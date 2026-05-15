@@ -129,6 +129,13 @@ body { font-family:'Noto Sans KR',sans-serif; background:var(--bg); color:var(--
   </div>
   <div class="vat">VAT 별도</div>
 </div>
+<div style="background:#e8f4f5;border-bottom:1px solid #c0dde2;padding:8px 18px;display:flex;align-items:center;gap:8px;">
+  <span style="font-size:0.72rem;color:#5a7080;">📋 적용 고시:</span>
+  <select id="version-select" onchange="onVersionChange()" style="font-size:0.75rem;font-weight:600;color:#0099a8;background:transparent;border:none;outline:none;cursor:pointer;font-family:inherit;">
+    <option value="2026-02" selected>2026년 2월 고시</option>
+  </select>
+  <span style="margin-left:auto;font-size:0.68rem;color:#9ab0be;">국토교통부 제2026-55호</span>
+</div>
 
 <div class="step">
   <div class="step-head">
@@ -486,6 +493,11 @@ function setDone(numId, valId, txt) {
 }
 function fmt(n) { return Number(n).toLocaleString('ko-KR') + '원'; }
 setFareType('위탁');
+
+function onVersionChange() {
+  var v = document.getElementById('version-select').value;
+  alert('현재는 ' + document.getElementById('version-select').options[document.getElementById('version-select').selectedIndex].text + ' 데이터만 제공됩니다.\n추후 업데이트 시 이전 고시도 조회 가능합니다.');
+}
 </script>
 </body>
 </html>
