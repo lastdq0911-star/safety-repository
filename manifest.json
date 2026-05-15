@@ -1,6 +1,6 @@
 {
-  "name": "SEBANG 안전운임 조회",
-  "short_name": "SEBANG 운임",
+  "name": "안전운임",
+  "short_name": "안전운임",
   "description": "세방(주) 수출입 컨테이너 안전운임 조회 시스템",
   "start_url": "./",
   "display": "standalone",
