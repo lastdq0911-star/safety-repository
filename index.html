@@ -28,12 +28,12 @@
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
 body { font-family:'Noto Sans KR',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; padding-bottom:60px; }
 
-.header { background:#3d3d3d; padding:0 14px; height:56px; display:flex; align-items:center; gap:10px; position:sticky; top:0; z-index:100; box-shadow:0 2px 10px rgba(0,0,0,0.25); border-bottom:3px solid var(--mint); }
+.header { background:#3d3d3d; padding:0 14px; height:64px; display:flex; align-items:center; gap:10px; position:sticky; top:0; z-index:100; box-shadow:0 2px 10px rgba(0,0,0,0.25); border-bottom:3px solid var(--mint); }
 .sebang-logo { height:20px; object-fit:contain; filter:brightness(0) invert(1); flex-shrink:0; max-width:85px; }
 .sebang-text { font-size:1.3rem; font-weight:900; font-style:italic; color:#fff; font-family:Arial Black,Impact,sans-serif; white-space:nowrap; flex-shrink:0; }
 .header-divider { width:1px; height:30px; background:rgba(255,255,255,0.25); flex-shrink:0; }
-.header-text { flex:1; min-width:0; }
-.header-text h1 { font-size:0.82rem; font-weight:700; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.header-text { flex:1; min-width:0; text-align:center; }
+.header-text h1 { font-size:1rem; font-weight:700; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .header-text p { font-size:0.55rem; color:rgba(255,255,255,0.55); margin-top:2px; white-space:nowrap; }
 .vat { font-size:0.62rem; font-weight:700; color:#fff; background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.35); padding:4px 9px; border-radius:5px; white-space:nowrap; flex-shrink:0; }
 
@@ -260,69 +260,6 @@ body { font-family:'Noto Sans KR',sans-serif; background:var(--bg); color:var(--
   .pc-right { display: contents; }
   .pc-placeholder { display: none; }
 }
-/* ── PC 반응형 ── */
-@media (min-width: 768px) {
-  body { padding-bottom:0; background:#d8d8d8; }
-
-  .header { height:70px; padding:0 32px; }
-  .sebang-logo { height:26px; max-width:110px; }
-  .header-text h1 { font-size:1.1rem; }
-  .header-text p { font-size:0.68rem; }
-  .vat { font-size:0.72rem; padding:6px 14px; }
-
-  .banner { padding:10px 32px; }
-
-  .pc-container {
-    max-width:960px;
-    margin:0 auto;
-    padding:28px 24px;
-    display:grid;
-    grid-template-columns:400px 1fr;
-    gap:24px;
-    align-items:start;
-  }
-
-  .pc-left { display:flex; flex-direction:column; gap:16px; }
-  .pc-right { display:flex; flex-direction:column; gap:16px; position:sticky; top:90px; }
-
-  .step { margin:0 !important; }
-  .result-wrap { margin:0 !important; }
-  .sur-result { margin:0 !important; }
-  .note { margin:0 !important; }
-  #loading { margin:0; }
-
-  /* PC에서 폰트/패딩 살짝 크게 */
-  .step-title { font-size:0.95rem; }
-  .tog-btn { font-size:0.92rem; padding:15px 8px; }
-  #search-input { font-size:1rem; padding:16px 16px 16px 46px; }
-  .ac-item { height:54px; font-size:0.95rem; }
-  .fare-row.selected-type .fv { font-size:1.1rem; }
-  .result-loc { font-size:1.1rem; }
-
-  /* PC 결과 없을 때 안내 */
-  .pc-empty {
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    min-height:300px;
-    background:#fff;
-    border-radius:14px;
-    border:2px dashed #d0d0d0;
-    color:#9a9a9a;
-    font-size:0.9rem;
-    line-height:2.2;
-    text-align:center;
-  }
-  .pc-empty-icon { font-size:3.5rem; margin-bottom:12px; }
-}
-
-@media (max-width:767px) {
-  .pc-container { display:contents; }
-  .pc-left { display:contents; }
-  .pc-right { display:contents; }
-  .pc-empty { display:none !important; }
-}
 </style>
 </head>
 <body>
@@ -347,9 +284,6 @@ body { font-family:'Noto Sans KR',sans-serif; background:var(--bg); color:var(--
 </div>
 
 <div class="pc-wrap">
-<div class="pc-left">
-
-<div class="pc-container">
 <div class="pc-left">
 
 <div class="step" id="step1">
@@ -437,15 +371,6 @@ body { font-family:'Noto Sans KR',sans-serif; background:var(--bg); color:var(--
 </div><!-- /pc-left -->
 <div class="pc-right">
 
-</div><!-- /pc-left -->
-<div class="pc-right">
-
-<div class="pc-empty" id="pc-empty">
-  <div class="pc-empty-icon">🚢</div>
-  <div>왼쪽에서 목적지를 검색하면</div>
-  <div>운임이 여기에 표시됩니다</div>
-</div>
-
 <div id="loading"><span class="spin"></span>데이터 로딩 중...<div class="load-bar"><div class="load-fill" id="load-fill" style="width:0%"></div></div></div>
 
 <div class="pc-placeholder" id="pc-placeholder">
@@ -490,10 +415,7 @@ body { font-family:'Noto Sans KR',sans-serif; background:var(--bg); color:var(--
   <div class="note">※ VAT 미포함 &nbsp;|&nbsp; 안전위탁: 운수사업자→화물차주 &nbsp;|&nbsp; 안전운송: 화주→운수사업자<br>※ 다중 할증: 최고 100% + 나머지 각 50% (최대 3개 합산)</div>
 </div>
 
-</div><!-- /pc-right -->
-</div><!-- /pc-container -->
-
-<script src="flat.js?v=20260516d"></script>
+<script src="flat.js?v=20260516c"></script>
 <script src="data0.js?v=20260516c"></script>
 <script src="data1.js?v=20260516c"></script>
 <script src="data2.js?v=20260516c"></script>
@@ -682,9 +604,8 @@ function calcSur() {
   surEl.classList.add('show');
 }
 function showResult(key, label) {
-  var entry = TARIFF[key]; if (!entry) { alert('데이터를 찾을 수 없습니다.'); return; }
-  var pe = document.getElementById('pc-empty');
-  if (pe) pe.style.display = 'none';
+  var entry = TARIFF[key];
+  if (!entry) { alert('데이터를 찾을 수 없습니다.'); return; }
   var ph = document.getElementById('pc-placeholder');
   if (ph) ph.style.display = 'none';
   curEntry = entry;
