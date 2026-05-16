@@ -503,7 +503,12 @@ function setType(t) {
   document.getElementById('btn-왕복').classList.toggle('active', t === '왕복');
   document.getElementById('btn-편도').classList.toggle('active', t === '편도');
   setDone('sn2', 'sv2', t === '왕복' ? '왕복' : '편도(의왕ICD)');
-  if (currentKey && currentFareType) showResult(currentKey, inp.value);
+  // 목적지 + 운임유형 모두 선택됐을 때만 결과 표시
+  if (currentKey && currentFareType) {
+    showResult(currentKey, inp.value);
+  } else {
+    document.getElementById('result').style.display = 'none';
+  }
 }
 
 var fareDesc = {
@@ -517,7 +522,14 @@ function setFareType(t) {
   document.getElementById('ftdesc').innerHTML = fareDesc[t];
   document.getElementById('ftdesc').style.display = 'block';
   setDone('sn3', 'sv3', t === '위탁' ? '안전위탁' : t === '사업자' ? '사업자간' : '안전운송');
-  applyFareHighlight(); calcSur();
+  // 목적지 + 운송유형 모두 선택됐을 때만 결과 표시
+  if (currentKey && currentType) {
+    showResult(currentKey, inp.value);
+  } else {
+    document.getElementById('result').style.display = 'none';
+    applyFareHighlight();
+    calcSur();
+  }
 }
 function applyFareHighlight() {
   if (!currentFareType) return;
