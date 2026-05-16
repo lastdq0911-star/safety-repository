@@ -339,7 +339,7 @@ body { font-family:'Noto Sans KR',sans-serif; background:var(--bg); color:var(--
     </div>
     <div class="sur-detail" id="sur-detail"></div>
   </div>
-  <div class="note">※ VAT 미포함 &nbsp;|&nbsp; 안전위탁: 운수사업자→화물차주 &nbsp;|&nbsp; 안전운송: 화주→운수사업자<br>※ 다중 할증: 최고 100% + 나머지 각 50% (최대 3개 합산)</div>
+  <div class="note">※ VAT 미포함 &nbsp;|&nbsp; 안전위탁: 운수사업자→화물차주 &nbsp;|&nbsp; 사업자간: 운수사업자→운수사업자 &nbsp;|&nbsp; 안전운송: 화주→운수사업자<br>※ 다중 할증: 최고 100% + 나머지 각 50% (최대 3개 합산)</div>
 </div>
 
 </div><!-- /pc-wrap -->
@@ -479,8 +479,20 @@ function selectItem(i) {
   tryShowResult();
 }
 
-// ── 운송 유형 ──
+// ── 운송 유형 (같은 버튼 다시 누르면 해제) ──
 function setType(t) {
+  if (currentType === t) {
+    // 이미 선택된 것 다시 누르면 해제
+    currentType = null;
+    document.getElementById('btn-왕복').classList.remove('active');
+    document.getElementById('btn-편도').classList.remove('active');
+    var sn = document.getElementById('sn2');
+    sn.classList.remove('done'); sn.textContent = '2';
+    document.getElementById('sv2').textContent = '';
+    document.getElementById('result').style.display = 'none';
+    document.getElementById('sur-result').classList.remove('show');
+    return;
+  }
   currentType = t;
   document.getElementById('btn-왕복').classList.toggle('active', t === '왕복');
   document.getElementById('btn-편도').classList.toggle('active', t === '편도');
@@ -488,13 +500,29 @@ function setType(t) {
   tryShowResult();
 }
 
-// ── 운임 유형 ──
+// ── 운임 유형 (같은 버튼 다시 누르면 해제) ──
 var fareDesc = {
   '위탁': '<b style="color:#1a1a1a;font-weight:700">안전위탁운임</b> — 운수사업자가 화물차주에게 지급하는 운임',
   '사업자': '<b style="color:#1a1a1a;font-weight:700">운수사업자간 운임</b> — 운수사업자가 다른 운송사업자에게 위탁 시 지급하는 운임',
   '운송': '<b style="color:#1a1a1a;font-weight:700">안전운송운임</b> — 화주가 운수사업자 또는 화물차주에게 지급하는 운임'
 };
 function setFareType(t) {
+  if (currentFareType === t) {
+    // 이미 선택된 것 다시 누르면 해제
+    currentFareType = null;
+    ['위탁','사업자','운송'].forEach(function(k) {
+      document.getElementById('ft-'+k).classList.remove('active');
+    });
+    var ftdesc = document.getElementById('ftdesc');
+    ftdesc.style.display = 'none';
+    ftdesc.innerHTML = '';
+    var sn = document.getElementById('sn3');
+    sn.classList.remove('done'); sn.textContent = '3';
+    document.getElementById('sv3').textContent = '';
+    document.getElementById('result').style.display = 'none';
+    document.getElementById('sur-result').classList.remove('show');
+    return;
+  }
   currentFareType = t;
   ['위탁','사업자','운송'].forEach(function(k) {
     document.getElementById('ft-'+k).classList.toggle('active', k === t);
@@ -576,14 +604,17 @@ function calcSur() {
   }
   var surEl = document.getElementById('sur-result');
   if (!curPortData || rates.length === 0) {
+    var wasShowing = surEl.classList.contains('show');
     surEl.classList.remove('show');
-    // 할증 해제 시 → 기본 운임 결과로 스크롤
-    setTimeout(function() {
-      var resultWrap = document.getElementById('result');
-      if (resultWrap && resultWrap.style.display !== 'none') {
-        resultWrap.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      }
-    }, 100);
+    // 할증 전체 해제 시 → 기본 운임 결과로 스크롤
+    if (wasShowing) {
+      setTimeout(function() {
+        var resultWrap = document.getElementById('result');
+        if (resultWrap && resultWrap.style.display !== 'none') {
+          resultWrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 100);
+    }
     return;
   }
   if (!currentFareType) return;
