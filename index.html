@@ -45,7 +45,7 @@ body { font-family:'Noto Sans KR',sans-serif; background:var(--bg); color:var(--
 .step { margin:14px 14px 0; background:var(--bg2); border:1px solid var(--border); border-left:4px solid var(--mint); border-radius:var(--radius); overflow:visible; box-shadow:var(--shadow); position:relative; }
 .step-head { padding:13px 16px; display:flex; align-items:center; gap:10px; border-bottom:1px solid var(--border2); background:var(--bg3); border-radius:calc(var(--radius) - 1px) calc(var(--radius) - 1px) 0 0; }
 .step-num { width:26px; height:26px; border-radius:50%; flex-shrink:0; background:#e8e8e8; border:1.5px solid #c0c0c0; color:var(--text2); font-size:0.75rem; font-weight:700; display:flex; align-items:center; justify-content:center; transition:all 0.2s; }
-.step-num.active { background:var(--mint); color:#fff; border-color:var(--mint); }
+.step-num.done { background:var(--mint); color:#fff; border-color:var(--mint); }
 .step-title { font-size:0.85rem; font-weight:700; color:var(--text); }
 .step-tag { font-size:0.65rem; color:var(--text3); font-weight:400; margin-left:4px; }
 .step-val { margin-left:auto; font-size:0.75rem; color:var(--mint); font-weight:700; max-width:50%; text-align:right; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
@@ -261,11 +261,11 @@ body { font-family:'Noto Sans KR',sans-serif; background:var(--bg); color:var(--
   <div class="step-head">
     <div class="step-num" id="sn2">2</div>
     <span class="step-title">운송 유형</span>
-    <span class="step-val" id="sv2">왕복</span>
+    <span class="step-val" id="sv2"></span>
   </div>
   <div class="step-body">
     <div class="toggle-row" style="grid-template-columns:1fr 1fr;">
-      <button class="tog-btn active" id="btn-왕복" onclick="setType('왕복')">🔄 왕복</button>
+      <button class="tog-btn" id="btn-왕복" onclick="setType('왕복')">🔄 왕복</button>
       <button class="tog-btn" id="btn-편도" onclick="setType('편도')">➡️ 편도 (의왕ICD)</button>
     </div>
   </div>
@@ -275,15 +275,15 @@ body { font-family:'Noto Sans KR',sans-serif; background:var(--bg); color:var(--
   <div class="step-head">
     <div class="step-num" id="sn3">3</div>
     <span class="step-title">운임 유형</span>
-    <span class="step-val" id="sv3">안전위탁</span>
+    <span class="step-val" id="sv3"></span>
   </div>
   <div class="step-body">
     <div class="toggle-row" style="grid-template-columns:1fr 1fr 1fr;">
-      <button class="tog-btn active" id="ft-위탁" onclick="setFareType('위탁')">안전위탁</button>
+      <button class="tog-btn" id="ft-위탁" onclick="setFareType('위탁')">안전위탁</button>
       <button class="tog-btn" id="ft-사업자" onclick="setFareType('사업자')">사업자간</button>
       <button class="tog-btn" id="ft-운송" onclick="setFareType('운송')">안전운송</button>
     </div>
-    <div class="fare-type-desc" id="ftdesc"><b style="color:#1a1a1a;font-weight:700">안전위탁운임</b> — 운수사업자가 화물차주에게 지급하는 운임</div>
+    <div class="fare-type-desc" id="ftdesc" style="display:none;"><b style="color:#1a1a1a;font-weight:700">안전위탁운임</b> — 운수사업자가 화물차주에게 지급하는 운임</div>
   </div>
 </div>
 
@@ -503,7 +503,7 @@ function setType(t) {
   document.getElementById('btn-왕복').classList.toggle('active', t === '왕복');
   document.getElementById('btn-편도').classList.toggle('active', t === '편도');
   setDone('sn2', 'sv2', t === '왕복' ? '왕복' : '편도(의왕ICD)');
-  if (currentKey) showResult(currentKey, inp.value);
+  if (currentKey && currentFareType) showResult(currentKey, inp.value);
 }
 
 var fareDesc = {
@@ -515,10 +515,12 @@ function setFareType(t) {
   currentFareType = t;
   ['위탁','사업자','운송'].forEach(function(k) { document.getElementById('ft-'+k).classList.toggle('active', k === t); });
   document.getElementById('ftdesc').innerHTML = fareDesc[t];
+  document.getElementById('ftdesc').style.display = 'block';
   setDone('sn3', 'sv3', t === '위탁' ? '안전위탁' : t === '사업자' ? '사업자간' : '안전운송');
   applyFareHighlight(); calcSur();
 }
 function applyFareHighlight() {
+  if (!currentFareType) return;
   var idx = {'위탁':0,'사업자':1,'운송':2}[currentFareType];
   ['f40','f20'].forEach(function(ft) {
     ['위탁','사업자','운송'].forEach(function(k, i) {
@@ -620,18 +622,12 @@ function selectPort(portName) {
 }
 function setDone(numId, valId, txt) {
   var el = document.getElementById(numId);
-  el.classList.remove('done');
-  el.classList.add('active');
-  // 숫자는 그대로 유지 (변경 안 함)
+  el.classList.add('done');
+  el.textContent = '✓';
   document.getElementById(valId).textContent = txt;
 }
 function fmt(n) { return Number(n).toLocaleString('ko-KR') + '원'; }
-setFareType('위탁');
-// sn2, sn3 초기 active 상태
-document.getElementById('sn2').classList.add('active');
-document.getElementById('sn3').classList.add('active');
-document.getElementById('sv2').textContent = '왕복';
-document.getElementById('sv3').textContent = '안전위탁';
+// 초기값 없음 - 사용자가 직접 선택
 </script>
 </div><!-- /pc-wrap -->
 </body>
