@@ -28,20 +28,23 @@
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
 body { font-family:'Noto Sans KR',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; padding-bottom:60px; }
 
-.header { background:#3d3d3d; padding:0 14px; height:56px; display:flex; align-items:center; gap:10px; position:sticky; top:0; z-index:100; box-shadow:0 2px 10px rgba(0,0,0,0.25); border-bottom:3px solid var(--mint); }
+/* ── 헤더 ── */
+.header { background:#3d3d3d; padding:0 14px; height:64px; display:flex; align-items:center; gap:10px; position:sticky; top:0; z-index:100; box-shadow:0 2px 10px rgba(0,0,0,0.25); border-bottom:3px solid var(--mint); }
 .sebang-logo { height:20px; object-fit:contain; filter:brightness(0) invert(1); flex-shrink:0; max-width:85px; }
 .sebang-text { font-size:1.3rem; font-weight:900; font-style:italic; color:#fff; font-family:Arial Black,Impact,sans-serif; white-space:nowrap; flex-shrink:0; }
 .header-divider { width:1px; height:30px; background:rgba(255,255,255,0.25); flex-shrink:0; }
-.header-text { flex:1; min-width:0; }
-.header-text h1 { font-size:0.82rem; font-weight:700; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.header-text p { font-size:0.55rem; color:rgba(255,255,255,0.55); margin-top:2px; white-space:nowrap; }
+.header-text { flex:1; min-width:0; text-align:center; }
+.header-text h1 { font-size:1rem; font-weight:700; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.header-text p { font-size:0.58rem; color:rgba(255,255,255,0.55); margin-top:3px; white-space:nowrap; }
 .vat { font-size:0.62rem; font-weight:700; color:#fff; background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.35); padding:4px 9px; border-radius:5px; white-space:nowrap; flex-shrink:0; }
 
+/* ── 배너 ── */
 .banner { background:#f5f5f5; border-bottom:1px solid var(--border); padding:8px 18px; display:flex; align-items:center; gap:8px; }
 .banner-label { font-size:0.7rem; color:var(--text2); }
 .banner-select { font-size:0.75rem; font-weight:700; color:var(--gray-dark); background:transparent; border:none; outline:none; cursor:pointer; font-family:inherit; }
 .banner-gov { margin-left:auto; font-size:0.65rem; color:var(--text3); }
 
+/* ── STEP 카드 ── */
 .step { margin:14px 14px 0; background:var(--bg2); border:1px solid var(--border); border-left:4px solid var(--mint); border-radius:var(--radius); overflow:visible; box-shadow:var(--shadow); position:relative; }
 .step-head { padding:13px 16px; display:flex; align-items:center; gap:10px; border-bottom:1px solid var(--border2); background:var(--bg3); border-radius:calc(var(--radius) - 1px) calc(var(--radius) - 1px) 0 0; }
 .step-num { width:26px; height:26px; border-radius:50%; flex-shrink:0; background:#e8e8e8; border:1.5px solid #c0c0c0; color:var(--text2); font-size:0.75rem; font-weight:700; display:flex; align-items:center; justify-content:center; transition:all 0.2s; }
@@ -51,77 +54,33 @@ body { font-family:'Noto Sans KR',sans-serif; background:var(--bg); color:var(--
 .step-val { margin-left:auto; font-size:0.75rem; color:var(--mint); font-weight:700; max-width:50%; text-align:right; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 .step-body { padding:14px 16px; }
 
-/* 검색창 */
+/* ── 검색창 ── */
 .search-wrap { position:relative; z-index:200; }
 .search-icon { position:absolute; left:13px; top:50%; transform:translateY(-50%); font-size:16px; pointer-events:none; z-index:1; }
-#search-input {
-  width:100%; padding:14px 14px 14px 42px;
-  background:var(--bg3); border:1.5px solid var(--border);
-  border-radius:var(--radius-sm); font-size:16px;
-  font-family:inherit; color:var(--text); outline:none;
-  -webkit-appearance:none; transition:border-radius 0.1s;
-}
+#search-input { width:100%; padding:14px 14px 14px 42px; background:var(--bg3); border:1.5px solid var(--border); border-radius:var(--radius-sm); font-size:16px; font-family:inherit; color:var(--text); outline:none; -webkit-appearance:none; transition:border-radius 0.1s; }
 #search-input::placeholder { color:var(--text3); }
 #search-input:focus { border-color:var(--gray); background:#fff; }
-#search-input.ac-open {
-  border-bottom-left-radius:0;
-  border-bottom-right-radius:0;
-  border-bottom-color:transparent;
-}
+#search-input.ac-open { border-bottom-left-radius:0; border-bottom-right-radius:0; border-bottom-color:transparent; }
 
-/* 드롭다운 */
-#ac-wrap {
-  display:none;
-  position:absolute;
-  top:100%;
-  left:0; right:0;
-  background:#fff;
-  border:1.5px solid var(--gray);
-  border-top:none;
-  border-radius:0 0 12px 12px;
-  box-shadow:0 8px 24px rgba(0,0,0,0.15);
-  z-index:300;
-}
-#ac-info {
-  padding:8px 14px;
-  font-size:0.7rem;
-  color:var(--text3);
-  background:#fafafa;
-  border-bottom:1px solid #f0f0f0;
-}
-#ac-list {
-  max-height:260px;
-  overflow-y:auto;
-  -webkit-overflow-scrolling:touch;
-  overscroll-behavior:contain;
-}
-.ac-item {
-  display:flex;
-  align-items:center;
-  gap:10px;
-  padding:0 14px;
-  height:50px;
-  font-size:0.9rem;
-  color:#1a1a1a;
-  border-bottom:1px solid #f5f5f5;
-  touch-action:manipulation;
-  user-select:none;
-  -webkit-user-select:none;
-  cursor:pointer;
-}
+/* ── 드롭다운 ── */
+#ac-wrap { display:none; position:absolute; top:100%; left:0; right:0; background:#fff; border:1.5px solid var(--gray); border-top:none; border-radius:0 0 12px 12px; box-shadow:0 8px 24px rgba(0,0,0,0.15); z-index:300; }
+#ac-info { padding:8px 14px; font-size:0.7rem; color:var(--text3); background:#fafafa; border-bottom:1px solid #f0f0f0; }
+#ac-list { max-height:260px; overflow-y:auto; -webkit-overflow-scrolling:touch; overscroll-behavior:contain; }
+.ac-item { display:flex; align-items:center; gap:10px; padding:0 14px; height:50px; font-size:0.9rem; color:#1a1a1a; border-bottom:1px solid #f5f5f5; touch-action:manipulation; user-select:none; -webkit-user-select:none; cursor:pointer; }
 .ac-item:last-child { border-bottom:none; }
 .ac-item:active { background:#f0f0f0; }
 .ac-icon { color:#ccc; font-size:13px; flex-shrink:0; }
 .ac-match { color:var(--mint); font-weight:700; }
-
 .hint-text { font-size:0.7rem; color:var(--text2); margin-top:8px; line-height:1.7; }
 .hint-text b { color:var(--gray-dark); font-weight:700; }
 
+/* ── 토글 버튼 ── */
 .toggle-row { display:grid; gap:8px; }
 .tog-btn { padding:13px 8px; border-radius:var(--radius-sm); border:1.5px solid var(--border); background:var(--bg3); color:var(--text2); font-size:0.85rem; font-weight:600; font-family:inherit; cursor:pointer; text-align:center; transition:all 0.15s; min-height:50px; }
 .tog-btn.active { background:var(--gray); border-color:var(--gray); color:#fff; font-weight:700; }
 .fare-type-desc { font-size:0.72rem; color:var(--text2); margin-top:10px; padding:10px 12px; background:var(--bg3); border-radius:8px; border-left:3px solid var(--gray); border:1px solid var(--border2); border-left:3px solid var(--gray); line-height:1.6; }
 
+/* ── 할증 ── */
 .sur-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
 .sur-item { background:var(--bg3); border:1.5px solid var(--border); border-radius:var(--radius-sm); padding:12px; cursor:pointer; transition:all 0.15s; min-height:64px; display:flex; flex-direction:column; justify-content:center; }
 .sur-item.checked { background:#efefef; border-color:var(--gray); }
@@ -141,12 +100,14 @@ body { font-family:'Noto Sans KR',sans-serif; background:var(--bg); color:var(--
 .weight-label { font-size:0.72rem; color:var(--text2); min-width:110px; }
 .weight-input { width:64px; padding:8px; border-radius:7px; background:#fff; border:1.5px solid var(--border); color:var(--text); font-size:0.9rem; font-family:'JetBrains Mono',monospace; text-align:center; outline:none; -webkit-appearance:none; }
 
+/* ── 로딩 ── */
 #loading { text-align:center; padding:40px 20px; color:var(--text2); font-size:0.85rem; }
 .spin { display:inline-block; width:24px; height:24px; border:2px solid var(--border); border-top-color:var(--gray); border-radius:50%; animation:sp 0.7s linear infinite; margin-right:8px; vertical-align:middle; }
 @keyframes sp { to{ transform:rotate(360deg) } }
 .load-bar { width:200px; height:4px; background:var(--border); border-radius:2px; margin:12px auto 0; overflow:hidden; }
 .load-fill { height:100%; background:var(--gray); border-radius:2px; transition:width 0.3s; }
 
+/* ── 결과 ── */
 #result { display:none; }
 .result-wrap { margin:14px 14px 0; background:var(--bg2); border:1px solid var(--border); border-left:4px solid var(--mint); border-radius:var(--radius); overflow:hidden; box-shadow:var(--shadow); }
 .result-top { padding:14px 16px; background:var(--gray-dark); border-bottom:3px solid var(--mint); }
@@ -184,86 +145,99 @@ body { font-family:'Noto Sans KR',sans-serif; background:var(--bg); color:var(--
 .sur-detail { margin-top:10px; padding-top:10px; border-top:1px solid var(--border); font-size:0.67rem; color:var(--text2); line-height:1.8; }
 .note { margin:10px 14px 0; padding:11px 13px; background:#f0fffe; border:1px solid rgba(0,184,169,0.20); border-left:3px solid var(--mint); border-radius:var(--radius-sm); font-size:0.67rem; color:#006b62; line-height:1.7; }
 
-/* ── 반응형 PC 와이드 레이아웃 ── */
-@media (min-width: 768px) {
-  body { padding-bottom: 0; }
+/* ════════════════════════════════
+   PC 레이아웃 (768px 이상)
+   ════════════════════════════════ */
+@media (min-width:768px) {
+  body { padding-bottom:0; background:#d4d4d4; }
 
-  .header {
-    height: 64px;
-    padding: 0 32px;
+  /* 헤더 PC 스타일 */
+  .header { height:68px; padding:0 40px; }
+  .sebang-logo { height:22px; max-width:95px; }
+  .header-text h1 { font-size:1.05rem; }
+  .header-text p { font-size:0.62rem; }
+  .vat { font-size:0.7rem; padding:5px 12px; }
+  .banner { padding:10px 40px; font-size:0.8rem; }
+
+  /* PC 2컬럼 레이아웃 */
+  .pc-layout {
+    max-width:1100px;
+    margin:28px auto;
+    padding:0 24px;
+    display:grid;
+    grid-template-columns:380px 1fr;
+    gap:20px;
+    align-items:start;
   }
-  .sebang-logo { height: 24px; }
-  .header-text h1 { font-size: 1rem; }
-  .header-text p { font-size: 0.65rem; }
-  .vat { font-size: 0.72rem; padding: 5px 14px; }
 
-  .banner { padding: 10px 32px; }
-
-  /* PC 전체 컨테이너 */
-  .pc-wrap {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 24px 32px;
-    display: grid;
-    grid-template-columns: 420px 1fr;
-    gap: 24px;
-    align-items: start;
+  /* 왼쪽: 검색/설정 패널 */
+  .pc-panel-left {
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+    position:sticky;
+    top:96px; /* 헤더(68px) + 여유 */
   }
 
-  /* 왼쪽 컬럼 - 검색/설정 */
-  .pc-left { display: flex; flex-direction: column; gap: 16px; }
-
-  /* 오른쪽 컬럼 - 결과 */
-  .pc-right { display: flex; flex-direction: column; gap: 16px; }
-
-  /* 스텝 카드 마진 제거 (PC에서는 wrap이 담당) */
-  .step { margin: 0 !important; }
-  #result { display: block !important; }
-  #loading { display: none !important; }
-
-  .result-wrap { margin: 0 !important; }
-  .sur-result { margin: 0 !important; }
-  .note { margin: 0 !important; }
-
-  /* 검색창 더 크게 */
-  #search-input { font-size: 1rem; padding: 16px 16px 16px 46px; }
-
-  /* 버튼 더 크게 */
-  .tog-btn { font-size: 0.9rem; padding: 14px 8px; }
-
-  /* 운임 카드 폰트 크게 */
-  .fare-row.selected-type .fv { font-size: 1.2rem; }
-  .fv { font-size: 0.9rem; }
-  .fl { font-size: 0.75rem; }
-
-  /* 결과 위치 안내 */
-  .pc-placeholder {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 60px 20px;
-    background: #fff;
-    border-radius: 14px;
-    border: 2px dashed #d0d0d0;
-    color: #9a9a9a;
-    font-size: 0.9rem;
-    line-height: 2;
-    text-align: center;
+  /* 오른쪽: 결과 패널 */
+  .pc-panel-right {
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+    min-height:400px;
   }
-  .pc-placeholder .icon { font-size: 3rem; margin-bottom: 12px; }
+
+  /* 모바일 마진 제거 */
+  .step { margin:0 !important; }
+  .result-wrap { margin:0 !important; }
+  .sur-result { margin:0 !important; }
+  .note { margin:0 !important; }
+  #loading { margin:0; border-radius:var(--radius); background:#fff; border:1px solid var(--border); box-shadow:var(--shadow); }
+
+  /* PC에서 폰트 크기 약간 키우기 */
+  .step-title { font-size:0.9rem; }
+  .tog-btn { font-size:0.88rem; padding:14px 10px; }
+  #search-input { font-size:1rem; padding:15px 15px 15px 44px; }
+  .ac-item { height:52px; font-size:0.92rem; }
+  .result-loc { font-size:1.05rem; }
+  .fv { font-size:0.85rem; }
+  .fl { font-size:0.72rem; }
+  .fare-row.selected-type .fv { font-size:1.05rem; }
+  .ptab { font-size:0.78rem; padding:9px 16px; }
+
+  /* PC 결과 없을 때 빈 상태 */
+  .pc-empty {
+    display:flex !important;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    min-height:360px;
+    background:#fff;
+    border-radius:var(--radius);
+    border:1px solid var(--border);
+    border-left:4px solid var(--border);
+    box-shadow:var(--shadow);
+    color:var(--text3);
+    text-align:center;
+    line-height:2;
+  }
+  .pc-empty-icon { font-size:3.5rem; margin-bottom:16px; opacity:0.5; }
+  .pc-empty-title { font-size:1rem; font-weight:600; color:var(--text2); margin-bottom:6px; }
+  .pc-empty-desc { font-size:0.82rem; color:var(--text3); }
 }
 
-@media (max-width: 767px) {
-  .pc-wrap { display: contents; }
-  .pc-left { display: contents; }
-  .pc-right { display: contents; }
-  .pc-placeholder { display: none; }
+/* 모바일: pc 전용 요소 숨김 */
+@media (max-width:767px) {
+  .pc-layout { display:contents; }
+  .pc-panel-left { display:contents; }
+  .pc-panel-right { display:contents; }
+  .pc-empty { display:none !important; }
 }
 </style>
 </head>
 <body>
 
+<!-- 헤더 -->
 <div class="header">
   <img class="sebang-logo" src="https://www.sebang.com/img/logo.png" alt="SEBANG"
     onerror="this.outerHTML='<span class=&quot;sebang-text&quot;>SEBANG</span>'">
@@ -275,6 +249,7 @@ body { font-family:'Noto Sans KR',sans-serif; background:var(--bg); color:var(--
   <div class="vat">VAT 별도</div>
 </div>
 
+<!-- 배너 -->
 <div class="banner">
   <span class="banner-label">📋 적용 고시:</span>
   <select class="banner-select" onchange="alert('현재는 2026년 2월 고시 데이터만 제공됩니다.')">
@@ -283,149 +258,168 @@ body { font-family:'Noto Sans KR',sans-serif; background:var(--bg); color:var(--
   <span class="banner-gov">국토교통부 제2026-55호</span>
 </div>
 
-<div class="pc-wrap">
-<div class="pc-left">
+<!-- PC 2컬럼 레이아웃 시작 -->
+<div class="pc-layout">
 
-<div class="step" id="step1">
-  <div class="step-head">
-    <div class="step-num" id="sn1">1</div>
-    <span class="step-title">목적지 검색</span>
-    <span class="step-val" id="sv1"></span>
-  </div>
-  <div class="step-body">
-    <div class="search-wrap">
-      <span class="search-icon">🔍</span>
-      <input id="search-input" type="text"
-        placeholder="예) 해운대, 반여동, 경주시..."
-        autocomplete="off" autocorrect="off"
-        autocapitalize="off" spellcheck="false"/>
-      <div id="ac-wrap">
-        <div id="ac-info">검색 결과</div>
-        <div id="ac-list"></div>
+  <!-- 왼쪽: 검색/설정 -->
+  <div class="pc-panel-left">
+
+    <!-- STEP 1 검색 -->
+    <div class="step" id="step1">
+      <div class="step-head">
+        <div class="step-num" id="sn1">1</div>
+        <span class="step-title">목적지 검색</span>
+        <span class="step-val" id="sv1"></span>
       </div>
-    </div>
-    <p class="hint-text">시·도 / 시·군·구 / 읍·면·동 중 <b>일부만 입력</b>해도 검색돼요<br>예) <b>부산 해운대</b> &nbsp;·&nbsp; <b>반여동</b> &nbsp;·&nbsp; <b>경주</b></p>
-  </div>
-</div>
-
-<div class="step">
-  <div class="step-head">
-    <div class="step-num done" id="sn2">✓</div>
-    <span class="step-title">운송 유형</span>
-    <span class="step-val" id="sv2">왕복</span>
-  </div>
-  <div class="step-body">
-    <div class="toggle-row" style="grid-template-columns:1fr 1fr;">
-      <button class="tog-btn active" id="btn-왕복" onclick="setType('왕복')">🔄 왕복</button>
-      <button class="tog-btn" id="btn-편도" onclick="setType('편도')">➡️ 편도 (의왕ICD)</button>
-    </div>
-  </div>
-</div>
-
-<div class="step">
-  <div class="step-head">
-    <div class="step-num done" id="sn3">✓</div>
-    <span class="step-title">운임 유형</span>
-    <span class="step-val" id="sv3">안전위탁</span>
-  </div>
-  <div class="step-body">
-    <div class="toggle-row" style="grid-template-columns:1fr 1fr 1fr;">
-      <button class="tog-btn active" id="ft-위탁" onclick="setFareType('위탁')">안전위탁</button>
-      <button class="tog-btn" id="ft-사업자" onclick="setFareType('사업자')">사업자간</button>
-      <button class="tog-btn" id="ft-운송" onclick="setFareType('운송')">안전운송</button>
-    </div>
-    <div class="fare-type-desc" id="ftdesc"><b style="color:#1a1a1a;font-weight:700">안전위탁운임</b> — 운수사업자가 화물차주에게 지급하는 운임</div>
-  </div>
-</div>
-
-<div class="step">
-  <div class="step-head">
-    <div class="step-num" id="sn4">4</div>
-    <span class="step-title">할증 <span class="step-tag">(선택사항)</span></span>
-    <span class="step-val" id="sv4"></span>
-  </div>
-  <div class="step-body">
-    <div class="sur-grid">
-      <div class="sur-item" data-key="냉동냉장" data-rate="30" data-warn="0" onclick="toggleSur(this)"><div class="sur-top"><div class="sur-check">✓</div><div class="sur-name">❄️ 냉동·냉장</div></div><div class="sur-rate">+30%</div></div>
-      <div class="sur-item" data-key="탱크" data-rate="30" data-warn="0" onclick="toggleSur(this)"><div class="sur-top"><div class="sur-check">✓</div><div class="sur-name">🛢 탱크 컨테이너</div></div><div class="sur-rate">+30%</div></div>
-      <div class="sur-item" data-key="위험물" data-rate="30" data-warn="1" onclick="toggleSur(this)"><div class="sur-top"><div class="sur-check">✓</div><div class="sur-name">⚠️ 위험물·유독물</div></div><div class="sur-rate">+30%</div></div>
-      <div class="sur-item" data-key="덤프" data-rate="25" data-warn="0" onclick="toggleSur(this)"><div class="sur-top"><div class="sur-check">✓</div><div class="sur-name">🔽 덤프 컨테이너</div></div><div class="sur-rate">+25%</div></div>
-      <div class="sur-item" data-key="공휴일" data-rate="20" data-warn="0" onclick="toggleSur(this)"><div class="sur-top"><div class="sur-check">✓</div><div class="sur-name">📅 공휴일</div></div><div class="sur-rate">+20%</div></div>
-      <div class="sur-item" data-key="심야" data-rate="20" data-warn="0" onclick="toggleSur(this)"><div class="sur-top"><div class="sur-check">✓</div><div class="sur-name">🌙 심야 (22~06시)</div></div><div class="sur-rate">+20%</div></div>
-      <div class="sur-item" data-key="험로오지" data-rate="20" data-warn="0" onclick="toggleSur(this)"><div class="sur-top"><div class="sur-check">✓</div><div class="sur-name">🛤 험로·오지</div></div><div class="sur-rate">+20%</div></div>
-      <div class="sur-item" data-key="플렉시액체" data-rate="20" data-warn="0" onclick="toggleSur(this)"><div class="sur-top"><div class="sur-check">✓</div><div class="sur-name">💧 플렉시백(액체)</div></div><div class="sur-rate">+20%</div></div>
-      <div class="sur-item" data-key="플렉시분말" data-rate="10" data-warn="0" onclick="toggleSur(this)"><div class="sur-top"><div class="sur-check">✓</div><div class="sur-name">🌫 플렉시백(분말)</div></div><div class="sur-rate">+10%</div></div>
-      <div class="sur-item" data-key="통행제한" data-rate="30" data-warn="0" onclick="toggleSur(this)"><div class="sur-top"><div class="sur-check">✓</div><div class="sur-name">🚧 통행제한지역</div></div><div class="sur-rate">+30% 이상</div></div>
-      <div class="sur-item" data-key="화약" data-rate="100" data-warn="1" onclick="toggleSur(this)"><div class="sur-top"><div class="sur-check">✓</div><div class="sur-name">💥 화약류</div></div><div class="sur-rate">+100%</div></div>
-      <div class="sur-item" data-key="방사성" data-rate="200" data-warn="1" onclick="toggleSur(this)"><div class="sur-top"><div class="sur-check">✓</div><div class="sur-name">☢️ 방사성물질</div></div><div class="sur-rate">+200%</div></div>
-      <div class="sur-item" data-key="45ft" data-rate="12.5" data-warn="0" onclick="toggleSur(this)"><div class="sur-top"><div class="sur-check">✓</div><div class="sur-name">📦 45FT 컨테이너</div></div><div class="sur-rate">+12.5%</div></div>
-      <div class="sur-item" data-key="중량" data-rate="0" data-warn="0" onclick="toggleSur(this)"><div class="sur-top"><div class="sur-check">✓</div><div class="sur-name">⚖️ 중량물 초과</div></div><div class="sur-rate">초과톤당 +10%</div></div>
-    </div>
-    <div class="weight-input-wrap" id="weight-wrap">
-      <div class="weight-row"><span class="weight-label">40FT 초과 중량</span><input class="weight-input" id="w40" type="number" min="0" max="15" placeholder="0" oninput="calcSur()"><span style="font-size:0.72rem;color:var(--text2);">톤</span></div>
-      <div class="weight-row"><span class="weight-label">20FT 초과 중량</span><input class="weight-input" id="w20" type="number" min="0" max="15" placeholder="0" oninput="calcSur()"><span style="font-size:0.72rem;color:var(--text2);">톤</span></div>
-    </div>
-  </div>
-</div>
-
-</div><!-- /pc-left -->
-<div class="pc-right">
-
-<div id="loading"><span class="spin"></span>데이터 로딩 중...<div class="load-bar"><div class="load-fill" id="load-fill" style="width:0%"></div></div></div>
-
-<div class="pc-placeholder" id="pc-placeholder">
-  <div class="icon">🚢</div>
-  <div>왼쪽에서 목적지를 검색하면</div>
-  <div>여기에 운임이 표시됩니다</div>
-</div>
-
-<div id="result">
-  <div class="result-wrap">
-    <div class="result-top"><div class="result-loc" id="r-loc">-</div><div class="result-sub" id="r-sub">-</div></div>
-    <div class="port-scroll"><div class="port-tabs" id="port-tabs"></div></div>
-    <div class="fare-area">
-      <div class="fare-cards">
-        <div class="fare-card ft40">
-          <div class="fare-card-head"><span class="ft-label">40FT</span><span style="font-size:0.68rem;color:var(--text2);">컨테이너</span><span class="dist-km" id="dist-km">-</span></div>
-          <div class="fare-rows">
-            <div class="fare-row" id="row-f40-위탁"><span class="fl">안전위탁운임</span><span class="fv" id="f40-위탁">-</span></div>
-            <div class="fare-row" id="row-f40-사업자"><span class="fl">운수사업자간</span><span class="fv" id="f40-사업자">-</span></div>
-            <div class="fare-row" id="row-f40-운송"><span class="fl">안전운송운임</span><span class="fv" id="f40-운송">-</span></div>
+      <div class="step-body">
+        <div class="search-wrap">
+          <span class="search-icon">🔍</span>
+          <input id="search-input" type="text"
+            placeholder="예) 해운대, 반여동, 경주시..."
+            autocomplete="off" autocorrect="off"
+            autocapitalize="off" spellcheck="false"/>
+          <div id="ac-wrap">
+            <div id="ac-info">검색 결과</div>
+            <div id="ac-list"></div>
           </div>
         </div>
-        <div class="fare-card ft20">
-          <div class="fare-card-head"><span class="ft-label">20FT</span><span style="font-size:0.68rem;color:var(--text2);">컨테이너</span></div>
-          <div class="fare-rows">
-            <div class="fare-row" id="row-f20-위탁"><span class="fl">안전위탁운임</span><span class="fv" id="f20-위탁">-</span></div>
-            <div class="fare-row" id="row-f20-사업자"><span class="fl">운수사업자간</span><span class="fv" id="f20-사업자">-</span></div>
-            <div class="fare-row" id="row-f20-운송"><span class="fl">안전운송운임</span><span class="fv" id="f20-운송">-</span></div>
-          </div>
+        <p class="hint-text">시·도 / 시·군·구 / 읍·면·동 중 <b>일부만 입력</b>해도 검색돼요<br>예) <b>부산 해운대</b> &nbsp;·&nbsp; <b>반여동</b> &nbsp;·&nbsp; <b>경주</b></p>
+      </div>
+    </div>
+
+    <!-- STEP 2 운송 유형 -->
+    <div class="step">
+      <div class="step-head">
+        <div class="step-num done" id="sn2">✓</div>
+        <span class="step-title">운송 유형</span>
+        <span class="step-val" id="sv2">왕복</span>
+      </div>
+      <div class="step-body">
+        <div class="toggle-row" style="grid-template-columns:1fr 1fr;">
+          <button class="tog-btn active" id="btn-왕복" onclick="setType('왕복')">🔄 왕복</button>
+          <button class="tog-btn" id="btn-편도" onclick="setType('편도')">➡️ 편도 (의왕ICD)</button>
         </div>
       </div>
     </div>
-  </div>
-  <div class="sur-result" id="sur-result">
-    <div class="sur-result-title">⚡ 할증 적용 최종운임</div>
-    <div class="sur-final-grid">
-      <div class="sur-final-item"><div class="sfl" id="sr-label-40">40FT 안전위탁 (최종)</div><div class="sfv" id="sr-f40">-</div></div>
-      <div class="sur-final-item"><div class="sfl" id="sr-label-20">20FT 안전위탁 (최종)</div><div class="sfv" id="sr-f20">-</div></div>
-    </div>
-    <div class="sur-detail" id="sur-detail"></div>
-  </div>
-  <div class="note">※ VAT 미포함 &nbsp;|&nbsp; 안전위탁: 운수사업자→화물차주 &nbsp;|&nbsp; 안전운송: 화주→운수사업자<br>※ 다중 할증: 최고 100% + 나머지 각 50% (최대 3개 합산)</div>
-</div>
 
-<script src="flat.js?v=20260516c"></script>
-<script src="data0.js?v=20260516c"></script>
-<script src="data1.js?v=20260516c"></script>
-<script src="data2.js?v=20260516c"></script>
-<script src="data3.js?v=20260516c"></script>
-<script src="data4.js?v=20260516c"></script>
-<script src="data5.js?v=20260516c"></script>
-<script src="data6.js?v=20260516c"></script>
-<script src="data7.js?v=20260516c"></script>
-<script src="data8.js?v=20260516c"></script>
-<script src="data9.js?v=20260516c"></script>
+    <!-- STEP 3 운임 유형 -->
+    <div class="step">
+      <div class="step-head">
+        <div class="step-num done" id="sn3">✓</div>
+        <span class="step-title">운임 유형</span>
+        <span class="step-val" id="sv3">안전위탁</span>
+      </div>
+      <div class="step-body">
+        <div class="toggle-row" style="grid-template-columns:1fr 1fr 1fr;">
+          <button class="tog-btn active" id="ft-위탁" onclick="setFareType('위탁')">안전위탁</button>
+          <button class="tog-btn" id="ft-사업자" onclick="setFareType('사업자')">사업자간</button>
+          <button class="tog-btn" id="ft-운송" onclick="setFareType('운송')">안전운송</button>
+        </div>
+        <div class="fare-type-desc" id="ftdesc"><b style="color:#1a1a1a;font-weight:700">안전위탁운임</b> — 운수사업자가 화물차주에게 지급하는 운임</div>
+      </div>
+    </div>
+
+    <!-- STEP 4 할증 -->
+    <div class="step">
+      <div class="step-head">
+        <div class="step-num" id="sn4">4</div>
+        <span class="step-title">할증 <span class="step-tag">(선택사항)</span></span>
+        <span class="step-val" id="sv4"></span>
+      </div>
+      <div class="step-body">
+        <div class="sur-grid">
+          <div class="sur-item" data-key="냉동냉장" data-rate="30" data-warn="0" onclick="toggleSur(this)"><div class="sur-top"><div class="sur-check">✓</div><div class="sur-name">❄️ 냉동·냉장</div></div><div class="sur-rate">+30%</div></div>
+          <div class="sur-item" data-key="탱크" data-rate="30" data-warn="0" onclick="toggleSur(this)"><div class="sur-top"><div class="sur-check">✓</div><div class="sur-name">🛢 탱크 컨테이너</div></div><div class="sur-rate">+30%</div></div>
+          <div class="sur-item" data-key="위험물" data-rate="30" data-warn="1" onclick="toggleSur(this)"><div class="sur-top"><div class="sur-check">✓</div><div class="sur-name">⚠️ 위험물·유독물</div></div><div class="sur-rate">+30%</div></div>
+          <div class="sur-item" data-key="덤프" data-rate="25" data-warn="0" onclick="toggleSur(this)"><div class="sur-top"><div class="sur-check">✓</div><div class="sur-name">🔽 덤프 컨테이너</div></div><div class="sur-rate">+25%</div></div>
+          <div class="sur-item" data-key="공휴일" data-rate="20" data-warn="0" onclick="toggleSur(this)"><div class="sur-top"><div class="sur-check">✓</div><div class="sur-name">📅 공휴일</div></div><div class="sur-rate">+20%</div></div>
+          <div class="sur-item" data-key="심야" data-rate="20" data-warn="0" onclick="toggleSur(this)"><div class="sur-top"><div class="sur-check">✓</div><div class="sur-name">🌙 심야 (22~06시)</div></div><div class="sur-rate">+20%</div></div>
+          <div class="sur-item" data-key="험로오지" data-rate="20" data-warn="0" onclick="toggleSur(this)"><div class="sur-top"><div class="sur-check">✓</div><div class="sur-name">🛤 험로·오지</div></div><div class="sur-rate">+20%</div></div>
+          <div class="sur-item" data-key="플렉시액체" data-rate="20" data-warn="0" onclick="toggleSur(this)"><div class="sur-top"><div class="sur-check">✓</div><div class="sur-name">💧 플렉시백(액체)</div></div><div class="sur-rate">+20%</div></div>
+          <div class="sur-item" data-key="플렉시분말" data-rate="10" data-warn="0" onclick="toggleSur(this)"><div class="sur-top"><div class="sur-check">✓</div><div class="sur-name">🌫 플렉시백(분말)</div></div><div class="sur-rate">+10%</div></div>
+          <div class="sur-item" data-key="통행제한" data-rate="30" data-warn="0" onclick="toggleSur(this)"><div class="sur-top"><div class="sur-check">✓</div><div class="sur-name">🚧 통행제한지역</div></div><div class="sur-rate">+30% 이상</div></div>
+          <div class="sur-item" data-key="화약" data-rate="100" data-warn="1" onclick="toggleSur(this)"><div class="sur-top"><div class="sur-check">✓</div><div class="sur-name">💥 화약류</div></div><div class="sur-rate">+100%</div></div>
+          <div class="sur-item" data-key="방사성" data-rate="200" data-warn="1" onclick="toggleSur(this)"><div class="sur-top"><div class="sur-check">✓</div><div class="sur-name">☢️ 방사성물질</div></div><div class="sur-rate">+200%</div></div>
+          <div class="sur-item" data-key="45ft" data-rate="12.5" data-warn="0" onclick="toggleSur(this)"><div class="sur-top"><div class="sur-check">✓</div><div class="sur-name">📦 45FT 컨테이너</div></div><div class="sur-rate">+12.5%</div></div>
+          <div class="sur-item" data-key="중량" data-rate="0" data-warn="0" onclick="toggleSur(this)"><div class="sur-top"><div class="sur-check">✓</div><div class="sur-name">⚖️ 중량물 초과</div></div><div class="sur-rate">초과톤당 +10%</div></div>
+        </div>
+        <div class="weight-input-wrap" id="weight-wrap">
+          <div class="weight-row"><span class="weight-label">40FT 초과 중량</span><input class="weight-input" id="w40" type="number" min="0" max="15" placeholder="0" oninput="calcSur()"><span style="font-size:0.72rem;color:var(--text2);">톤</span></div>
+          <div class="weight-row"><span class="weight-label">20FT 초과 중량</span><input class="weight-input" id="w20" type="number" min="0" max="15" placeholder="0" oninput="calcSur()"><span style="font-size:0.72rem;color:var(--text2);">톤</span></div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /pc-panel-left -->
+
+  <!-- 오른쪽: 결과 -->
+  <div class="pc-panel-right">
+
+    <!-- 로딩 -->
+    <div id="loading"><span class="spin"></span>데이터 로딩 중...<div class="load-bar"><div class="load-fill" id="load-fill" style="width:0%"></div></div></div>
+
+    <!-- PC 빈 상태 안내 -->
+    <div class="pc-empty" id="pc-empty">
+      <div class="pc-empty-icon">🚢</div>
+      <div class="pc-empty-title">목적지를 검색해보세요</div>
+      <div class="pc-empty-desc">왼쪽 검색창에 지역명을 입력하면<br>운임이 여기에 표시됩니다</div>
+    </div>
+
+    <!-- 결과 -->
+    <div id="result">
+      <div class="result-wrap">
+        <div class="result-top">
+          <div class="result-loc" id="r-loc">-</div>
+          <div class="result-sub" id="r-sub">-</div>
+        </div>
+        <div class="port-scroll"><div class="port-tabs" id="port-tabs"></div></div>
+        <div class="fare-area">
+          <div class="fare-cards">
+            <div class="fare-card ft40">
+              <div class="fare-card-head"><span class="ft-label">40FT</span><span style="font-size:0.68rem;color:var(--text2);">컨테이너</span><span class="dist-km" id="dist-km">-</span></div>
+              <div class="fare-rows">
+                <div class="fare-row" id="row-f40-위탁"><span class="fl">안전위탁운임</span><span class="fv" id="f40-위탁">-</span></div>
+                <div class="fare-row" id="row-f40-사업자"><span class="fl">운수사업자간</span><span class="fv" id="f40-사업자">-</span></div>
+                <div class="fare-row" id="row-f40-운송"><span class="fl">안전운송운임</span><span class="fv" id="f40-운송">-</span></div>
+              </div>
+            </div>
+            <div class="fare-card ft20">
+              <div class="fare-card-head"><span class="ft-label">20FT</span><span style="font-size:0.68rem;color:var(--text2);">컨테이너</span></div>
+              <div class="fare-rows">
+                <div class="fare-row" id="row-f20-위탁"><span class="fl">안전위탁운임</span><span class="fv" id="f20-위탁">-</span></div>
+                <div class="fare-row" id="row-f20-사업자"><span class="fl">운수사업자간</span><span class="fv" id="f20-사업자">-</span></div>
+                <div class="fare-row" id="row-f20-운송"><span class="fl">안전운송운임</span><span class="fv" id="f20-운송">-</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="sur-result" id="sur-result">
+        <div class="sur-result-title">⚡ 할증 적용 최종운임</div>
+        <div class="sur-final-grid">
+          <div class="sur-final-item"><div class="sfl" id="sr-label-40">40FT 안전위탁 (최종)</div><div class="sfv" id="sr-f40">-</div></div>
+          <div class="sur-final-item"><div class="sfl" id="sr-label-20">20FT 안전위탁 (최종)</div><div class="sfv" id="sr-f20">-</div></div>
+        </div>
+        <div class="sur-detail" id="sur-detail"></div>
+      </div>
+      <div class="note">※ VAT 미포함 &nbsp;|&nbsp; 안전위탁: 운수사업자→화물차주 &nbsp;|&nbsp; 안전운송: 화주→운수사업자<br>※ 다중 할증: 최고 100% + 나머지 각 50% (최대 3개 합산)</div>
+    </div>
+
+  </div><!-- /pc-panel-right -->
+
+</div><!-- /pc-layout -->
+
+<script src="flat.js?v=20260517a"></script>
+<script src="data0.js?v=20260517a"></script>
+<script src="data1.js?v=20260517a"></script>
+<script src="data2.js?v=20260517a"></script>
+<script src="data3.js?v=20260517a"></script>
+<script src="data4.js?v=20260517a"></script>
+<script src="data5.js?v=20260517a"></script>
+<script src="data6.js?v=20260517a"></script>
+<script src="data7.js?v=20260517a"></script>
+<script src="data8.js?v=20260517a"></script>
+<script src="data9.js?v=20260517a"></script>
 
 <script>
 var TARIFF = {};
@@ -433,33 +427,22 @@ window.addEventListener('load', function() {
   setTimeout(function() {
     for (var i = 0; i < 10; i++) {
       var chunk = window['TARIFF_CHUNK' + i];
-      if (chunk) {
-        var keys = Object.keys(chunk);
-        for (var j = 0; j < keys.length; j++) TARIFF[keys[j]] = chunk[keys[j]];
-      }
+      if (chunk) { var keys = Object.keys(chunk); for (var j = 0; j < keys.length; j++) TARIFF[keys[j]] = chunk[keys[j]]; }
     }
     document.getElementById('load-fill').style.width = '100%';
     document.getElementById('loading').style.display = 'none';
   }, 500);
 });
 
-var acResults = [];
-var currentKey = null, currentType = '왕복', currentFareType = '위탁';
+var acResults = [], currentKey = null, currentType = '왕복', currentFareType = '위탁';
 var curEntry = null, curPortData = null;
-
 var inp = document.getElementById('search-input');
 var acWrap = document.getElementById('ac-wrap');
 var acList = document.getElementById('ac-list');
 var acInfo = document.getElementById('ac-info');
 
-function showAC() {
-  acWrap.style.display = 'block';
-  inp.classList.add('ac-open');
-}
-function hideAC() {
-  acWrap.style.display = 'none';
-  inp.classList.remove('ac-open');
-}
+function showAC() { acWrap.style.display = 'block'; inp.classList.add('ac-open'); }
+function hideAC() { acWrap.style.display = 'none'; inp.classList.remove('ac-open'); }
 
 inp.addEventListener('input', function() {
   var q = inp.value.trim();
@@ -473,22 +456,15 @@ inp.addEventListener('input', function() {
   acInfo.textContent = '검색 결과 ' + acResults.length + '건';
   acList.innerHTML = acResults.map(function(item, i) {
     var label = item.l;
-    tokens.forEach(function(t) {
-      label = label.split(t).join('<span class="ac-match">' + t + '</span>');
-    });
+    tokens.forEach(function(t) { label = label.split(t).join('<span class="ac-match">' + t + '</span>'); });
     return '<div class="ac-item" data-i="' + i + '"><span class="ac-icon">📍</span><span>' + label + '</span></div>';
   }).join('');
   showAC();
 });
 
-// 스크롤/선택 구분
 var _sy = 0, _sm = false;
-acList.addEventListener('touchstart', function(e) {
-  _sy = e.touches[0].clientY; _sm = false;
-}, { passive: true });
-acList.addEventListener('touchmove', function(e) {
-  if (Math.abs(e.touches[0].clientY - _sy) > 8) _sm = true;
-}, { passive: true });
+acList.addEventListener('touchstart', function(e) { _sy = e.touches[0].clientY; _sm = false; }, { passive: true });
+acList.addEventListener('touchmove', function(e) { if (Math.abs(e.touches[0].clientY - _sy) > 8) _sm = true; }, { passive: true });
 acList.addEventListener('touchend', function(e) {
   if (_sm) { _sm = false; return; }
   var item = e.target.closest('.ac-item');
@@ -498,29 +474,20 @@ acList.addEventListener('mousedown', function(e) {
   var item = e.target.closest('.ac-item');
   if (item) { e.preventDefault(); selectItem(parseInt(item.getAttribute('data-i'), 10)); }
 });
-
 inp.addEventListener('keydown', function(e) {
   if (e.key === 'Enter' && acResults.length > 0) selectItem(0);
   if (e.key === 'Escape') hideAC();
 });
-document.addEventListener('touchstart', function(e) {
-  if (!e.target.closest('#step1')) hideAC();
-}, { passive: true });
-document.addEventListener('mousedown', function(e) {
-  if (!e.target.closest('#step1')) hideAC();
-});
+document.addEventListener('touchstart', function(e) { if (!e.target.closest('#step1')) hideAC(); }, { passive: true });
+document.addEventListener('mousedown', function(e) { if (!e.target.closest('#step1')) hideAC(); });
 
 function selectItem(i) {
-  var item = acResults[i];
-  if (!item) return;
-  inp.value = item.l;
-  hideAC();
-  inp.blur();
+  var item = acResults[i]; if (!item) return;
+  inp.value = item.l; hideAC(); inp.blur();
   currentKey = item.k;
   setDone('sn1', 'sv1', item.l.split(' ').slice(-2).join(' '));
   showResult(item.k, item.l);
 }
-
 function setType(t) {
   currentType = t;
   document.getElementById('btn-왕복').classList.toggle('active', t === '왕복');
@@ -528,7 +495,6 @@ function setType(t) {
   setDone('sn2', 'sv2', t === '왕복' ? '왕복' : '편도(의왕ICD)');
   if (currentKey) showResult(currentKey, inp.value);
 }
-
 var fareDesc = {
   '위탁': '<b style="color:#1a1a1a;font-weight:700">안전위탁운임</b> — 운수사업자가 화물차주에게 지급하는 운임',
   '사업자': '<b style="color:#1a1a1a;font-weight:700">운수사업자간 운임</b> — 운수사업자가 다른 운송사업자에게 위탁 시 지급하는 운임',
@@ -604,10 +570,9 @@ function calcSur() {
   surEl.classList.add('show');
 }
 function showResult(key, label) {
-  var entry = TARIFF[key];
-  if (!entry) { alert('데이터를 찾을 수 없습니다.'); return; }
-  var ph = document.getElementById('pc-placeholder');
-  if (ph) ph.style.display = 'none';
+  var entry = TARIFF[key]; if (!entry) { alert('데이터를 찾을 수 없습니다.'); return; }
+  var pe = document.getElementById('pc-empty');
+  if (pe) pe.style.display = 'none';
   curEntry = entry;
   var ports = currentType === '왕복'
     ? Object.keys(entry).filter(function(k){return k.indexOf('편도')<0;})
@@ -615,8 +580,7 @@ function showResult(key, label) {
   if (!ports.length) { alert('편도 운임은 수도권 화주공장에서 의왕ICD 반납·수령 시만 적용됩니다.'); return; }
   document.getElementById('r-loc').textContent = label;
   document.getElementById('r-sub').textContent = currentType + ' · 2026년 안전운임 (VAT 별도)';
-  var tabsEl = document.getElementById('port-tabs');
-  tabsEl.innerHTML = '';
+  var tabsEl = document.getElementById('port-tabs'); tabsEl.innerHTML = '';
   ports.forEach(function(p, i) {
     var tab = document.createElement('div');
     tab.className = 'ptab' + (i === 0 ? ' active' : '');
@@ -627,12 +591,15 @@ function showResult(key, label) {
   });
   selectPort(ports[0]);
   document.getElementById('result').style.display = 'block';
-  setTimeout(function() { document.getElementById('result').scrollIntoView({behavior:'smooth',block:'start'}); }, 150);
+  setTimeout(function() {
+    if (window.innerWidth < 768) {
+      document.getElementById('result').scrollIntoView({behavior:'smooth',block:'start'});
+    }
+  }, 150);
 }
 function selectPort(portName) {
   document.querySelectorAll('.ptab').forEach(function(t) { t.classList.toggle('active', t.getAttribute('data-port') === portName); });
-  var d = curEntry[portName];
-  if (!d) return;
+  var d = curEntry[portName]; if (!d) return;
   curPortData = d;
   document.getElementById('dist-km').textContent = d.dist + ' km';
   document.getElementById('f40-위탁').textContent = fmt(d.f40[0]);
@@ -652,7 +619,5 @@ function fmt(n) { return Number(n).toLocaleString('ko-KR') + '원'; }
 setFareType('위탁');
 setDone('sn2','sv2','왕복');
 </script>
-</div><!-- /pc-right -->
-</div><!-- /pc-wrap -->
 </body>
 </html>
