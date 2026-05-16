@@ -183,6 +183,83 @@ body { font-family:'Noto Sans KR',sans-serif; background:var(--bg); color:var(--
 .sfv { font-family:'JetBrains Mono',monospace; font-size:1rem; font-weight:800; color:var(--gray-dark); }
 .sur-detail { margin-top:10px; padding-top:10px; border-top:1px solid var(--border); font-size:0.67rem; color:var(--text2); line-height:1.8; }
 .note { margin:10px 14px 0; padding:11px 13px; background:#f0fffe; border:1px solid rgba(0,184,169,0.20); border-left:3px solid var(--mint); border-radius:var(--radius-sm); font-size:0.67rem; color:#006b62; line-height:1.7; }
+
+/* ── 반응형 PC 와이드 레이아웃 ── */
+@media (min-width: 768px) {
+  body { padding-bottom: 0; }
+
+  .header {
+    height: 64px;
+    padding: 0 32px;
+  }
+  .sebang-logo { height: 24px; }
+  .header-text h1 { font-size: 1rem; }
+  .header-text p { font-size: 0.65rem; }
+  .vat { font-size: 0.72rem; padding: 5px 14px; }
+
+  .banner { padding: 10px 32px; }
+
+  /* PC 전체 컨테이너 */
+  .pc-wrap {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 24px 32px;
+    display: grid;
+    grid-template-columns: 420px 1fr;
+    gap: 24px;
+    align-items: start;
+  }
+
+  /* 왼쪽 컬럼 - 검색/설정 */
+  .pc-left { display: flex; flex-direction: column; gap: 16px; }
+
+  /* 오른쪽 컬럼 - 결과 */
+  .pc-right { display: flex; flex-direction: column; gap: 16px; }
+
+  /* 스텝 카드 마진 제거 (PC에서는 wrap이 담당) */
+  .step { margin: 0 !important; }
+  #result { display: block !important; }
+  #loading { display: none !important; }
+
+  .result-wrap { margin: 0 !important; }
+  .sur-result { margin: 0 !important; }
+  .note { margin: 0 !important; }
+
+  /* 검색창 더 크게 */
+  #search-input { font-size: 1rem; padding: 16px 16px 16px 46px; }
+
+  /* 버튼 더 크게 */
+  .tog-btn { font-size: 0.9rem; padding: 14px 8px; }
+
+  /* 운임 카드 폰트 크게 */
+  .fare-row.selected-type .fv { font-size: 1.2rem; }
+  .fv { font-size: 0.9rem; }
+  .fl { font-size: 0.75rem; }
+
+  /* 결과 위치 안내 */
+  .pc-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    background: #fff;
+    border-radius: 14px;
+    border: 2px dashed #d0d0d0;
+    color: #9a9a9a;
+    font-size: 0.9rem;
+    line-height: 2;
+    text-align: center;
+  }
+  .pc-placeholder .icon { font-size: 3rem; margin-bottom: 12px; }
+}
+
+@media (max-width: 767px) {
+  .pc-wrap { display: contents; }
+  .pc-left { display: contents; }
+  .pc-right { display: contents; }
+  .pc-placeholder { display: none; }
+}
 </style>
 </head>
 <body>
@@ -205,6 +282,9 @@ body { font-family:'Noto Sans KR',sans-serif; background:var(--bg); color:var(--
   </select>
   <span class="banner-gov">국토교통부 제2026-55호</span>
 </div>
+
+<div class="pc-wrap">
+<div class="pc-left">
 
 <div class="step" id="step1">
   <div class="step-head">
@@ -288,7 +368,16 @@ body { font-family:'Noto Sans KR',sans-serif; background:var(--bg); color:var(--
   </div>
 </div>
 
+</div><!-- /pc-left -->
+<div class="pc-right">
+
 <div id="loading"><span class="spin"></span>데이터 로딩 중...<div class="load-bar"><div class="load-fill" id="load-fill" style="width:0%"></div></div></div>
+
+<div class="pc-placeholder" id="pc-placeholder">
+  <div class="icon">🚢</div>
+  <div>왼쪽에서 목적지를 검색하면</div>
+  <div>여기에 운임이 표시됩니다</div>
+</div>
 
 <div id="result">
   <div class="result-wrap">
@@ -517,6 +606,8 @@ function calcSur() {
 function showResult(key, label) {
   var entry = TARIFF[key];
   if (!entry) { alert('데이터를 찾을 수 없습니다.'); return; }
+  var ph = document.getElementById('pc-placeholder');
+  if (ph) ph.style.display = 'none';
   curEntry = entry;
   var ports = currentType === '왕복'
     ? Object.keys(entry).filter(function(k){return k.indexOf('편도')<0;})
@@ -561,5 +652,7 @@ function fmt(n) { return Number(n).toLocaleString('ko-KR') + '원'; }
 setFareType('위탁');
 setDone('sn2','sv2','왕복');
 </script>
+</div><!-- /pc-right -->
+</div><!-- /pc-wrap -->
 </body>
 </html>
