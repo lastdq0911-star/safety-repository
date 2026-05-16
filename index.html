@@ -54,27 +54,7 @@ body { font-family:'Noto Sans KR',sans-serif; background:var(--bg); color:var(--
 .step-val { font-size:0.75rem; color:var(--mint); font-weight:700; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 .step-body { padding:14px 16px; }
 
-/* ── 고정 버튼 ── */
-.pin-btn {
-  margin-left:auto;
-  font-size:0.62rem;
-  font-weight:600;
-  color:var(--text3);
-  background:#fff;
-  border:1px solid var(--border);
-  border-radius:5px;
-  padding:4px 9px;
-  cursor:pointer;
-  white-space:nowrap;
-  transition:all 0.15s;
-  font-family:inherit;
-  flex-shrink:0;
-}
-.pin-btn.pinned {
-  color:#fff;
-  background:var(--mint);
-  border-color:var(--mint);
-}
+
 
 /* ── 검색창 ── */
 .search-wrap { position:relative; z-index:200; }
@@ -259,7 +239,6 @@ body { font-family:'Noto Sans KR',sans-serif; background:var(--bg); color:var(--
     <div class="step-num" id="sn2">2</div>
     <span class="step-title">운송 유형</span>
     <span class="step-val" id="sv2" style="margin-left:8px;"></span>
-    <button class="pin-btn" id="pin-type" onclick="togglePin('type')">📌 고정</button>
   </div>
   <div class="step-body">
     <div class="toggle-row" style="grid-template-columns:1fr 1fr;">
@@ -275,7 +254,6 @@ body { font-family:'Noto Sans KR',sans-serif; background:var(--bg); color:var(--
     <div class="step-num" id="sn3">3</div>
     <span class="step-title">운임 유형</span>
     <span class="step-val" id="sv3" style="margin-left:8px;"></span>
-    <button class="pin-btn" id="pin-fare" onclick="togglePin('fare')">📌 고정</button>
   </div>
   <div class="step-body">
     <div class="toggle-row" style="grid-template-columns:1fr 1fr 1fr;">
@@ -402,35 +380,7 @@ var currentFareType = null; // 운임 유형 - 초기 미선택
 var curEntry = null;
 var curPortData = null;
 
-// ── 고정 기능 (세션 중에만 유지, 껐다 켜면 초기화) ──
-var pinnedType = null;
-var pinnedFare = null;
 
-function togglePin(which) {
-  if (which === 'type') {
-    if (pinnedType) {
-      pinnedType = null;
-      document.getElementById('pin-type').classList.remove('pinned');
-      document.getElementById('pin-type').textContent = '📌 고정';
-    } else {
-      if (!currentType) { alert('먼저 운송 유형을 선택해주세요!'); return; }
-      pinnedType = currentType;
-      document.getElementById('pin-type').classList.add('pinned');
-      document.getElementById('pin-type').textContent = '📌 고정됨';
-    }
-  } else {
-    if (pinnedFare) {
-      pinnedFare = null;
-      document.getElementById('pin-fare').classList.remove('pinned');
-      document.getElementById('pin-fare').textContent = '📌 고정';
-    } else {
-      if (!currentFareType) { alert('먼저 운임 유형을 선택해주세요!'); return; }
-      pinnedFare = currentFareType;
-      document.getElementById('pin-fare').classList.add('pinned');
-      document.getElementById('pin-fare').textContent = '📌 고정됨';
-    }
-  }
-}
 
 // ── 자동완성 ──
 var inp = document.getElementById('search-input');
@@ -523,9 +473,6 @@ function selectItem(i) {
   inp.blur();
   currentKey = item.k;
   setDone('sn1', 'sv1', item.l.split(' ').slice(-2).join(' '));
-  // 고정값 자동 적용
-  if (pinnedType && !currentType) setType(pinnedType);
-  if (pinnedFare && !currentFareType) setFareType(pinnedFare);
   // 3가지 모두 선택됐으면 결과 표시
   tryShowResult();
 }
