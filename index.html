@@ -185,6 +185,27 @@ body { font-family:'Noto Sans KR',sans-serif; background:var(--bg); color:var(--
 .sur-detail { margin-top:10px; padding-top:10px; border-top:1px solid var(--border); font-size:0.67rem; color:var(--text2); line-height:1.8; }
 .note { margin:10px 14px 0; padding:11px 13px; background:#f0fffe; border:1px solid rgba(0,184,169,0.20); border-left:3px solid var(--mint); border-radius:var(--radius-sm); font-size:0.67rem; color:#006b62; line-height:1.7; }
 
+/* 고정 버튼 */
+.pin-btn {
+  margin-left:auto;
+  font-size:0.65rem;
+  font-weight:600;
+  color:var(--text3);
+  background:var(--bg3);
+  border:1px solid var(--border);
+  border-radius:5px;
+  padding:3px 8px;
+  cursor:pointer;
+  white-space:nowrap;
+  transition:all 0.15s;
+  font-family:inherit;
+}
+.pin-btn.pinned {
+  color:#fff;
+  background:var(--mint);
+  border-color:var(--mint);
+}
+
 /* ── PC 레이아웃 ── */
 @media (min-width: 768px) {
   body { padding-bottom: 40px; }
@@ -495,6 +516,9 @@ function selectItem(i) {
   inp.blur();
   currentKey = item.k;
   setDone('sn1', 'sv1', item.l.split(' ').slice(-2).join(' '));
+  // 고정값 자동 적용
+  if (pinnedType) setType(pinnedType);
+  if (pinnedFare) setFareType(pinnedFare);
   // 운송유형, 운임유형 모두 선택됐을 때만 결과 표시
   if (currentType && currentFareType) {
     showResult(item.k, item.l);
@@ -649,7 +673,65 @@ function setDone(numId, valId, txt) {
   document.getElementById(valId).textContent = txt;
 }
 function fmt(n) { return Number(n).toLocaleString('ko-KR') + '원'; }
-// 초기값 없음 - 사용자가 직접 선택
+// ── 고정 기능 ──
+// 앱 시작 시 로컬스토리지에서 고정값 복원
+var pinnedType = localStorage.getItem('pinnedType') || null;
+var pinnedFare = localStorage.getItem('pinnedFare') || null;
+
+function togglePin(which) {
+  if (which === 'type') {
+    if (pinnedType) {
+      // 고정 해제
+      pinnedType = null;
+      localStorage.removeItem('pinnedType');
+      document.getElementById('pin-type').classList.remove('pinned');
+      document.getElementById('pin-type').textContent = '📌 고정';
+    } else {
+      if (!currentType) { alert('먼저 운송 유형을 선택해주세요!'); return; }
+      pinnedType = currentType;
+      localStorage.setItem('pinnedType', pinnedType);
+      document.getElementById('pin-type').classList.add('pinned');
+      document.getElementById('pin-type').textContent = '📌 고정됨';
+    }
+  } else {
+    if (pinnedFare) {
+      // 고정 해제
+      pinnedFare = null;
+      localStorage.removeItem('pinnedFare');
+      document.getElementById('pin-fare').classList.remove('pinned');
+      document.getElementById('pin-fare').textContent = '📌 고정';
+    } else {
+      if (!currentFareType) { alert('먼저 운임 유형을 선택해주세요!'); return; }
+      pinnedFare = currentFareType;
+      localStorage.setItem('pinnedFare', pinnedFare);
+      document.getElementById('pin-fare').classList.add('pinned');
+      document.getElementById('pin-fare').textContent = '📌 고정됨';
+    }
+  }
+}
+
+// 고정값 복원 적용
+function applyPinned() {
+  if (pinnedType) {
+    setType(pinnedType);
+    document.getElementById('pin-type').classList.add('pinned');
+    document.getElementById('pin-type').textContent = '📌 고정됨';
+  }
+  if (pinnedFare) {
+    setFareType(pinnedFare);
+    document.getElementById('pin-fare').classList.add('pinned');
+    document.getElementById('pin-fare').textContent = '📌 고정됨';
+  }
+}
+
+// 목적지 선택 시 고정값 자동 적용
+function applyPinnedOnSearch() {
+  if (pinnedType && !currentType) setType(pinnedType);
+  if (pinnedFare && !currentFareType) setFareType(pinnedFare);
+}
+
+// 초기값 없음 - 사용자가 직접 선택 (고정값은 자동 복원)
+applyPinned();
 </script>
 </div><!-- /pc-wrap -->
 </body>
