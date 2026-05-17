@@ -570,23 +570,34 @@ function toggleSur(el) {
   if (!was) el.classList.add(warn ? 'checked-warn' : 'checked');
   if (isWeight) document.getElementById('weight-wrap').classList.toggle('show', !was);
 
-  // 해제 후 남은 할증 개수 확인
+  // 해제 후 남은 할증 개수
   var remaining = document.querySelectorAll('.sur-item.checked,.sur-item.checked-warn').length;
-
-  // 할증이 전부 해제됐고 이전에 sur-result가 보이고 있었으면 기본 운임으로 스크롤
+  // sur-result 현재 보이는지 (calcSur 호출 전에 체크)
   var surEl = document.getElementById('sur-result');
   var surWasShowing = surEl.classList.contains('show');
 
   calcSur();
 
+  // 할증 해제 + 전부 해제됨 + 이전에 할증결과 보이고 있었음 → 기본 운임으로 스크롤
   if (was && remaining === 0 && surWasShowing) {
     setTimeout(function() {
-      var resultWrap = document.querySelector('.result-wrap');
-      if (resultWrap) {
-        var top = resultWrap.getBoundingClientRect().top + window.pageYOffset - 80;
+      var resultEl = document.getElementById('result');
+      if (resultEl && resultEl.style.display !== 'none') {
+        var top = resultEl.getBoundingClientRect().top + window.pageYOffset - 80;
         window.scrollTo({ top: top, behavior: 'smooth' });
       }
-    }, 150);
+    }, 200);
+  }
+
+  // 할증 선택 시 → 할증 결과로 스크롤 (calcSur에서 show 추가된 후)
+  if (!was) {
+    setTimeout(function() {
+      var surResult = document.getElementById('sur-result');
+      if (surResult && surResult.classList.contains('show')) {
+        var top = surResult.getBoundingClientRect().top + window.pageYOffset - 80;
+        window.scrollTo({ top: top, behavior: 'smooth' });
+      }
+    }, 200);
   }
 }
 function getSurRates() {
@@ -642,11 +653,6 @@ function calcSur() {
   document.getElementById('sr-f20').textContent = fmt(final20);
   document.getElementById('sur-detail').textContent = '적용: ' + rates.map(function(r){ return r.label; }).join(', ') + ' / 40FT ' + rate40.toFixed(1) + '% · 20FT ' + rate20.toFixed(1) + '%';
   surEl.classList.add('show');
-  // 할증 선택 시 → 할증 최종운임으로 스크롤
-  setTimeout(function() {
-    var top = surEl.getBoundingClientRect().top + window.pageYOffset - 80;
-    window.scrollTo({ top: top, behavior: 'smooth' });
-  }, 150);
 }
 
 // ── 결과 표시 ──
