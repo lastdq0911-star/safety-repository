@@ -564,7 +564,12 @@ function applyFareHighlight() {
 // ── 할증 ──
 function doScroll(targetEl) {
   if (!targetEl) return;
-  targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  // requestAnimationFrame으로 브라우저 렌더링 후 스크롤
+  requestAnimationFrame(function() {
+    requestAnimationFrame(function() {
+      targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
 }
 
 function toggleSur(el) {
