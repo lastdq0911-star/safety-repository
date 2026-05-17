@@ -156,8 +156,8 @@ body { font-family:'Noto Sans KR',sans-serif; background:var(--bg); color:var(--
 .fare-row.dimmed { opacity:0.3; }
 
 /* ── 할증 최종운임 ── */
-.sur-result { margin:10px 14px 0; background:linear-gradient(135deg,#f8f8f8,#f0f0f0); border:1.5px solid var(--gray); border-top:3px solid var(--mint); border-radius:var(--radius-sm); padding:14px 16px; display:none; box-shadow:var(--shadow); scroll-margin-top:80px; }
-.sur-result.show { display:block; }
+.sur-result { margin:10px 14px 0; background:linear-gradient(135deg,#f8f8f8,#f0f0f0); border:1.5px solid var(--gray); border-top:3px solid var(--mint); border-radius:var(--radius-sm); padding:14px 16px; box-shadow:var(--shadow); scroll-margin-top:80px; visibility:hidden; height:0; overflow:hidden; padding:0; margin-top:0; border:none; }
+.sur-result.show { visibility:visible; height:auto; overflow:visible; padding:14px 16px; margin-top:10px; border:1.5px solid var(--gray); border-top:3px solid var(--mint); margin-bottom:0; }
 .sur-result-title { font-size:0.78rem; color:var(--gray-dark); font-weight:800; margin-bottom:10px; }
 .sur-final-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
 .sur-final-item { background:#fff; border-radius:8px; padding:10px 12px; border:1px solid var(--border); border-top:2px solid var(--gray); }
@@ -564,42 +564,29 @@ function applyFareHighlight() {
 // ── 할증 ──
 function doScroll(targetEl) {
   if (!targetEl) return;
-  // requestAnimationFrame으로 브라우저 렌더링 후 스크롤
-  requestAnimationFrame(function() {
-    requestAnimationFrame(function() {
-      targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    });
-  });
+  targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 function toggleSur(el) {
   var isWeight = el.getAttribute('data-key') === '중량';
   var warn = el.getAttribute('data-warn') === '1';
   var was = el.classList.contains('checked') || el.classList.contains('checked-warn');
-
-  // calcSur 호출 전에 sur-result 보임 여부 저장
   var surWasShowing = document.getElementById('sur-result').classList.contains('show');
 
-  // 체크 상태 변경
   el.classList.remove('checked', 'checked-warn');
   if (!was) el.classList.add(warn ? 'checked-warn' : 'checked');
   if (isWeight) document.getElementById('weight-wrap').classList.toggle('show', !was);
 
-  // 해제 후 남은 개수 (상태 변경 후 바로 카운트)
   var remaining = document.querySelectorAll('.sur-item.checked,.sur-item.checked-warn').length;
 
   calcSur();
 
   if (!was) {
     // 할증 선택 → sur-result로 스크롤
-    setTimeout(function() {
-      doScroll(document.getElementById('sur-result'));
-    }, 300);
+    doScroll(document.getElementById('sur-result'));
   } else if (remaining === 0 && surWasShowing) {
     // 할증 전체 해제 → result-wrap으로 스크롤
-    setTimeout(function() {
-      doScroll(document.querySelector('.result-wrap'));
-    }, 300);
+    doScroll(document.querySelector('.result-wrap'));
   }
 }
 function getSurRates() {
