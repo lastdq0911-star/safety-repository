@@ -569,7 +569,25 @@ function toggleSur(el) {
   el.classList.remove('checked','checked-warn');
   if (!was) el.classList.add(warn ? 'checked-warn' : 'checked');
   if (isWeight) document.getElementById('weight-wrap').classList.toggle('show', !was);
+
+  // 해제 후 남은 할증 개수 확인
+  var remaining = document.querySelectorAll('.sur-item.checked,.sur-item.checked-warn').length;
+
+  // 할증이 전부 해제됐고 이전에 sur-result가 보이고 있었으면 기본 운임으로 스크롤
+  var surEl = document.getElementById('sur-result');
+  var surWasShowing = surEl.classList.contains('show');
+
   calcSur();
+
+  if (was && remaining === 0 && surWasShowing) {
+    setTimeout(function() {
+      var resultWrap = document.querySelector('.result-wrap');
+      if (resultWrap) {
+        var top = resultWrap.getBoundingClientRect().top + window.pageYOffset - 80;
+        window.scrollTo({ top: top, behavior: 'smooth' });
+      }
+    }, 150);
+  }
 }
 function getSurRates() {
   var rates = [];
@@ -607,18 +625,7 @@ function calcSur() {
   }
   var surEl = document.getElementById('sur-result');
   if (!curPortData || rates.length === 0) {
-    var wasShowing = surEl.classList.contains('show');
     surEl.classList.remove('show');
-    // 할증 전체 해제 시 → 기본 운임 결과로 스크롤
-    if (wasShowing) {
-      setTimeout(function() {
-        var resultWrap = document.querySelector('.result-wrap');
-        if (resultWrap) {
-          var top = resultWrap.getBoundingClientRect().top + window.pageYOffset - 80;
-          window.scrollTo({ top: top, behavior: 'smooth' });
-        }
-      }, 150);
-    }
     return;
   }
   if (!currentFareType) return;
