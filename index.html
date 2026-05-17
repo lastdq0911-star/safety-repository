@@ -352,7 +352,7 @@ body { font-family:'Noto Sans KR',sans-serif; background:var(--bg); color:var(--
     </div>
     <div class="sur-detail" id="sur-detail"></div>
   </div>
-  <div class="note" id="result-note">※ VAT 미포함 &nbsp;|&nbsp; 안전위탁: 운수사업자→화물차주 &nbsp;|&nbsp; 사업자간: 운수사업자→운수사업자 &nbsp;|&nbsp; 안전운송: 화주→운수사업자<br>※ 다중 할증: 최고 100% + 나머지 각 50% (최대 3개 합산)</div>
+  <div class="note">※ VAT 미포함 &nbsp;|&nbsp; 안전위탁: 운수사업자→화물차주 &nbsp;|&nbsp; 사업자간: 운수사업자→운수사업자 &nbsp;|&nbsp; 안전운송: 화주→운수사업자<br>※ 다중 할증: 최고 100% + 나머지 각 50% (최대 3개 합산)</div>
 </div>
 
 <!-- 오프라인 배지 -->
@@ -461,6 +461,9 @@ function loadNoticeData(notice) {
     .catch(function (err) {
       hideLoading();
       isLoading = false;
+      // 고시 선택 드롭다운을 이전 값으로 되돌림
+      const select = document.getElementById('notice-select');
+      if (activeNotice) select.value = activeNotice.id;
       showInlineError('데이터를 불러오지 못했습니다. 네트워크 상태를 확인하고 페이지를 새로고침 해주세요.');
     });
 }
@@ -488,7 +491,10 @@ function hideLoading() {
   setTimeout(function () {
     document.getElementById('loading').style.display = 'none';
     document.getElementById('search-input').disabled = false;
-    document.getElementById('search-input').focus();
+    // 터치 기기에서는 자동 포커스 안 함 (가상 키보드 팝업 방지)
+    if (!('ontouchstart' in window)) {
+      document.getElementById('search-input').focus();
+    }
   }, 300);
 }
 
