@@ -562,15 +562,22 @@ function applyFareHighlight() {
 }
 
 // ── 할증 ──
+function scrollTo(el, offset) {
+  if (!el) return;
+  var rect = el.getBoundingClientRect();
+  var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+  window.scrollTo({ top: scrollTop + rect.top - (offset || 80), behavior: 'smooth' });
+}
+
 function toggleSur(el) {
   var isWeight = el.getAttribute('data-key') === '중량';
   var warn = el.getAttribute('data-warn') === '1';
   var was = el.classList.contains('checked') || el.classList.contains('checked-warn');
 
-  // 해제인 경우 - calcSur 전에 sur-result 상태 먼저 저장
+  // calcSur 전에 sur-result 보임 여부 저장
   var surWasShowing = document.getElementById('sur-result').classList.contains('show');
 
-  el.classList.remove('checked','checked-warn');
+  el.classList.remove('checked', 'checked-warn');
   if (!was) el.classList.add(warn ? 'checked-warn' : 'checked');
   if (isWeight) document.getElementById('weight-wrap').classList.toggle('show', !was);
 
@@ -578,30 +585,20 @@ function toggleSur(el) {
 
   // 할증 선택 → sur-result로 스크롤
   if (!was) {
-    var surEl = document.getElementById('sur-result');
-    if (surEl.classList.contains('show')) {
-      setTimeout(function() {
-        window.scrollTo({
-          top: surEl.offsetTop - 80,
-          behavior: 'smooth'
-        });
-      }, 200);
-    }
+    setTimeout(function() {
+      var surEl = document.getElementById('sur-result');
+      if (surEl.classList.contains('show')) scrollTo(surEl, 80);
+    }, 300);
     return;
   }
 
   // 할증 해제 → 남은 할증 없고 이전에 sur-result 보이고 있었으면 result-wrap으로 스크롤
   var remaining = document.querySelectorAll('.sur-item.checked,.sur-item.checked-warn').length;
   if (remaining === 0 && surWasShowing) {
-    var resultWrap = document.querySelector('.result-wrap');
-    if (resultWrap) {
-      setTimeout(function() {
-        window.scrollTo({
-          top: resultWrap.offsetTop - 80,
-          behavior: 'smooth'
-        });
-      }, 200);
-    }
+    setTimeout(function() {
+      var resultWrap = document.querySelector('.result-wrap');
+      if (resultWrap) scrollTo(resultWrap, 80);
+    }, 300);
   }
 }
 function getSurRates() {
