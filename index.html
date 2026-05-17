@@ -136,7 +136,7 @@ body { font-family:'Noto Sans KR',sans-serif; background:var(--bg); color:var(--
 .port-scroll { overflow-x:auto; padding:12px 14px 0; scrollbar-width:none; -webkit-overflow-scrolling:touch; background:#fff; }
 .port-scroll::-webkit-scrollbar { display:none; }
 .port-tabs { display:flex; gap:6px; width:max-content; padding-bottom:12px; }
-.ptab { padding:8px 14px; border-radius:7px; font-size:0.75rem; font-weight:600; border:1.5px solid var(--border); background:var(--bg3); color:var(--text2); cursor:pointer; white-space:nowrap; min-height:36px; display:flex; align-items:center; transition:all 0.15s; }
+.ptab { appearance:none; -webkit-appearance:none; font-family:inherit; padding:8px 14px; border-radius:7px; font-size:0.75rem; font-weight:600; border:1.5px solid var(--border); background:var(--bg3); color:var(--text2); cursor:pointer; white-space:nowrap; min-height:36px; display:flex; align-items:center; transition:all 0.15s; }
 .ptab.active { background:var(--gray); border-color:var(--gray); color:#fff; font-weight:700; }
 .fare-area { padding:0 14px 14px; background:#fff; }
 .fare-cards { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
@@ -304,7 +304,7 @@ body { font-family:'Noto Sans KR',sans-serif; background:var(--bg); color:var(--
 <div id="loading"><span class="spin"></span>데이터 로딩 중...<div class="load-bar"><div class="load-fill" id="load-fill" style="width:0%"></div></div></div>
 
 <!-- 인라인 에러 -->
-<div id="inline-error" style="display:none" class="note" style="color:#c00;border-color:#c00;"></div>
+<div id="inline-error" style="display:none;color:#c00;border-left-color:#c00;" class="note"></div>
 
 <!-- 결과 -->
 <div id="result">
