@@ -584,8 +584,11 @@ function toggleSur(el) {
   if (!was) {
     // 할증 선택 → sur-result로 스크롤
     doScroll(document.getElementById('sur-result'));
-  } else if (remaining === 0 && surWasShowing) {
-    // 할증 전체 해제 → result-wrap으로 스크롤
+  } else if (was && remaining > 0) {
+    // 할증 일부 해제 (아직 남아있음) → 업데이트된 sur-result로 스크롤
+    doScroll(document.getElementById('sur-result'));
+  } else if (was && remaining === 0 && surWasShowing) {
+    // 할증 전체 해제 → 기본 result-wrap으로 스크롤
     doScroll(document.querySelector('.result-wrap'));
   }
 }
@@ -744,6 +747,7 @@ function resetStep(step) {
 
   } else if (step === 4) {
     // 할증 초기화
+    var surWasShowing4 = document.getElementById('sur-result').classList.contains('show');
     document.querySelectorAll('.sur-item.checked,.sur-item.checked-warn').forEach(function(el) {
       el.classList.remove('checked','checked-warn');
     });
@@ -754,6 +758,10 @@ function resetStep(step) {
     sn.classList.remove('done'); sn.textContent = '4';
     document.getElementById('sv4').textContent = '';
     document.getElementById('sur-result').classList.remove('show');
+    // 전체 해제 시 기본 결과로 스크롤
+    if (surWasShowing4) {
+      doScroll(document.querySelector('.result-wrap'));
+    }
   }
 }
 </script>
