@@ -178,7 +178,7 @@ body { font-family:'Noto Sans KR',sans-serif; background:var(--bg); color:var(--
 #rate-table-btn:hover { background:var(--gray-dark); color:#fff; border-color:var(--gray-dark); }
 .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.55); z-index:500; align-items:center; justify-content:center; padding:16px; }
 .modal-overlay.open { display:flex; }
-.modal-box { background:#fff; border-radius:16px; width:100%; max-width:900px; max-height:88vh; display:flex; flex-direction:column; box-shadow:0 8px 40px rgba(0,0,0,0.3); overflow:hidden; }
+.modal-box { background:#fff; border-radius:16px; width:100%; max-width:560px; max-height:88vh; display:flex; flex-direction:column; box-shadow:0 8px 40px rgba(0,0,0,0.3); overflow:hidden; }
 .modal-head { background:#3d3d3d; padding:13px 18px; display:flex; align-items:center; gap:10px; border-bottom:3px solid var(--mint); flex-shrink:0; }
 .modal-title { font-size:0.92rem; font-weight:700; color:#fff; flex:1; }
 .modal-notice { font-size:0.64rem; color:rgba(255,255,255,0.55); white-space:nowrap; }
@@ -190,7 +190,7 @@ body { font-family:'Noto Sans KR',sans-serif; background:var(--bg); color:var(--
 .mf-group { display:flex; gap:4px; }
 .mf-btn { appearance:none; font-family:inherit; padding:5px 12px; border-radius:6px; border:1.5px solid var(--border); background:#fff; color:var(--text2); font-size:0.71rem; font-weight:600; cursor:pointer; transition:all 0.15s; }
 .mf-btn.active { background:var(--gray-dark); border-color:var(--gray-dark); color:#fff; }
-.modal-body { flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; }
+.modal-body { flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; padding:10px; }
 .rate-table { width:100%; border-collapse:collapse; }
 .rate-table thead { position:sticky; top:0; z-index:1; }
 .rate-table th { background:#efefef; border-bottom:2px solid var(--border); padding:8px 16px; font-size:0.71rem; font-weight:700; color:var(--gray-dark); text-align:right; white-space:nowrap; }
@@ -207,7 +207,19 @@ body { font-family:'Noto Sans KR',sans-serif; background:var(--bg); color:var(--
 .rate-table tr.rt-highlight:hover td { background:#d8f8f5; }
 .modal-empty { padding:40px; text-align:center; color:var(--text3); font-size:0.85rem; }
 .modal-foot { flex-shrink:0; padding:7px 16px; background:var(--bg3); border-top:1px solid var(--border2); font-size:0.62rem; color:var(--text3); line-height:1.6; }
-.rt-th-dist { width:70px; }
+/* ── 콘솔 박스 ── */
+.rt-panel { border:1px solid var(--border); border-radius:var(--radius-sm); overflow:hidden; margin:0 0 10px; }
+.rt-panel:last-child { margin-bottom:0; }
+.rt-panel-head { display:flex; align-items:center; justify-content:space-between; padding:10px 16px; background:var(--gray-dark); color:#fff; font-size:0.8rem; font-weight:700; cursor:pointer; user-select:none; -webkit-user-select:none; }
+.rt-panel-head:hover { background:#4d4d4d; }
+.rt-panel-arrow { font-size:0.65rem; transition:transform 0.2s; }
+.rt-panel:not(.open) .rt-panel-arrow { transform:rotate(180deg); }
+.rt-panel-body { display:block; }
+.rt-panel:not(.open) .rt-panel-body { display:none; }
+/* 패널별 헤더 색상 */
+#rt-panel-base .rt-panel-head { background:var(--gray-dark); border-left:4px solid var(--mint); }
+#rt-panel-icn  .rt-panel-head { background:#1a5a8a; border-left:4px solid #4db8ff; }
+#rt-panel-ptk  .rt-panel-head { background:#7a4500; border-left:4px solid #ffa040; }
 
 /* ══════════════════════════════════════════
    PC 레이아웃 (900px+) — 완전 재설계
@@ -546,25 +558,50 @@ body { font-family:'Noto Sans KR',sans-serif; background:var(--bg); color:var(--
     </div>
     <div class="modal-body">
       <div class="modal-empty" id="modal-empty">고시 데이터 로딩 후 이용하실 수 있습니다.</div>
-      <table class="rate-table" id="rate-table" style="display:none;">
-        <thead>
-          <tr>
-            <th rowspan="2" class="rt-th-dist">구간거리<br>(KM)</th>
-            <th rowspan="2" class="rt-th-dist">왕복거리<br>(KM)</th>
-            <th colspan="2" class="rt-group rt-group-base">기본 운임</th>
-            <th colspan="2" class="rt-group rt-group-icn">인천지역</th>
-            <th colspan="2" class="rt-group rt-group-ptk">평택지역</th>
-          </tr>
-          <tr>
-            <th>20FT</th><th>40FT</th>
-            <th>20FT</th><th>40FT</th>
-            <th>20FT</th><th>40FT</th>
-          </tr>
-        </thead>
-        <tbody id="rate-tbody"></tbody>
-      </table>
+
+      <!-- 콘솔 박스 1: 기본 -->
+      <div class="rt-panel open" id="rt-panel-base">
+        <div class="rt-panel-head" data-panel="rt-panel-base">
+          <span>거리(KM)별 운임 (왕복)</span>
+          <span class="rt-panel-arrow">▲</span>
+        </div>
+        <div class="rt-panel-body">
+          <table class="rate-table">
+            <thead><tr><th>구간거리(KM)</th><th>왕복거리(KM)</th><th>20FT (원)</th><th>40FT (원)</th></tr></thead>
+            <tbody id="tbody-base"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 콘솔 박스 2: 인천지역 -->
+      <div class="rt-panel open" id="rt-panel-icn">
+        <div class="rt-panel-head" data-panel="rt-panel-icn">
+          <span>거리(KM)별 운임 — 인천지역 (왕복)</span>
+          <span class="rt-panel-arrow">▲</span>
+        </div>
+        <div class="rt-panel-body">
+          <table class="rate-table">
+            <thead><tr><th>구간거리(KM)</th><th>왕복거리(KM)</th><th>20FT (원)</th><th>40FT (원)</th></tr></thead>
+            <tbody id="tbody-icn"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 콘솔 박스 3: 평택지역 -->
+      <div class="rt-panel open" id="rt-panel-ptk">
+        <div class="rt-panel-head" data-panel="rt-panel-ptk">
+          <span>거리(KM)별 운임 — 평택지역 (왕복)</span>
+          <span class="rt-panel-arrow">▲</span>
+        </div>
+        <div class="rt-panel-body">
+          <table class="rate-table">
+            <thead><tr><th>구간거리(KM)</th><th>왕복거리(KM)</th><th>20FT (원)</th><th>40FT (원)</th></tr></thead>
+            <tbody id="tbody-ptk"></tbody>
+          </table>
+        </div>
+      </div>
     </div>
-    <div class="modal-foot">※ 구간거리(편도) · 왕복거리 = 구간×2 · 왕복 운임 · VAT 별도<br>인천지역: 인천항 고시 요율 / 평택지역: 평택항 고시 요율 (지역할증 포함)</div>
+    <div class="modal-foot">※ 구간거리(편도 기준) · 왕복거리 = 구간×2 · 왕복 운임 · VAT 별도</div>
   </div>
 </div>
 
@@ -1236,92 +1273,74 @@ if ('serviceWorker' in navigator) {
 })();
 
 // ────────────────────────────────────────────
-// 거리별 운임표 모달 (왕복 전용)
+// 거리별 운임표 모달 (왕복 전용 · 3개 콘솔 박스)
 // ────────────────────────────────────────────
-// 데이터 구조 분석 결과:
-//   기본 운임  → 부산신항 (표준 기준 요율)
-//   인천지역   → 인천항   (고시에 지역할증 포함된 실제 요율)
-//   평택지역   → 평택항   (고시에 지역할증 포함된 실제 요율)
+// 데이터 분석 결과:
+//   기본 운임 → 마산항 (표준 기준, 가장 작은 거리 2km부터)
+//   인천지역  → 인천항 (고시에 지역할증 포함, 3km부터)
+//   평택지역  → 평택항 (고시에 지역할증 포함, 8km부터)
 
 var modalFareIdx = 0; // 0=위탁, 1=사업자, 2=운송
 
-var MODAL_PORTS = {
-  base: '부산신항',
-  icn:  '인천항',
-  ptk:  '평택항'
-};
+var MODAL_PORTS = { base: '마산항', icn: '인천항', ptk: '평택항' };
+var MODAL_TBODY  = { base: 'tbody-base', icn: 'tbody-icn', ptk: 'tbody-ptk' };
 
-function buildRateTable() {
-  var empty = document.getElementById('modal-empty');
-  var table = document.getElementById('rate-table');
-  var tbody = document.getElementById('rate-tbody');
-
-  if (!activeNotice || !Object.keys(TARIFF).length) {
-    empty.textContent = '고시 데이터 로딩 후 이용하실 수 있습니다.';
-    empty.style.display = 'block';
-    table.style.display = 'none';
-    return;
-  }
-
-  // 세 항구의 구간거리별 운임 수집
-  var maps = { base: {}, icn: {}, ptk: {} };
+// 항구별 거리→운임 맵 추출
+function buildDistMap(portName) {
+  var map = {};
   Object.keys(TARIFF).forEach(function (key) {
-    var entry = TARIFF[key];
-    ['base', 'icn', 'ptk'].forEach(function (col) {
-      var d = entry[MODAL_PORTS[col]];
-      if (!d || maps[col][d.dist]) return;
-      maps[col][d.dist] = { f40: d.f40[modalFareIdx], f20: d.f20[modalFareIdx] };
-    });
+    var d = (TARIFF[key] || {})[portName];
+    if (!d || map[d.dist]) return;
+    map[d.dist] = { f20: d.f20[modalFareIdx], f40: d.f40[modalFareIdx] };
   });
+  return map;
+}
 
-  // 세 항구 합집합 거리 목록을 오름차순 정렬
-  var allDists = {};
-  ['base', 'icn', 'ptk'].forEach(function (col) {
-    Object.keys(maps[col]).forEach(function (d) { allDists[d] = true; });
-  });
-  var dists = Object.keys(allDists).map(Number).sort(function (a, b) { return a - b; });
-
-  if (!dists.length) {
-    empty.textContent = '운임 데이터가 없습니다.';
-    empty.style.display = 'block';
-    table.style.display = 'none';
-    return;
-  }
-
-  // 현재 검색 결과의 구간거리 강조 (왕복 검색 시)
-  var currentDist = (state.portData && state.type === '왕복') ? state.portData.dist : null;
+// 패널 하나의 tbody 렌더링
+function renderPanelTable(tbodyId, distMap, currentDist) {
+  var dists = Object.keys(distMap).map(Number).sort(function (a, b) { return a - b; });
+  var tbody = document.getElementById(tbodyId);
+  if (!dists.length) { tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--text3)">데이터 없음</td></tr>'; return; }
 
   function w(n) { return Number(n).toLocaleString('ko-KR') + '원'; }
-  function cell(map, dist) {
-    return map[dist] ? '<td>' + w(map[dist].f20) + '</td><td>' + w(map[dist].f40) + '</td>'
-                     : '<td>-</td><td>-</td>';
-  }
-
   tbody.innerHTML = dists.map(function (dist) {
+    var r  = distMap[dist];
     var hl = dist === currentDist ? ' class="rt-highlight"' : '';
     return '<tr' + hl + '>' +
       '<td>' + dist + '</td>' +
       '<td>' + (dist * 2) + '</td>' +
-      cell(maps.base, dist) +
-      cell(maps.icn,  dist) +
-      cell(maps.ptk,  dist) +
+      '<td>' + w(r.f20) + '</td>' +
+      '<td>' + w(r.f40) + '</td>' +
       '</tr>';
   }).join('');
+}
 
+function buildAllPanels() {
+  var empty = document.getElementById('modal-empty');
+  if (!activeNotice || !Object.keys(TARIFF).length) {
+    empty.style.display = 'block';
+    ['rt-panel-base','rt-panel-icn','rt-panel-ptk'].forEach(function(id){ document.getElementById(id).style.display='none'; });
+    return;
+  }
   empty.style.display = 'none';
-  table.style.display = 'table';
+  ['rt-panel-base','rt-panel-icn','rt-panel-ptk'].forEach(function(id){ document.getElementById(id).style.display=''; });
 
+  var currentDist = (state.portData && state.type === '왕복') ? state.portData.dist : null;
+  ['base','icn','ptk'].forEach(function (col) {
+    renderPanelTable(MODAL_TBODY[col], buildDistMap(MODAL_PORTS[col]), currentDist);
+  });
+
+  // 현재 거리 행으로 스크롤 (기본 패널 우선)
   setTimeout(function () {
-    var hl = tbody.querySelector('.rt-highlight');
+    var hl = document.querySelector('#rt-panel-base .rt-highlight') ||
+             document.querySelector('#rt-panel-icn .rt-highlight') ||
+             document.querySelector('#rt-panel-ptk .rt-highlight');
     if (hl) hl.scrollIntoView({ block: 'center' });
   }, 60);
 }
 
 function openRateModal() {
-  if (!activeNotice) {
-    showInlineError('고시 데이터 로딩 후 이용하실 수 있습니다.');
-    return;
-  }
+  if (!activeNotice) { showInlineError('고시 데이터 로딩 후 이용하실 수 있습니다.'); return; }
   if (state.fareType) modalFareIdx = { '위탁': 0, '사업자': 1, '운송': 2 }[state.fareType];
 
   var fareKey = ['위탁', '사업자', '운송'][modalFareIdx];
@@ -1330,7 +1349,7 @@ function openRateModal() {
   });
 
   document.getElementById('modal-notice-text').textContent = activeNotice.label;
-  buildRateTable();
+  buildAllPanels();
   document.getElementById('rate-modal').classList.add('open');
   document.body.style.overflow = 'hidden';
 }
@@ -1339,6 +1358,13 @@ function closeRateModal() {
   document.getElementById('rate-modal').classList.remove('open');
   document.body.style.overflow = '';
 }
+
+// 콘솔 박스 토글
+document.querySelectorAll('.rt-panel-head').forEach(function (head) {
+  head.addEventListener('click', function () {
+    document.getElementById(head.getAttribute('data-panel')).classList.toggle('open');
+  });
+});
 
 document.getElementById('rate-table-btn').addEventListener('click', openRateModal);
 document.getElementById('modal-close-btn').addEventListener('click', closeRateModal);
@@ -1355,7 +1381,7 @@ document.querySelectorAll('[data-mf-fare]').forEach(function (btn) {
     document.querySelectorAll('[data-mf-fare]').forEach(function (b) {
       b.classList.toggle('active', b === btn);
     });
-    buildRateTable();
+    buildAllPanels();
   });
 });
 
