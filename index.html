@@ -178,7 +178,7 @@ body { font-family:'Noto Sans KR',sans-serif; background:var(--bg); color:var(--
 #rate-table-btn:hover { background:var(--gray-dark); color:#fff; border-color:var(--gray-dark); }
 .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.55); z-index:500; align-items:center; justify-content:center; padding:16px; }
 .modal-overlay.open { display:flex; }
-.modal-box { background:#fff; border-radius:16px; width:100%; max-width:660px; max-height:88vh; display:flex; flex-direction:column; box-shadow:0 8px 40px rgba(0,0,0,0.3); overflow:hidden; }
+.modal-box { background:#fff; border-radius:16px; width:100%; max-width:900px; max-height:88vh; display:flex; flex-direction:column; box-shadow:0 8px 40px rgba(0,0,0,0.3); overflow:hidden; }
 .modal-head { background:#3d3d3d; padding:13px 18px; display:flex; align-items:center; gap:10px; border-bottom:3px solid var(--mint); flex-shrink:0; }
 .modal-title { font-size:0.92rem; font-weight:700; color:#fff; flex:1; }
 .modal-notice { font-size:0.64rem; color:rgba(255,255,255,0.55); white-space:nowrap; }
@@ -194,7 +194,11 @@ body { font-family:'Noto Sans KR',sans-serif; background:var(--bg); color:var(--
 .rate-table { width:100%; border-collapse:collapse; }
 .rate-table thead { position:sticky; top:0; z-index:1; }
 .rate-table th { background:#efefef; border-bottom:2px solid var(--border); padding:8px 16px; font-size:0.71rem; font-weight:700; color:var(--gray-dark); text-align:right; white-space:nowrap; }
-.rate-table th:first-child { text-align:center; width:100px; }
+.rate-table th:first-child { text-align:center; width:80px; }
+.rt-group { text-align:center; border-bottom:1px solid var(--border); }
+.rt-group-base { background:#efefef; }
+.rt-group-icn  { background:#e8f4fd; color:#1a6aa0; }
+.rt-group-ptk  { background:#fdf3e8; color:#a06010; }
 .rate-table td { padding:7px 16px; border-bottom:1px solid var(--border2); text-align:right; font-family:'JetBrains Mono',monospace; font-size:0.8rem; color:var(--text); }
 .rate-table td:first-child { text-align:center; font-family:inherit; font-size:0.78rem; font-weight:600; color:var(--text2); }
 .rate-table tbody tr:hover td { background:#f6f6f6; }
@@ -548,15 +552,21 @@ body { font-family:'Noto Sans KR',sans-serif; background:var(--bg); color:var(--
       <table class="rate-table" id="rate-table" style="display:none;">
         <thead>
           <tr>
-            <th>구간거리 (KM)</th>
-            <th>20FT (원)</th>
-            <th>40FT (원)</th>
+            <th rowspan="2">구간거리<br>(KM)</th>
+            <th colspan="2" class="rt-group rt-group-base">기본 운임</th>
+            <th colspan="2" class="rt-group rt-group-icn">인천지역 (+20%)</th>
+            <th colspan="2" class="rt-group rt-group-ptk">평택지역 (+18%)</th>
+          </tr>
+          <tr>
+            <th>20FT</th><th>40FT</th>
+            <th>20FT</th><th>40FT</th>
+            <th>20FT</th><th>40FT</th>
           </tr>
         </thead>
         <tbody id="rate-tbody"></tbody>
       </table>
     </div>
-    <div class="modal-foot">※ 구간거리(편도 기준) · 왕복 운임 · VAT 별도</div>
+    <div class="modal-foot">※ 구간거리(편도 기준) · 왕복 운임 · VAT 별도 · 할증 적용금액은 백원 단위 반올림</div>
   </div>
 </div>
 
@@ -1302,13 +1312,23 @@ function buildRateTable() {
     }
   }
 
+  function surcharge(base, pct) {
+    return Math.round(base * (1 + pct / 100) / 100) * 100;
+  }
+
   tbody.innerHTML = dists.map(function (dist) {
-    var r  = distMap[dist];
-    var hl = dist === currentDist ? ' class="rt-highlight"' : '';
+    var r   = distMap[dist];
+    var hl  = dist === currentDist ? ' class="rt-highlight"' : '';
+    var icn20 = surcharge(r.f20, 20);
+    var icn40 = surcharge(r.f40, 20);
+    var ptk20 = surcharge(r.f20, 18);
+    var ptk40 = surcharge(r.f40, 18);
+    function w(n) { return Number(n).toLocaleString('ko-KR') + '원'; }
     return '<tr' + hl + '>' +
       '<td>' + dist + ' km</td>' +
-      '<td>' + Number(r.f20).toLocaleString('ko-KR') + '원</td>' +
-      '<td>' + Number(r.f40).toLocaleString('ko-KR') + '원</td>' +
+      '<td>' + w(r.f20) + '</td><td>' + w(r.f40) + '</td>' +
+      '<td>' + w(icn20) + '</td><td>' + w(icn40) + '</td>' +
+      '<td>' + w(ptk20) + '</td><td>' + w(ptk40) + '</td>' +
       '</tr>';
   }).join('');
 
