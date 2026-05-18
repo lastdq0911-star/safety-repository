@@ -173,63 +173,107 @@ body { font-family:'Noto Sans KR',sans-serif; background:var(--bg); color:var(--
 #offline-badge { display:none; position:fixed; bottom:14px; left:50%; transform:translateX(-50%); background:#555; color:#fff; font-size:0.7rem; font-weight:700; padding:6px 14px; border-radius:20px; z-index:999; white-space:nowrap; box-shadow:0 2px 10px rgba(0,0,0,0.25); }
 #offline-badge.show { display:block; }
 
-/* ── PC 2단 레이아웃 (900px+) ── */
+/* ── PC 2단 레이아웃 (900px+) — 세로 한 화면 ── */
 @media (min-width:900px) {
+  /* 전체 레이아웃 */
   body { display:flex; flex-direction:column; height:100vh; min-height:0; overflow:hidden; padding-bottom:0; }
-  .header { flex-shrink:0; height:64px; padding:0 40px; }
-  .sebang-logo { height:22px; }
-  .header-text h1 { font-size:1.05rem; }
-  .header-text p { font-size:0.65rem; }
-  .banner { flex-shrink:0; padding:10px 40px; }
 
-  /* 좌(검색+결과) / 우(할증) 2단 */
+  /* 헤더 압축 */
+  .header { flex-shrink:0; height:50px; padding:0 28px; gap:8px; }
+  .sebang-logo { height:17px; max-width:72px; }
+  .sebang-text { font-size:1.1rem; }
+  .header-divider { height:24px; }
+  .header-text h1 { font-size:0.88rem; }
+  .header-text p { font-size:0.56rem; }
+  .vat { font-size:0.55rem; padding:3px 6px; }
+
+  /* 배너 압축 */
+  .banner { flex-shrink:0; padding:4px 28px; }
+  .banner-label { font-size:0.63rem; }
+  .banner-select { font-size:0.66rem; }
+  .banner-gov { font-size:0.6rem; }
+
+  /* 2단 컨테이너 */
   .pc-wrap {
     flex:1; min-height:0;
-    display:flex; gap:16px;
-    padding:14px 24px;
+    display:flex; gap:12px;
+    padding:10px 18px;
     max-width:1200px; width:100%; margin:0 auto;
     overflow:hidden;
   }
+  .pc-left  { flex:1; min-width:0; display:flex; flex-direction:column; gap:7px; overflow-y:auto; }
+  .pc-right { flex:0 0 396px;     display:flex; flex-direction:column; gap:7px; overflow-y:auto; }
 
-  /* 좌측: STEP 1~3 + 운임 결과 */
-  .pc-left {
-    flex:1; min-width:0;
-    display:flex; flex-direction:column; gap:10px;
-    overflow-y:auto;
-  }
-
-  /* 우측: 할증(STEP 4) + 최종운임 — 고정 너비 */
-  .pc-right {
-    flex:0 0 410px;
-    display:flex; flex-direction:column; gap:10px;
-    overflow-y:auto;
-  }
-
-  /* 마진 초기화 */
+  /* STEP 카드 압축 */
   .step { margin:0; }
+  .step-head { padding:7px 13px; }
+  .step-body { padding:9px 13px; }
+  .step-num { width:21px; height:21px; font-size:0.66rem; }
+  .step-title { font-size:0.83rem; }
+  .step-tag { font-size:0.61rem; }
+  .step-val { font-size:0.7rem; }
+
+  /* 검색창 */
+  #search-input { padding:8px 10px 8px 36px; font-size:0.92rem; }
+  .search-icon { font-size:13px; left:10px; }
+  .hint-text { display:none; }          /* PC: 힌트 숨김 */
+
+  /* 운임 유형 설명 */
+  .fare-type-desc { font-size:0.64rem; padding:7px 9px; margin-top:7px; line-height:1.45; }
+
+  /* 토글 버튼 */
+  .tog-btn { padding:8px 6px; min-height:38px; font-size:0.82rem; }
+
+  /* 결과 카드 */
   .result-wrap { margin:0; }
-  .sur-result { margin:0; }
-  .note { margin:0; }
-  #inline-error { margin:0; }
+  .result-top { padding:9px 13px; }
+  .result-loc { font-size:0.88rem; }
+  .result-km { font-size:0.72rem; font-weight:700; color:var(--mint); margin-top:3px; letter-spacing:-0.01em; }
+  .result-sub { font-size:0.59rem; margin-top:2px; }
+  .port-scroll { padding:7px 12px 0; }
+  .ptab { padding:6px 11px; font-size:0.7rem; min-height:30px; }
+  .fare-area { padding:0 12px 9px; }
+  .fare-cards { gap:8px; }
+  .fare-card-head { padding:6px 10px; }
+  .ft-label { font-size:0.64rem; padding:2px 5px; }
+  .dist-km { font-size:0.66rem; }
+  .fare-rows { padding:5px 10px; }
+  .fare-row { padding:3px 0; }
+  .fl { font-size:0.65rem; }
+  .fv { font-size:0.8rem; }
+  .fare-row.selected-type { padding:5px 8px; }
+  .fare-row.selected-type .fv { font-size:0.9rem; }
 
-  /* 할증 2열 (우측 패널) */
+  /* 할증 그리드 */
   .sur-grid { grid-template-columns:1fr 1fr; }
-  .sur-item { min-height:58px; padding:10px 12px; }
-  .sur-name { font-size:0.75rem; }
+  .sur-item { min-height:46px; padding:6px 9px; }
+  .sur-name { font-size:0.7rem; }
+  .sur-rate { font-size:0.62rem; margin-top:2px; }
+  .sur-check { width:16px; height:16px; font-size:9px; }
+  .sur-top { gap:6px; }
 
-  /* 결과 카드 컴팩트 */
-  .fare-rows { padding:8px 12px; }
-  .fare-row { padding:5px 0; }
+  /* 중량 입력 */
+  .weight-input-wrap { padding:7px 9px; margin-top:7px; }
+  .weight-row { margin-bottom:6px; }
+  .weight-label { font-size:0.65rem; min-width:90px; }
+  .weight-input { width:52px; padding:5px 6px; font-size:0.82rem; }
 
-  /* 거리·운임 정보 라인 */
-  .result-km { font-size:0.8rem; font-weight:700; color:var(--mint); margin-top:5px; letter-spacing:-0.01em; }
+  /* 할증 최종운임 */
+  .sur-result { margin:0; }
+  .sur-result-title { font-size:0.71rem; margin-bottom:7px; }
+  .sur-final-grid { gap:6px; }
+  .sur-final-item { padding:7px 10px; }
+  .sfl { font-size:0.61rem; margin-bottom:3px; }
+  .sfv { font-size:0.88rem; }
+  .sur-detail { margin-top:7px; padding-top:7px; font-size:0.62rem; line-height:1.65; }
+  .sur-multi-note { margin-top:5px; font-size:0.6rem; }
 
-  /* 폰트/크기 */
-  #search-input { font-size:1rem; }
-  .tog-btn { font-size:0.9rem; padding:14px 10px; }
-  .step-title { font-size:0.92rem; }
-  .fl { font-size:0.72rem; }
-  .fv { font-size:0.85rem; }
+  /* 노트 / 에러 */
+  .note { margin:0; padding:6px 11px; font-size:0.6rem; line-height:1.45; }
+  #inline-error { margin:0; font-size:0.66rem; padding:8px 11px; }
+
+  /* 로딩 */
+  #loading { padding:16px; }
 }
 </style>
 </head>
