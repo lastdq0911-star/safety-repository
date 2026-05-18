@@ -1113,7 +1113,14 @@ function selectPort(portName) {
 // 할증 계산
 // ────────────────────────────────────────────
 
-function doScroll(el) { if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+function doScroll(el) {
+  if (!el) return;
+  requestAnimationFrame(function () {
+    requestAnimationFrame(function () {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+}
 
 function toggleSur(el) {
   const isWeight = el.getAttribute('data-key') === '중량';
@@ -1128,8 +1135,16 @@ function toggleSur(el) {
   const remaining = document.querySelectorAll('.sur-item.checked,.sur-item.checked-warn').length;
   calcSur();
 
-  if (!was || remaining > 0) doScroll(document.getElementById('sur-result'));
-  else if (surWasShowing) doScroll(document.querySelector('.result-wrap'));
+  if (!was) {
+    // 할증 선택 → sur-result로 스크롤
+    doScroll(document.getElementById('sur-result'));
+  } else if (remaining > 0) {
+    // 할증 일부 해제 (남은 할증 있음) → sur-result로 스크롤
+    doScroll(document.getElementById('sur-result'));
+  } else if (surWasShowing) {
+    // 할증 전체 해제 → 기본 result-wrap으로 스크롤
+    doScroll(document.querySelector('.result-wrap'));
+  }
 }
 
 function getSurRates() {
@@ -1204,7 +1219,14 @@ function resetStep(step) {
   if (step === 4) {
     const surWasShowing = document.getElementById('sur-result').classList.contains('show');
     clearSurcharges();
-    if (surWasShowing) doScroll(document.querySelector('.result-wrap'));
+    if (surWasShowing) {
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () {
+          const rw = document.querySelector('.result-wrap');
+          if (rw) rw.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+      });
+    }
     return;
   }
 
@@ -1250,6 +1272,9 @@ document.querySelectorAll('.sur-item').forEach(function (el) {
 
 document.getElementById('w40').addEventListener('input', calcSur);
 document.getElementById('w20').addEventListener('input', calcSur);
+
+// ── 새로고침 시 항상 맨 위로 ──
+window.onbeforeunload = function () { window.scrollTo(0, 0); };
 
 // ────────────────────────────────────────────
 // Service Worker 등록
