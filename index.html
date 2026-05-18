@@ -181,40 +181,47 @@ body { font-family:'Noto Sans KR',sans-serif; background:var(--bg); color:var(--
   .header-text p { font-size:0.65rem; }
   .banner { flex-shrink:0; padding:10px 40px; }
 
-  /* 2단 컨테이너 */
+  /* 좌(검색+결과) / 우(할증) 2단 */
   .pc-wrap {
     flex:1; min-height:0;
     display:flex; gap:16px;
     padding:14px 24px;
-    max-width:1100px; width:100%; margin:0 auto;
+    max-width:1200px; width:100%; margin:0 auto;
     overflow:hidden;
   }
 
-  /* 좌측: STEP 1~4 + 로딩 */
+  /* 좌측: STEP 1~3 + 운임 결과 */
   .pc-left {
-    flex:0 0 380px;
-    display:flex; flex-direction:column; gap:10px;
-    overflow-y:auto;
-  }
-
-  /* 우측: 결과 영역 */
-  .pc-right {
     flex:1; min-width:0;
     display:flex; flex-direction:column; gap:10px;
     overflow-y:auto;
   }
 
-  /* 마진 초기화 (flex gap으로 대체) */
+  /* 우측: 할증(STEP 4) + 최종운임 — 고정 너비 */
+  .pc-right {
+    flex:0 0 410px;
+    display:flex; flex-direction:column; gap:10px;
+    overflow-y:auto;
+  }
+
+  /* 마진 초기화 */
   .step { margin:0; }
   .result-wrap { margin:0; }
   .sur-result { margin:0; }
   .note { margin:0; }
   #inline-error { margin:0; }
 
-  /* 할증 3열 (좌측 컬럼 폭에 맞게 압축) */
-  .sur-grid { grid-template-columns:1fr 1fr 1fr; }
-  .sur-item { min-height:52px; padding:8px 10px; }
-  .sur-name { font-size:0.73rem; }
+  /* 할증 2열 (우측 패널) */
+  .sur-grid { grid-template-columns:1fr 1fr; }
+  .sur-item { min-height:58px; padding:10px 12px; }
+  .sur-name { font-size:0.75rem; }
+
+  /* 결과 카드 컴팩트 */
+  .fare-rows { padding:8px 12px; }
+  .fare-row { padding:5px 0; }
+
+  /* 거리·운임 정보 라인 */
+  .result-km { font-size:0.8rem; font-weight:700; color:var(--mint); margin-top:5px; letter-spacing:-0.01em; }
 
   /* 폰트/크기 */
   #search-input { font-size:1rem; }
@@ -306,6 +313,53 @@ body { font-family:'Noto Sans KR',sans-serif; background:var(--bg); color:var(--
   </div>
 </div>
 
+<!-- 로딩 -->
+<div id="loading">
+  <span class="spin"></span>데이터 로딩 중...
+  <div class="load-bar"><div class="load-fill" id="load-fill" style="width:0%"></div></div>
+  <div id="load-text"></div>
+</div>
+
+<!-- 인라인 에러 -->
+<div id="inline-error"></div>
+
+<!-- 결과: 운임 카드 -->
+<div id="result">
+  <div class="result-wrap">
+    <div class="result-top">
+      <div class="result-loc" id="r-loc">-</div>
+      <div class="result-km" id="r-km"></div>
+      <div class="result-sub" id="r-sub">-</div>
+    </div>
+    <div class="port-scroll"><div class="port-tabs" id="port-tabs"></div></div>
+    <div class="fare-area">
+      <div class="fare-cards">
+        <div class="fare-card ft40">
+          <div class="fare-card-head"><span class="ft-label">40FT</span><span style="font-size:0.68rem;color:var(--text2);">컨테이너</span><span class="dist-km" id="dist-km">-</span></div>
+          <div class="fare-rows">
+            <div class="fare-row" id="row-f40-위탁"><span class="fl">안전위탁운임</span><span class="fv" id="f40-위탁">-</span></div>
+            <div class="fare-row" id="row-f40-사업자"><span class="fl">운수사업자간</span><span class="fv" id="f40-사업자">-</span></div>
+            <div class="fare-row" id="row-f40-운송"><span class="fl">안전운송운임</span><span class="fv" id="f40-운송">-</span></div>
+          </div>
+        </div>
+        <div class="fare-card ft20">
+          <div class="fare-card-head"><span class="ft-label">20FT</span><span style="font-size:0.68rem;color:var(--text2);">컨테이너</span></div>
+          <div class="fare-rows">
+            <div class="fare-row" id="row-f20-위탁"><span class="fl">안전위탁운임</span><span class="fv" id="f20-위탁">-</span></div>
+            <div class="fare-row" id="row-f20-사업자"><span class="fl">운수사업자간</span><span class="fv" id="f20-사업자">-</span></div>
+            <div class="fare-row" id="row-f20-운송"><span class="fl">안전운송운임</span><span class="fv" id="f20-운송">-</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="note">※ VAT 미포함 &nbsp;|&nbsp; 안전위탁: 운수사업자→화물차주 &nbsp;|&nbsp; 사업자간: 운수사업자→운수사업자 &nbsp;|&nbsp; 안전운송: 화주→운수사업자<br>※ 다중 할증: 최고 100% + 나머지 각 50% (최대 3개 합산)</div>
+</div>
+
+</div><!-- /pc-left -->
+
+<div class="pc-right">
+
 <!-- STEP 4: 할증 -->
 <div class="step">
   <div class="step-head">
@@ -339,59 +393,14 @@ body { font-family:'Noto Sans KR',sans-serif; background:var(--bg); color:var(--
   </div>
 </div>
 
-<!-- 로딩 -->
-<div id="loading">
-  <span class="spin"></span>데이터 로딩 중...
-  <div class="load-bar"><div class="load-fill" id="load-fill" style="width:0%"></div></div>
-  <div id="load-text"></div>
-</div>
-
-<!-- 인라인 에러 -->
-<div id="inline-error"></div>
-
-</div><!-- /pc-left -->
-
-<div class="pc-right">
-
-<!-- 결과 -->
-<div id="result">
-  <div class="result-wrap">
-    <div class="result-top">
-      <div class="result-loc" id="r-loc">-</div>
-      <div class="result-sub" id="r-sub">-</div>
-    </div>
-    <div class="port-scroll"><div class="port-tabs" id="port-tabs"></div></div>
-    <div class="fare-area">
-      <div class="fare-cards">
-        <div class="fare-card ft40">
-          <div class="fare-card-head"><span class="ft-label">40FT</span><span style="font-size:0.68rem;color:var(--text2);">컨테이너</span><span class="dist-km" id="dist-km">-</span></div>
-          <div class="fare-rows">
-            <div class="fare-row" id="row-f40-위탁"><span class="fl">안전위탁운임</span><span class="fv" id="f40-위탁">-</span></div>
-            <div class="fare-row" id="row-f40-사업자"><span class="fl">운수사업자간</span><span class="fv" id="f40-사업자">-</span></div>
-            <div class="fare-row" id="row-f40-운송"><span class="fl">안전운송운임</span><span class="fv" id="f40-운송">-</span></div>
-          </div>
-        </div>
-        <div class="fare-card ft20">
-          <div class="fare-card-head"><span class="ft-label">20FT</span><span style="font-size:0.68rem;color:var(--text2);">컨테이너</span></div>
-          <div class="fare-rows">
-            <div class="fare-row" id="row-f20-위탁"><span class="fl">안전위탁운임</span><span class="fv" id="f20-위탁">-</span></div>
-            <div class="fare-row" id="row-f20-사업자"><span class="fl">운수사업자간</span><span class="fv" id="f20-사업자">-</span></div>
-            <div class="fare-row" id="row-f20-운송"><span class="fl">안전운송운임</span><span class="fv" id="f20-운송">-</span></div>
-          </div>
-        </div>
-      </div>
-    </div>
+<!-- 할증 최종운임 -->
+<div class="sur-result" id="sur-result">
+  <div class="sur-result-title">⚡ 할증 적용 최종운임</div>
+  <div class="sur-final-grid">
+    <div class="sur-final-item"><div class="sfl" id="sr-label-40">40FT 안전위탁 (최종)</div><div class="sfv" id="sr-f40">-</div></div>
+    <div class="sur-final-item"><div class="sfl" id="sr-label-20">20FT 안전위탁 (최종)</div><div class="sfv" id="sr-f20">-</div></div>
   </div>
-  <!-- 할증 최종운임 -->
-  <div class="sur-result" id="sur-result">
-    <div class="sur-result-title">⚡ 할증 적용 최종운임</div>
-    <div class="sur-final-grid">
-      <div class="sur-final-item"><div class="sfl" id="sr-label-40">40FT 안전위탁 (최종)</div><div class="sfv" id="sr-f40">-</div></div>
-      <div class="sur-final-item"><div class="sfl" id="sr-label-20">20FT 안전위탁 (최종)</div><div class="sfv" id="sr-f20">-</div></div>
-    </div>
-    <div class="sur-detail" id="sur-detail"></div>
-  </div>
-  <div class="note">※ VAT 미포함 &nbsp;|&nbsp; 안전위탁: 운수사업자→화물차주 &nbsp;|&nbsp; 사업자간: 운수사업자→운수사업자 &nbsp;|&nbsp; 안전운송: 화주→운수사업자<br>※ 다중 할증: 최고 100% + 나머지 각 50% (최대 3개 합산)</div>
+  <div class="sur-detail" id="sur-detail"></div>
 </div>
 
 </div><!-- /pc-right -->
@@ -652,6 +661,7 @@ function resetAll() {
 
   clearSurcharges();
 
+  document.getElementById('r-km').textContent = '';
   document.getElementById('result').style.display = 'none';
   hideInlineError();
 }
@@ -865,8 +875,8 @@ function showResult() {
   }
 
   document.getElementById('r-loc').textContent = state.label;
-  document.getElementById('r-sub').textContent =
-    state.type + ' · ' + activeNotice.year + '년 안전운임 (VAT 별도)';
+  document.getElementById('r-km').textContent = '';
+  document.getElementById('r-sub').textContent = activeNotice.year + '년 안전운임 (VAT 별도)';
 
   const tabsEl = document.getElementById('port-tabs');
   tabsEl.innerHTML = '';
@@ -894,6 +904,8 @@ function selectPort(portName) {
   if (!d) return;
   state.portData = d;
   document.getElementById('dist-km').textContent = d.dist + ' km';
+  document.getElementById('r-km').textContent =
+    portName.replace('(편도)', '') + ' | 거리 ' + d.dist + ' km | ' + state.type + ' 운임';
   ['위탁', '사업자', '운송'].forEach(function (k, i) {
     document.getElementById('f40-' + k).textContent = fmt(d.f40[i]);
     document.getElementById('f20-' + k).textContent = fmt(d.f20[i]);
