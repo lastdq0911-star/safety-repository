@@ -201,7 +201,9 @@ body { font-family:'Noto Sans KR',sans-serif; background:var(--bg); color:var(--
 .rate-table tr.rt-highlight td { background:#e8fffd; color:var(--mint); font-weight:700; }
 .rate-table tr.rt-highlight td:first-child { color:var(--mint); }
 .rate-table tr.rt-highlight:hover td { background:#d8f8f5; }
+.mf-port-select { font-family:inherit; font-size:0.72rem; font-weight:600; color:var(--gray-dark); background:#fff; border:1.5px solid var(--border); border-radius:6px; padding:5px 8px; cursor:pointer; outline:none; }
 .modal-empty { padding:40px; text-align:center; color:var(--text3); font-size:0.85rem; }
+.modal-foot { flex-shrink:0; padding:7px 16px; background:var(--bg3); border-top:1px solid var(--border2); font-size:0.62rem; color:var(--text3); }
 
 /* ══════════════════════════════════════════
    PC 레이아웃 (900px+) — 완전 재설계
@@ -526,16 +528,13 @@ body { font-family:'Noto Sans KR',sans-serif; background:var(--bg); color:var(--
 <div id="rate-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title-text">
   <div class="modal-box">
     <div class="modal-head">
-      <span class="modal-title" id="modal-title-text">📊 거리(KM)별 안전운임표</span>
+      <span class="modal-title" id="modal-title-text">📊 거리(KM)별 안전운임표 — 왕복</span>
       <span class="modal-notice" id="modal-notice-text"></span>
       <button class="modal-close" id="modal-close-btn" aria-label="닫기">✕</button>
     </div>
     <div class="modal-filters">
-      <span class="mf-label">운송</span>
-      <div class="mf-group">
-        <button class="mf-btn active" data-mf-trip="왕복">왕복</button>
-        <button class="mf-btn" data-mf-trip="편도">편도</button>
-      </div>
+      <span class="mf-label">항구</span>
+      <select class="mf-port-select" id="modal-port-select" aria-label="항구 선택"></select>
       <div class="mf-sep"></div>
       <span class="mf-label">운임</span>
       <div class="mf-group">
@@ -549,7 +548,7 @@ body { font-family:'Noto Sans KR',sans-serif; background:var(--bg); color:var(--
       <table class="rate-table" id="rate-table" style="display:none;">
         <thead>
           <tr>
-            <th>거리 (KM)</th>
+            <th>구간거리 (KM)</th>
             <th>20FT (원)</th>
             <th>40FT (원)</th>
           </tr>
@@ -557,6 +556,7 @@ body { font-family:'Noto Sans KR',sans-serif; background:var(--bg); color:var(--
         <tbody id="rate-tbody"></tbody>
       </table>
     </div>
+    <div class="modal-foot">※ 구간거리(편도 기준) · 왕복 운임 · VAT 별도</div>
   </div>
 </div>
 
@@ -1228,52 +1228,82 @@ if ('serviceWorker' in navigator) {
 })();
 
 // ────────────────────────────────────────────
-// 거리별 운임표 모달
+// 거리별 운임표 모달 (왕복 전용)
 // ────────────────────────────────────────────
 
-var modalTripType = '왕복';
-var modalFareIdx  = 0; // 0=위탁, 1=사업자, 2=운송
+var modalPort    = '';   // 선택된 항구
+var modalFareIdx = 0;    // 0=위탁, 1=사업자, 2=운송
 
+// 왕복 항구 목록을 TARIFF에서 동적으로 추출
+function getWayPorts() {
+  var ports = [];
+  var seen  = {};
+  Object.keys(TARIFF).forEach(function (key) {
+    Object.keys(TARIFF[key]).forEach(function (portKey) {
+      if (portKey.indexOf('편도') < 0 && !seen[portKey]) {
+        seen[portKey] = true;
+        ports.push(portKey);
+      }
+    });
+  });
+  return ports;
+}
+
+// 항구 선택 드롭다운 갱신
+function updatePortSelect(preferPort) {
+  var sel   = document.getElementById('modal-port-select');
+  var ports = getWayPorts();
+  sel.innerHTML = ports.map(function (p) {
+    return '<option value="' + p + '">' + p + '</option>';
+  }).join('');
+  var target = preferPort && ports.indexOf(preferPort) >= 0 ? preferPort : ports[0];
+  sel.value = target;
+  modalPort = target;
+}
+
+// 선택된 항구·운임 유형으로 테이블 생성
 function buildRateTable() {
   var empty = document.getElementById('modal-empty');
   var table = document.getElementById('rate-table');
   var tbody = document.getElementById('rate-tbody');
 
-  if (!activeNotice || !Object.keys(TARIFF).length) {
+  if (!activeNotice || !Object.keys(TARIFF).length || !modalPort) {
+    empty.textContent = '고시 데이터 로딩 후 이용하실 수 있습니다.';
     empty.style.display = 'block';
     table.style.display = 'none';
     return;
   }
 
-  // 고시 내 모든 항목을 순회해 거리별 운임 수집
+  // 선택 항구의 구간거리별 운임 수집 (거리 중복 시 첫 번째 값 사용 — 같은 항구·같은 거리는 동일 요율)
   var distMap = {};
   Object.keys(TARIFF).forEach(function (key) {
-    var entry = TARIFF[key];
-    Object.keys(entry).forEach(function (portKey) {
-      var isOneWay = portKey.indexOf('편도') >= 0;
-      if (modalTripType === '왕복' && isOneWay) return;
-      if (modalTripType === '편도' && !isOneWay) return;
-      var d = entry[portKey];
-      if (!distMap[d.dist]) {
-        distMap[d.dist] = { f40: d.f40[modalFareIdx], f20: d.f20[modalFareIdx] };
-      }
-    });
+    var d = (TARIFF[key] || {})[modalPort];
+    if (!d) return;
+    if (!distMap[d.dist]) {
+      distMap[d.dist] = { f40: d.f40[modalFareIdx], f20: d.f20[modalFareIdx] };
+    }
   });
 
   var dists = Object.keys(distMap).map(Number).sort(function (a, b) { return a - b; });
 
   if (!dists.length) {
-    empty.textContent = '해당 조건의 운임 데이터가 없습니다.';
+    empty.textContent = '해당 항구의 운임 데이터가 없습니다.';
     empty.style.display = 'block';
     table.style.display = 'none';
     return;
   }
 
-  // 현재 검색된 거리 (같은 운송 유형일 때만 강조)
-  var currentDist = (state.portData && state.type === modalTripType) ? state.portData.dist : null;
+  // 현재 검색된 항구·거리 강조
+  var currentDist = null;
+  if (state.portData && state.type === '왕복') {
+    var activeTab = document.querySelector('.ptab.active');
+    if (activeTab && activeTab.getAttribute('data-port') === modalPort) {
+      currentDist = state.portData.dist;
+    }
+  }
 
   tbody.innerHTML = dists.map(function (dist) {
-    var r = distMap[dist];
+    var r  = distMap[dist];
     var hl = dist === currentDist ? ' class="rt-highlight"' : '';
     return '<tr' + hl + '>' +
       '<td>' + dist + ' km</td>' +
@@ -1285,7 +1315,6 @@ function buildRateTable() {
   empty.style.display = 'none';
   table.style.display = 'table';
 
-  // 현재 거리 행이 있으면 스크롤
   setTimeout(function () {
     var hl = tbody.querySelector('.rt-highlight');
     if (hl) hl.scrollIntoView({ block: 'center' });
@@ -1297,19 +1326,24 @@ function openRateModal() {
     showInlineError('고시 데이터 로딩 후 이용하실 수 있습니다.');
     return;
   }
-  // 현재 앱 선택값으로 필터 동기화
-  if (state.type) modalTripType = state.type;
+
+  // 현재 검색된 항구로 기본값 설정 (왕복일 때)
+  var preferPort = null;
+  if (state.type === '왕복') {
+    var activeTab = document.querySelector('.ptab.active');
+    if (activeTab) preferPort = activeTab.getAttribute('data-port');
+  }
+
+  // 운임 유형도 현재 선택값으로
   if (state.fareType) modalFareIdx = { '위탁': 0, '사업자': 1, '운송': 2 }[state.fareType];
 
-  document.querySelectorAll('[data-mf-trip]').forEach(function (btn) {
-    btn.classList.toggle('active', btn.getAttribute('data-mf-trip') === modalTripType);
-  });
   var fareKey = ['위탁', '사업자', '운송'][modalFareIdx];
   document.querySelectorAll('[data-mf-fare]').forEach(function (btn) {
     btn.classList.toggle('active', btn.getAttribute('data-mf-fare') === fareKey);
   });
 
   document.getElementById('modal-notice-text').textContent = activeNotice.label;
+  updatePortSelect(preferPort);
   buildRateTable();
   document.getElementById('rate-modal').classList.add('open');
   document.body.style.overflow = 'hidden';
@@ -1329,14 +1363,9 @@ document.addEventListener('keydown', function (e) {
   if (e.key === 'Escape' && document.getElementById('rate-modal').classList.contains('open')) closeRateModal();
 });
 
-document.querySelectorAll('[data-mf-trip]').forEach(function (btn) {
-  btn.addEventListener('click', function () {
-    modalTripType = btn.getAttribute('data-mf-trip');
-    document.querySelectorAll('[data-mf-trip]').forEach(function (b) {
-      b.classList.toggle('active', b === btn);
-    });
-    buildRateTable();
-  });
+document.getElementById('modal-port-select').addEventListener('change', function () {
+  modalPort = this.value;
+  buildRateTable();
 });
 
 document.querySelectorAll('[data-mf-fare]').forEach(function (btn) {
