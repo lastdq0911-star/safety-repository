@@ -1329,10 +1329,6 @@ if ('serviceWorker' in navigator) {
 var modalFareIdx = 0; // 0=위탁, 1=사업자, 2=운송
 var _distCache = [null, null, null]; // fareIdx별 캐시
 
-// 2026-02: 1km 기준 운임 (TARIFF 지역 데이터에 없으므로 직접 삽입)
-var OFFICIAL_1KM_F40 = [125300, 135500, 146500];
-var OFFICIAL_1KM_F20 = [108500, 117600, 127400];
-
 // 공식 고시 별표 거리(km)별 운임 (PDF 원본 직접 반영)
 // 구조: km=1~550, 6값/행 → [f40_위탁, f40_사업자, f40_운송, f20_위탁, f20_사업자, f20_운송]
 // 접근: km=N → index (N-1)*6
@@ -1355,17 +1351,6 @@ function buildBaseDistMap() {
       var i = (km - 1) * 6;
       if (!arr[i]) continue;
       map[km] = { f40: arr[i + modalFareIdx], f20: arr[i + 3 + modalFareIdx] };
-    }
-  } else {
-    Object.keys(TARIFF).forEach(function (key) {
-      var entry = TARIFF[key];
-      var d = entry['부산신항'];
-      if (d && !map[d.dist]) {
-        map[d.dist] = { f20: d.f20[modalFareIdx], f40: d.f40[modalFareIdx] };
-      }
-    });
-    if (!map[1]) {
-      map[1] = { f20: OFFICIAL_1KM_F20[modalFareIdx], f40: OFFICIAL_1KM_F40[modalFareIdx] };
     }
   }
   _distCache[modalFareIdx] = map;

@@ -1,7 +1,7 @@
 'use strict';
 
 // 캐시 버전: shell/flat 변경 시 이 값을 올려주세요 (예: v2, v3...)
-const CACHE_VERSION = 'v2';
+const CACHE_VERSION = 'v3';
 
 const SHELL_CACHE = 'safety-shell-' + CACHE_VERSION;
 const DATA_CACHE  = 'safety-data-'  + CACHE_VERSION; // 고시 데이터 (영구 캐시)
@@ -61,9 +61,9 @@ self.addEventListener('fetch', function (e) {
     return;
   }
 
-  // 고시 운임 데이터 청크 (data/YYYY-MM/dataX.js):
+  // 고시 운임 데이터 청크 (data/YYYY-MM/dataX.js 또는 YYYY-MM/dataX.js):
   // 캐시 우선 (한 번 올라간 고시 데이터는 변하지 않으므로 영구 캐시)
-  if (path.includes('/data/') && path.endsWith('.js')) {
+  if (/\/\d{4}-\d{2}\/data\d+\.js$/.test(path)) {
     e.respondWith(cacheFirst(req, DATA_CACHE));
     return;
   }
