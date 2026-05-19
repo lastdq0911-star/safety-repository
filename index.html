@@ -692,11 +692,12 @@ function loadNoticeData(notice) {
 
   const chunks = notice.chunks || 10;
   const ver = notice.id.replace(/-/g, '');
+  const base = (notice.dataBase !== undefined) ? notice.dataBase : 'data/';
   let loaded = 0;
 
   const promises = [];
   for (let i = 0; i < chunks; i++) {
-    const src = 'data/' + notice.id + '/data' + i + '.js?v=' + ver;
+    const src = base + notice.id + '/data' + i + '.js?v=' + ver;
     promises.push(
       loadScript(src).then(function () {
         loaded++;
