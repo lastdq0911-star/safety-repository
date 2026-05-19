@@ -1067,10 +1067,27 @@ function applyFareHighlight() {
   });
 }
 
+// FLAT 키(파이프 구분자, 현행 행정구역명)를 구 고시 TARIFF 키(언더스코어)로 변환
+// 이유: flat.js는 현행 행정구역명(강원특별자치도, 전북특별자치도, 인천 미추홀구 등)을 사용하지만
+//       구 고시 데이터 파일은 당시 명칭(강원도, 전라북도, 인천 남구 등)으로 저장되어 있음
+function normalizeKeyForOldNotice(flatKey) {
+  var k = flatKey
+    .replace('강원특별자치도|', '강원도|')
+    .replace('전북특별자치도|', '전라북도|')
+    .replace('인천광역시|미추홀구|', '인천광역시|남구|')
+    .replace(/\|/g, '_');
+  // FLAT의 "고양시 덕양구" 형태(시+구 사이 공백) → 구 TARIFF의 "고양시_덕양구" 형태
+  k = k.replace(/_([가-힣]+시) ([가-힣]+구)_/g, function(_, city, gu) { return '_' + city + '_' + gu + '_'; });
+  // 창원시 마산합포구/마산회원구: FLAT에서는 붙여쓰기, 구 TARIFF에서는 분리
+  k = k.replace('창원시마산합포구_', '창원시_마산합포_구_');
+  k = k.replace('창원시마산회원구_', '창원시_마산회원_구_');
+  return k;
+}
+
 function showResult() {
   if (!activeNotice) return;
-  // 2026-02 이후: 파이프(|) 구분자 / 구 고시: 언더스코어(_) 구분자
-  const entry = TARIFF[state.key] || TARIFF[state.key.replace(/\|/g, '_')];
+  // 2026-02 이후: 파이프(|) 구분자 / 구 고시: 언더스코어(_) 구분자 + 행정구역명 변환
+  const entry = TARIFF[state.key] || TARIFF[normalizeKeyForOldNotice(state.key)];
   if (!entry) {
     showInlineError('해당 지역의 데이터를 찾을 수 없습니다. 다른 지역을 검색해 주세요.');
     document.getElementById('result').style.display = 'none';
