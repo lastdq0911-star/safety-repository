@@ -1,7 +1,7 @@
 'use strict';
 
 // 캐시 버전: shell/flat 변경 시 이 값을 올려주세요 (예: v2, v3...)
-const CACHE_VERSION = 'v1';
+const CACHE_VERSION = 'v2';
 
 const SHELL_CACHE = 'safety-shell-' + CACHE_VERSION;
 const DATA_CACHE  = 'safety-data-'  + CACHE_VERSION; // 고시 데이터 (영구 캐시)
