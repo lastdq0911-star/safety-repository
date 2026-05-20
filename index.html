@@ -600,8 +600,8 @@ body { font-family:'Noto Sans KR',sans-serif; background:var(--bg); color:var(--
 </div>
 
 <!-- flat.js만 동기 로드 (검색용 지역 목록 294KB) — 운임 데이터는 고시 선택 시 동적 로드 -->
-<script src="flat.js?v=20260517">
-<script src="keymap.js?v=20260520"></script></script>
+<script src="flat.js?v=20260517"></script>
+<script src="keymap.js?v=20260520"></script>
 
 <script>
 (function () {
@@ -919,7 +919,9 @@ inp.addEventListener('input', function () {
           return state.type === '왕복' ? p.indexOf('편도') < 0 : p.indexOf('편도') >= 0;
         });
       });
-      if (withData.length) matched = withData;
+      // 운송 유형 선택 시 결과가 0건이어도 필터 적용 (빈 목록 표시)
+      // 유형 미선택 시에는 TARIFF 데이터가 있는 항목이 없을 경우 전체 목록 유지
+      if (withData.length || state.type) matched = withData;
     }
     acResults = matched.slice(0, 30);
     if (!acResults.length) { hideAC(); return; }
@@ -1691,7 +1693,7 @@ function mapDaumToTariff(data) {
         return state.type === '왕복' ? p.indexOf('편도') < 0 : p.indexOf('편도') >= 0;
       });
     });
-    if (withData.length) results = withData;
+    if (withData.length || state.type) results = withData;
   }
   results = results.slice(0, 30);
 
