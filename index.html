@@ -886,6 +886,7 @@ function showAC() { acWrap.style.display = 'block'; inp.classList.add('ac-open')
 function hideAC() { acWrap.style.display = 'none'; inp.classList.remove('ac-open'); }
 
 let searchMode = 'dong'; // 'dong' | 'road'
+var _daumEmbedOpen = false; // Daum 팝업 레거시 호환용
 
 let _debounceTimer = null;
 inp.addEventListener('input', function () {
@@ -1513,11 +1514,10 @@ document.querySelectorAll('[data-mf-fare]').forEach(function (btn) {
 });
 
 // ────────────────────────────────────────────
-// 도로명 주소 검색 (카카오 주소 API — 네이버 검색창 스타일 드롭다운)
+// 도로명 주소 검색 (카카오 API — 네이버 스타일 드롭다운)
 // ────────────────────────────────────────────
 
-// 카카오 주소 API - 도로명 주소 검색 → 드롭다운
-var _roadResults = []; // 도로명 검색 결과 별도 저장
+var _roadResults = [];
 
 function searchRoadAddress(q) {
   if (!window.kakao || !window.kakao.maps || !window.kakao.maps.services) {
@@ -1525,70 +1525,96 @@ function searchRoadAddress(q) {
     return;
   }
 
-  var geocoder = new kakao.maps.services.Geocoder();
-
-  // 로딩 표시
   acInfo.textContent = '🔍 주소 검색 중...';
-  acList.innerHTML = '';
+  acList.innerHTML = '<div style="padding:12px;text-align:center;color:var(--text3);font-size:0.8rem;">검색 중...</div>';
   showAC();
 
+  var geocoder = new kakao.maps.services.Geocoder();
+
+  // 1차: roadAddressSearch (도로명 전용)
   geocoder.addressSearch(q, function(result, status) {
-    _roadResults = [];
-
     if (status === kakao.maps.services.Status.OK && result.length > 0) {
-      _roadResults = result.map(function(r) {
-        var roadAddr = r.road_address;
-        var jibunAddr = r.address;
-        return {
-          road:    roadAddr  ? roadAddr.address_name  : '',
-          jibun:   jibunAddr ? jibunAddr.address_name : '',
-          sido:    jibunAddr ? jibunAddr.region_1depth_name : '',
-          sigungu: jibunAddr ? jibunAddr.region_2depth_name : '',
-          dong:    jibunAddr ? (jibunAddr.region_3depth_h_name || jibunAddr.region_3depth_name) : '',
-        };
-      });
+      _buildRoadResults(result, q);
+    } else {
+      // 2차: keywordSearch 폴백 (도로명+번지 못 찾을 경우)
+      var ps = new kakao.maps.services.Places();
+      ps.keywordSearch(q, function(kResult, kStatus) {
+        if (kStatus === kakao.maps.services.Status.OK && kResult.length > 0) {
+          // keywordSearch 결과를 geocoder로 좌표→주소 변환
+          var firstPlace = kResult[0];
+          geocoder.coord2Address(firstPlace.x, firstPlace.y, function(aResult, aStatus) {
+            if (aStatus === kakao.maps.services.Status.OK && aResult.length > 0) {
+              _buildRoadResults(aResult.map(function(a) {
+                return {
+                  road_address: a.road_address,
+                  address: a.address
+                };
+              }), q);
+            } else {
+              _showNoResult();
+            }
+          });
+        } else {
+          _showNoResult();
+        }
+      }, { category_group_code: '' });
     }
-
-    if (!_roadResults.length) {
-      acInfo.textContent = '검색 결과가 없습니다';
-      acList.innerHTML = '<div style="padding:16px;text-align:center;color:var(--text3);font-size:0.85rem;">일치하는 주소가 없어요<br><small>예) 우암로 127, 해운대해수욕장로 264</small></div>';
-      showAC();
-      return;
-    }
-
-    // 결과가 1개면 바로 운임 표시
-    if (_roadResults.length === 1) {
-      resolveRoadToTariff(_roadResults[0]);
-      return;
-    }
-
-    // 복수 결과 → 드롭다운 표시
-    renderRoadAC(q);
   });
 }
 
-function renderRoadAC(q) {
-  acInfo.textContent = '도로명 주소 검색 결과 ' + _roadResults.length + '건';
+function _buildRoadResults(result, q) {
+  _roadResults = result.map(function(r) {
+    var ra = r.road_address || null;
+    var ja = r.address      || null;
+    return {
+      road:    ra ? ra.address_name  : (ja ? ja.address_name : ''),
+      sido:    ja ? ja.region_1depth_name : (ra ? ra.region_1depth_name : ''),
+      sigungu: ja ? ja.region_2depth_name : (ra ? ra.region_2depth_name : ''),
+      dong:    ja ? (ja.region_3depth_h_name || ja.region_3depth_name) : (ra ? ra.region_3depth_name : ''),
+    };
+  }).filter(function(r) { return r.road || r.dong; });
+
+  if (!_roadResults.length) { _showNoResult(); return; }
+
+  // 결과 1개 → 바로 운임 표시
+  if (_roadResults.length === 1) {
+    resolveRoadToTariff(_roadResults[0]);
+    return;
+  }
+
+  // 복수 → 드롭다운
+  _renderRoadAC(q);
+}
+
+function _showNoResult() {
+  acInfo.textContent = '검색 결과가 없습니다';
+  acList.innerHTML = '<div style="padding:16px;text-align:center;color:var(--text3);font-size:0.85rem;">' +
+    '일치하는 주소가 없어요<br><span style="font-size:0.75rem;">예) 우암로 127 &nbsp;·&nbsp; 해운대해수욕장로 264</span></div>';
+  showAC();
+}
+
+function _renderRoadAC(q) {
+  acInfo.textContent = '도로명 검색 결과 ' + _roadResults.length + '건 — 선택하세요';
+  var tokens = q.split(/\s+/).filter(Boolean);
   acList.innerHTML = _roadResults.map(function(r, i) {
-    var displayAddr = escapeHtml(r.road || r.jibun);
-    var subAddr = escapeHtml((r.sigungu + ' ' + r.dong).trim());
-    // 검색어 하이라이트
-    q.split(' ').filter(Boolean).forEach(function(t) {
+    var addr = escapeHtml(r.road || (r.sigungu + ' ' + r.dong));
+    var sub  = escapeHtml((r.sigungu + ' ' + r.dong).trim());
+    tokens.forEach(function(t) {
       var st = escapeHtml(t);
-      displayAddr = displayAddr.split(st).join('<span class="ac-match">' + st + '</span>');
+      addr = addr.split(st).join('<span class="ac-match">' + st + '</span>');
     });
     return '<div class="ac-item" role="option" aria-selected="false" data-road-i="' + i + '">' +
-           '<span class="ac-icon" aria-hidden="true">🗺</span>' +
-           '<span style="display:flex;flex-direction:column;gap:1px;">' +
-           '<span style="font-size:0.87rem;font-weight:600;color:var(--text1);">' + displayAddr + '</span>' +
-           '<span style="font-size:0.71rem;color:var(--text3);">📍 ' + subAddr + '</span>' +
-           '</span></div>';
+      '<span class="ac-icon" aria-hidden="true">🗺</span>' +
+      '<span style="display:flex;flex-direction:column;gap:1px;">' +
+      '<span style="font-size:0.87rem;font-weight:600;">' + addr + '</span>' +
+      '<span style="font-size:0.71rem;color:var(--text3);">📍 ' + sub + '</span>' +
+      '</span></div>';
   }).join('');
   showAC();
   kbIndex = -1;
 }
 
-// 선택된 주소 → 행정동 → 운임 연결
+// 도로명 결과 → 행정동 → 바로 운임 표시
 function resolveRoadToTariff(addr) {
   hideAC();
   var sigungu  = addr.sigungu || '';
@@ -1596,7 +1622,14 @@ function resolveRoadToTariff(addr) {
   var flat     = window.FLAT  || [];
   var results  = [];
 
-  // 전략 1: 시군구 토큰 + 행정동 정확 매핑
+  // 행정동 모드로 전환
+  searchMode = 'dong';
+  inp.readOnly = false;
+  inp.placeholder = '예) 해운대, 반여동, 경주시...';
+  document.getElementById('smt-dong').classList.add('active');
+  document.getElementById('smt-road').classList.remove('active');
+
+  // 전략 1: 시군구 + 행정동
   if (sigungu && dongName) {
     var guTokens = sigungu.split(' ').filter(Boolean);
     results = flat.filter(function(item) {
@@ -1608,22 +1641,21 @@ function resolveRoadToTariff(addr) {
   if (!results.length && dongName) {
     results = flat.filter(function(item) { return item.l.indexOf(dongName) >= 0; });
   }
+  // 전략 3: 시군구만
+  if (!results.length && sigungu) {
+    var guTokens2 = sigungu.split(' ').filter(Boolean);
+    results = flat.filter(function(item) {
+      return guTokens2.every(function(t) { return item.l.indexOf(t) >= 0; });
+    });
+  }
 
-  // 운임 데이터 필터
+  // 운임 데이터 있는 것만 필터
   if (tariffLoaded && results.length) {
     var withData = results.filter(function(item) {
-      var tk = TARIFF[item.k] || TARIFF[normalizeKeyForOldNotice(item.k)];
-      return !!tk;
+      return !!(TARIFF[item.k] || TARIFF[normalizeKeyForOldNotice(item.k)]);
     });
     if (withData.length) results = withData;
   }
-
-  // 행정동 모드로 복귀
-  searchMode = 'dong';
-  inp.readOnly = false;
-  inp.placeholder = '예) 해운대, 반여동, 경주시...';
-  document.getElementById('smt-dong').classList.add('active');
-  document.getElementById('smt-road').classList.remove('active');
 
   if (!results.length) {
     inp.value = '';
@@ -1631,13 +1663,13 @@ function resolveRoadToTariff(addr) {
     return;
   }
 
-  // 동 이름 마지막 부분 완전 일치 → 바로 선택
+  // 동 이름 완전 일치 우선
   var exact = results.filter(function(item) {
     return item.l.split(' ').pop() === dongName;
   });
+  var target = exact.length >= 1 ? exact[0] : results[0];
 
-  // 1개로 확정되면 바로 운임 표시
-  var target = (exact.length >= 1) ? exact[0] : results[0];
+  // 바로 운임 표시
   acResults = [target];
   inp.value = target.l;
   selectItem(0);
