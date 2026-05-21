@@ -990,8 +990,15 @@ inp.addEventListener('keydown', function (e) {
     setKbFocus(Math.max(kbIndex - 1, 0));
   } else if (e.key === 'Enter') {
     e.preventDefault();
-    if (kbIndex >= 0 && kbIndex < acResults.length) selectItem(kbIndex);
-    else if (acResults.length > 0) selectItem(0);
+    var focusedItem = kbIndex >= 0 ? acList.querySelectorAll('.ac-item')[kbIndex] : null;
+    var roadI = focusedItem ? focusedItem.getAttribute('data-road-i') : null;
+    if (roadI !== null) {
+      resolveRoadToTariff(_roadResults[parseInt(roadI, 10)]);
+    } else if (kbIndex >= 0 && kbIndex < acResults.length) {
+      selectItem(kbIndex);
+    } else if (acResults.length > 0) {
+      selectItem(0);
+    }
   } else if (e.key === 'Escape') {
     hideAC();
   }
@@ -1592,6 +1599,21 @@ function renderRoadAC(q) {
 
 // 선택된 주소 → 행정동 → 운임 연결
 function resolveRoadToTariff(addr) {
+  // addr.dong이 이미 FLAT에서 1건으로 확정되면 coord2RegionCode 생략
+  var flat = window.FLAT || [];
+  var sigungu = addr.sigungu || '';
+  var dongName = addr.dong || '';
+  if (sigungu && dongName) {
+    var gt = sigungu.split(' ').filter(Boolean);
+    var quickMatch = flat.filter(function(item) {
+      return gt.every(function(t) { return item.l.indexOf(t) >= 0; }) &&
+             item.l.split(' ').pop() === dongName;
+    });
+    if (quickMatch.length === 1) {
+      _doResolveRoadToTariff(addr);
+      return;
+    }
+  }
   // coord2RegionCode로 정확한 행정동 조회 (좌표가 있는 경우)
   if (addr.x && addr.y && window.kakao && window.kakao.maps && window.kakao.maps.services) {
     var geocoder2 = new kakao.maps.services.Geocoder();
@@ -1801,8 +1823,6 @@ function setSearchMode(mode) {
   document.getElementById('smt-dong').classList.toggle('active', mode === 'dong');
   document.getElementById('smt-road').classList.toggle('active', mode === 'road');
   hideAC();
-  _daumEmbedOpen = false;
-
   if (mode === 'dong') {
     inp.readOnly = false;
     inp.placeholder = '예) 해운대, 반여동, 경주시...';
