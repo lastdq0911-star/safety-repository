@@ -1622,35 +1622,6 @@ function mapDaumToTariff(data) {
   showAC();
   kbIndex = -1;
 }
-    inp.value = '';
-    showInlineError('해당 주소의 운임 지역을 찾을 수 없습니다. 동 이름으로 직접 검색해 보세요.');
-    return;
-  }
-
-  // 결과 1개 → 바로 운임 표시
-  if (results.length === 1) {
-    acResults = results;
-    inp.value = results[0].l;
-    selectItem(0);
-    return;
-  }
-
-  // 복수 결과 → 행정동 드롭다운
-  acResults = results;
-  inp.value = dong || sigungu;
-  acInfo.textContent = '행정동을 선택해 주세요 (' + results.length + '건)';
-  acList.innerHTML = results.map(function (item, i) {
-    var label = escapeHtml(item.l);
-    [dong, sigungu].filter(Boolean).forEach(function (t) {
-      var st = escapeHtml(t);
-      label = label.split(st).join('<span class="ac-match">' + st + '</span>');
-    });
-    return '<div class="ac-item" role="option" aria-selected="false" data-i="' + i + '">' +
-      '<span class="ac-icon" aria-hidden="true">📍</span><span>' + label + '</span></div>';
-  }).join('');
-  showAC();
-  kbIndex = -1;
-}
 
 function setSearchMode(mode) {
   searchMode = mode;
