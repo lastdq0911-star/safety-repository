@@ -1559,7 +1559,29 @@ function mapDaumToTariff(data) {
     });
   }
 
-  // 전략 2: sido + sigungu (동 이름 못 찾을 때)
+  // 전략 2: sido + sigungu + 법정동 기본명 매칭
+  // (예: 감만동 → 감만 포함된 행정동 검색: 감만1동, 감만2동)
+  if (!results.length && sidoFull && sigungu && dong) {
+    var baseDong = dong.replace(/[0-9]/g, '').replace(/[동리]$/, '').trim();
+    if (baseDong.length >= 2) {
+      results = flat.filter(function (item) {
+        return item.l.indexOf(sidoFull) >= 0 &&
+               item.l.indexOf(sigungu) >= 0 &&
+               item.l.indexOf(baseDong) >= 0;
+      });
+    }
+  }
+
+  // 전략 3: sido + sigungu + 읍면 (읍면 지역)
+  if (!results.length && sidoFull && sigungu && eup) {
+    results = flat.filter(function (item) {
+      return item.l.indexOf(sidoFull) >= 0 &&
+             item.l.indexOf(sigungu) >= 0 &&
+             item.l.indexOf(eup) >= 0;
+    });
+  }
+
+  // 전략 4: sido + sigungu 전체 (최후 수단 → 사용자가 선택)
   if (!results.length && sidoFull && sigungu) {
     results = flat.filter(function (item) {
       return item.l.indexOf(sidoFull) >= 0 &&
@@ -1567,15 +1589,7 @@ function mapDaumToTariff(data) {
     });
   }
 
-  // 전략 3: sido + eup + dong (읍면 지역)
-  if (!results.length && sidoFull && eup && dong) {
-    results = flat.filter(function (item) {
-      return item.l.indexOf(sidoFull) >= 0 &&
-             item.l.indexOf(eup) >= 0;
-    });
-  }
-
-  // 전략 4: sigungu + dong (sido 매핑 실패 시)
+  // 전략 5: sigungu + dong (sido 매핑 실패 시)
   if (!results.length && sigungu && dong) {
     var guTokens = sigungu.split(' ').filter(Boolean);
     results = flat.filter(function (item) {
@@ -1614,13 +1628,14 @@ function mapDaumToTariff(data) {
     return;
   }
 
-  // 복수 결과 → 행정동 드롭다운
+  // 복수 결과 → 행정동 드롭다운 (사용자가 선택)
   acResults = results;
-  inp.value = results[0].l.split(' ').slice(-1)[0]; // 동 이름만 입력창에
+  var baseDong2 = dong.replace(/[0-9]/g, '').replace(/[동리]$/, '').trim();
+  inp.value = baseDong2 || sigungu;
   acInfo.textContent = '행정동을 선택해 주세요 (' + results.length + '건)';
   acList.innerHTML = results.map(function (item, i) {
     var label = escapeHtml(item.l);
-    [dong, sigungu, sidoFull].filter(Boolean).forEach(function (t) {
+    [baseDong2, sigungu, sidoFull].filter(function(t){ return t && t.length >= 2; }).forEach(function (t) {
       var st = escapeHtml(t);
       label = label.split(st).join('<span class="ac-match">' + st + '</span>');
     });
