@@ -1574,15 +1574,24 @@ function _buildRoadResults(result, q) {
     };
   }).filter(function(r) { return r.road || r.dong; });
 
+  // 중복 dong 제거
+  var seen = {};
+  _roadResults = _roadResults.filter(function(r) {
+    var key = r.sigungu + '_' + r.dong;
+    if (seen[key]) return false;
+    seen[key] = true;
+    return true;
+  });
+
   if (!_roadResults.length) { _showNoResult(); return; }
 
-  // 결과 1개 → 바로 운임 표시
+  // 결과 1개 → 바로 행정동 후보로 연결
   if (_roadResults.length === 1) {
     resolveRoadToTariff(_roadResults[0]);
     return;
   }
 
-  // 복수 → 드롭다운
+  // 복수 → 도로명 주소 드롭다운
   _renderRoadAC(q);
 }
 
@@ -1614,20 +1623,13 @@ function _renderRoadAC(q) {
   kbIndex = -1;
 }
 
-// 도로명 결과 → 행정동 → 바로 운임 표시
+// 도로명 결과 → 행정동 후보 목록 드롭다운 → 선택 → 운임 표시
 function resolveRoadToTariff(addr) {
   hideAC();
   var sigungu  = addr.sigungu || '';
   var dongName = addr.dong    || '';
   var flat     = window.FLAT  || [];
   var results  = [];
-
-  // 행정동 모드로 전환
-  searchMode = 'dong';
-  inp.readOnly = false;
-  inp.placeholder = '예) 해운대, 반여동, 경주시...';
-  document.getElementById('smt-dong').classList.add('active');
-  document.getElementById('smt-road').classList.remove('active');
 
   // 전략 1: 시군구 + 행정동
   if (sigungu && dongName) {
@@ -1646,7 +1648,7 @@ function resolveRoadToTariff(addr) {
     var guTokens2 = sigungu.split(' ').filter(Boolean);
     results = flat.filter(function(item) {
       return guTokens2.every(function(t) { return item.l.indexOf(t) >= 0; });
-    });
+    }).slice(0, 10);
   }
 
   // 운임 데이터 있는 것만 필터
@@ -1657,22 +1659,42 @@ function resolveRoadToTariff(addr) {
     if (withData.length) results = withData;
   }
 
+  // 행정동 모드로 전환
+  searchMode = 'dong';
+  inp.readOnly = false;
+  inp.placeholder = '예) 해운대, 반여동, 경주시...';
+  document.getElementById('smt-dong').classList.add('active');
+  document.getElementById('smt-road').classList.remove('active');
+
   if (!results.length) {
     inp.value = '';
     showInlineError('해당 주소의 운임 지역을 찾을 수 없습니다. 동 이름으로 직접 검색해 보세요.');
     return;
   }
 
-  // 동 이름 완전 일치 우선
-  var exact = results.filter(function(item) {
-    return item.l.split(' ').pop() === dongName;
-  });
-  var target = exact.length >= 1 ? exact[0] : results[0];
+  // 결과가 1개면 바로 운임 표시
+  if (results.length === 1) {
+    acResults = results;
+    inp.value = results[0].l;
+    selectItem(0);
+    return;
+  }
 
-  // 바로 운임 표시
-  acResults = [target];
-  inp.value = target.l;
-  selectItem(0);
+  // 복수면 행정동 후보 드롭다운으로 표시 (사용자가 선택)
+  acResults = results;
+  inp.value = dongName || sigungu;
+  acInfo.textContent = '행정동을 선택해 주세요 (' + results.length + '건)';
+  acList.innerHTML = results.map(function(item, i) {
+    var label = escapeHtml(item.l);
+    [dongName, sigungu].filter(Boolean).forEach(function(t) {
+      var st = escapeHtml(t);
+      label = label.split(st).join('<span class="ac-match">' + st + '</span>');
+    });
+    return '<div class="ac-item" role="option" aria-selected="false" data-i="' + i + '">' +
+      '<span class="ac-icon" aria-hidden="true">📍</span><span>' + label + '</span></div>';
+  }).join('');
+  showAC();
+  kbIndex = -1;
 }
 
 function mapDaumToTariff(data) {
