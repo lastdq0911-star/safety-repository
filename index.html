@@ -1538,6 +1538,7 @@ function searchRoadAddress(q) {
     '?confmKey=' + JUSO_KEY +
     '&currentPage=1&countPerPage=10' +
     '&keyword='  + encodeURIComponent(q) +
+    '&admYn=Y' +        // 행정동(admmNm) 필드 반환 필수
     '&resultType=json';
 
   function onData(data) {
@@ -1549,7 +1550,7 @@ function searchRoadAddress(q) {
         jibun:   r.jibunAddr    || '',
         sido:    r.siNm         || '',
         sigungu: r.sggNm        || '',
-        dong:    r.admmNm       || r.emdNm || '',
+        dong:    r.admmNm       || r.hemdNm || r.emdNm || '',
       };
     }).filter(function (r) { return r.road || r.jibun; });
 
