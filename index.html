@@ -1544,13 +1544,15 @@ function searchRoadAddress(q) {
   function onData(data) {
     if (myId !== _jusoReqId) return;
     var juso = (data.results && data.results.juso) || [];
-    _roadResults = juso.map(function (r) {
+    _roadResults = juso.map(function (r, idx) {
+      if (idx === 0) console.log('[Juso] raw fields:', JSON.stringify(r));
       return {
         road:    r.roadAddrPart1 || r.roadAddr || '',
         jibun:   r.jibunAddr    || '',
         sido:    r.siNm         || '',
         sigungu: ((r.siNm || '') + ' ' + (r.sggNm || '')).trim(),
         dong:    (r.admmNm || r.hemdNm || r.emdNm || '').trim(),
+        admCd:   r.admCd || '',
       };
     }).filter(function (r) { return r.road || r.jibun; });
 
@@ -1607,8 +1609,21 @@ function searchRoadAddress(q) {
 function renderRoadAC(q) {
   acInfo.textContent = '도로명 주소 검색 결과 ' + _roadResults.length + '건';
   acList.innerHTML = _roadResults.map(function(r, i) {
-    var displayAddr = escapeHtml(r.road || r.jibun);
-    var subAddr = escapeHtml((r.sigungu + ' ' + r.dong).trim());
+    // Main: 시도+시군구 접두어 제거 → "수영로 135" + "(대연4동)"
+    var fullRoad = r.road || r.jibun;
+    var shortRoad = fullRoad;
+    if (r.sigungu && fullRoad.indexOf(r.sigungu) === 0) {
+      shortRoad = fullRoad.slice(r.sigungu.length).trim();
+    }
+    var mainText = shortRoad + (r.dong ? ' (' + r.dong + ')' : '');
+
+    // Sub: 시도 축약 + 시군구 → "부산 남구"
+    var shortSido = (r.sido || '').replace(/[남북]?도$|특별시$|광역시$|특별자치시$|특별자치도$/, '');
+    var sgg = r.sigungu.replace(r.sido || '', '').trim();
+    var subText = shortSido + (sgg ? ' ' + sgg : '');
+
+    var displayAddr = escapeHtml(mainText);
+    var subAddr = escapeHtml(subText);
     // 검색어 하이라이트
     q.split(' ').filter(Boolean).forEach(function(t) {
       var st = escapeHtml(t);
@@ -1715,13 +1730,22 @@ function _doResolveRoadToTariff(addr) {
     switchToDong();
     inp.placeholder = '위 목록에서 행정동을 선택하세요';
     acResults = results;
-    acInfo.textContent = '행정동을 선택하세요 (' + results.length + '건)';
+    // 도로명 주소의 간략 표시 (시도+시군구 제거)
+    var roadLabel = (addr.road || addr.jibun || '').trim();
+    if (addr.sigungu && roadLabel.indexOf(addr.sigungu) === 0) {
+      roadLabel = roadLabel.slice(addr.sigungu.length).trim();
+    }
+    acInfo.textContent = (roadLabel ? '"' + roadLabel + '" — ' : '') + '행정동을 선택하세요 (' + results.length + '건)';
     acList.innerHTML = results.map(function(item, i) {
       var parts = item.l.split(' ');
-      var label = parts.slice(-2).join(' ');
+      var dongLabel = parts.pop();     // 마지막 토큰 = 행정동명
+      var sggLabel  = parts.pop() || ''; // 그 앞 = 시군구
       return '<div class="ac-item" role="option" aria-selected="false" data-i="' + i + '">' +
              '<span class="ac-icon" aria-hidden="true">📍</span>' +
-             '<span>' + escapeHtml(label) + '</span></div>';
+             '<span style="display:flex;flex-direction:column;gap:1px;">' +
+             '<span style="font-weight:600;">' + escapeHtml(dongLabel) + '</span>' +
+             (sggLabel ? '<span style="font-size:0.71rem;color:var(--text3);">' + escapeHtml(sggLabel) + '</span>' : '') +
+             '</span></div>';
     }).join('');
     showAC();
     kbIndex = -1;
