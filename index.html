@@ -21,8 +21,7 @@
   gtag('js', new Date());
   gtag('config', 'G-5D5CQQX1DJ');
 </script>
-<!-- 카카오 주소 검색 API -->
-<script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=b8cdcc306a177e725cff5745e675a432&libraries=services"></script>
+<!-- 행정안전부 Juso API - JSONP/fetch 동적 호출 (별도 SDK 없음) -->
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -1520,40 +1519,39 @@ document.querySelectorAll('[data-mf-fare]').forEach(function (btn) {
 });
 
 // ────────────────────────────────────────────
-// 도로명 주소 검색 (카카오 주소 API — 네이버 검색창 스타일 드롭다운)
+// 도로명 주소 검색 (행정안전부 Juso API)
+// fetch(CORS) 우선 → 실패 시 JSONP 폴백
 // ────────────────────────────────────────────
 
 var _roadResults = [];
+var _jusoReqId   = 0;
+var JUSO_KEY     = 'U01TX0FVVEgyMDI2MDUyMTE1NTE0MzExODIxMjU=';
 
 function searchRoadAddress(q) {
-  if (!window.kakao || !window.kakao.maps || !window.kakao.maps.services) {
-    showInlineError('주소 검색 서비스 로딩 중입니다. 잠시 후 다시 시도해 주세요.');
-    return;
-  }
+  var myId = ++_jusoReqId;
 
   acInfo.textContent = '🔍 주소 검색 중...';
   acList.innerHTML = '';
   showAC();
 
-  var geocoder = new kakao.maps.services.Geocoder();
-  geocoder.addressSearch(q, function (result, status) {
-    _roadResults = [];
+  var apiUrl = 'https://business.juso.go.kr/addrlink/addrLinkApi.do' +
+    '?confmKey=' + JUSO_KEY +
+    '&currentPage=1&countPerPage=10' +
+    '&keyword='  + encodeURIComponent(q) +
+    '&resultType=json';
 
-    if (status === kakao.maps.services.Status.OK && result.length > 0) {
-      _roadResults = result.map(function (r) {
-        var roadAddr  = r.road_address;
-        var jibunAddr = r.address;
-        return {
-          road:    roadAddr  ? roadAddr.address_name           : '',
-          jibun:   jibunAddr ? jibunAddr.address_name          : '',
-          sido:    jibunAddr ? jibunAddr.region_1depth_name    : '',
-          sigungu: jibunAddr ? jibunAddr.region_2depth_name    : '',
-          dong:    jibunAddr ? (jibunAddr.region_3depth_h_name || jibunAddr.region_3depth_name) : '',
-          x: r.x,
-          y: r.y,
-        };
-      });
-    }
+  function onData(data) {
+    if (myId !== _jusoReqId) return;
+    var juso = (data.results && data.results.juso) || [];
+    _roadResults = juso.map(function (r) {
+      return {
+        road:    r.roadAddrPart1 || r.roadAddr || '',
+        jibun:   r.jibunAddr    || '',
+        sido:    r.siNm         || '',
+        sigungu: r.sggNm        || '',
+        dong:    r.admmNm       || r.emdNm || '',
+      };
+    }).filter(function (r) { return r.road || r.jibun; });
 
     if (!_roadResults.length) {
       acInfo.textContent = '검색 결과가 없습니다';
@@ -1561,14 +1559,48 @@ function searchRoadAddress(q) {
       showAC();
       return;
     }
-
-    if (_roadResults.length === 1) {
-      resolveRoadToTariff(_roadResults[0]);
-      return;
-    }
-
+    if (_roadResults.length === 1) { resolveRoadToTariff(_roadResults[0]); return; }
     renderRoadAC(q);
-  });
+  }
+
+  function onError() {
+    if (myId !== _jusoReqId) return;
+    showInlineError('주소 검색 서비스에 연결할 수 없습니다. 행정동 탭으로 직접 검색해 보세요.');
+  }
+
+  function tryJsonp() {
+    if (myId !== _jusoReqId) return;
+    var cbName = '_jcb' + myId;
+    var script = document.createElement('script');
+    var timer  = setTimeout(function () {
+      delete window[cbName];
+      if (script.parentNode) script.parentNode.removeChild(script);
+      onError();
+    }, 8000);
+    window[cbName] = function (data) {
+      clearTimeout(timer);
+      delete window[cbName];
+      if (script.parentNode) script.parentNode.removeChild(script);
+      onData(data);
+    };
+    script.onerror = function () {
+      clearTimeout(timer);
+      delete window[cbName];
+      if (script.parentNode) script.parentNode.removeChild(script);
+      onError();
+    };
+    script.src = apiUrl + '&callback=' + cbName;
+    document.head.appendChild(script);
+  }
+
+  // 1차: fetch (CORS 지원 시)
+  fetch(apiUrl)
+    .then(function (r) { return r.json(); })
+    .then(function (data) {
+      if (data && data.results) { onData(data); }
+      else { tryJsonp(); }
+    })
+    .catch(tryJsonp);
 }
 
 function renderRoadAC(q) {
@@ -1592,40 +1624,8 @@ function renderRoadAC(q) {
   kbIndex = -1;
 }
 
-// 선택된 주소 → 행정동 → 운임 연결
+// 선택된 주소 → 행정동(admmNm) → 운임 연결
 function resolveRoadToTariff(addr) {
-  var flat     = window.FLAT || [];
-  var sigungu  = addr.sigungu || '';
-  var dongName = addr.dong    || '';
-
-  // dong이 FLAT에서 시군구 포함 1건으로 확정되면 coord2RegionCode 생략
-  if (sigungu && dongName) {
-    var gt = sigungu.split(' ').filter(Boolean);
-    var quickMatch = flat.filter(function (item) {
-      return gt.every(function (t) { return item.l.indexOf(t) >= 0; }) &&
-             item.l.split(' ').pop() === dongName;
-    });
-    if (quickMatch.length === 1) { _doResolveRoadToTariff(addr); return; }
-  }
-
-  // 좌표가 있으면 coord2RegionCode로 정확한 행정동 조회
-  if (addr.x && addr.y && window.kakao && window.kakao.maps && window.kakao.maps.services) {
-    var geo = new kakao.maps.services.Geocoder();
-    geo.coord2RegionCode(addr.x, addr.y, function (result, status) {
-      if (status === kakao.maps.services.Status.OK) {
-        var h = result.filter(function (e) { return e.region_type === 'H'; })[0];
-        if (h && h.region_3depth_name) {
-          addr = Object.assign({}, addr, {
-            sigungu: h.region_2depth_name || addr.sigungu,
-            dong:    h.region_3depth_name,
-          });
-        }
-      }
-      _doResolveRoadToTariff(addr);
-    });
-    return;
-  }
-
   _doResolveRoadToTariff(addr);
 }
 
