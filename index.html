@@ -21,7 +21,8 @@
   gtag('js', new Date());
   gtag('config', 'G-5D5CQQX1DJ');
 </script>
-<!-- 행정안전부 Juso API는 JSONP로 동적 로드 (별도 SDK 불필요) -->
+<!-- 카카오 주소 검색 API -->
+<script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=b8cdcc306a177e725cff5745e675a432&libraries=services"></script>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -1519,54 +1520,45 @@ document.querySelectorAll('[data-mf-fare]').forEach(function (btn) {
 });
 
 // ────────────────────────────────────────────
-// 도로명 주소 검색 (행정안전부 Juso API — JSONP)
+// 도로명 주소 검색 (카카오 주소 API — 네이버 검색창 스타일 드롭다운)
 // ────────────────────────────────────────────
 
 var _roadResults = [];
-var _jusoReqId = 0; // 오래된 응답 무시용
 
 function searchRoadAddress(q) {
+  if (!window.kakao || !window.kakao.maps || !window.kakao.maps.services) {
+    showInlineError('주소 검색 서비스 로딩 중입니다. 잠시 후 다시 시도해 주세요.');
+    return;
+  }
+
   acInfo.textContent = '🔍 주소 검색 중...';
   acList.innerHTML = '';
   showAC();
 
-  var reqId = ++_jusoReqId;
-  var cbName = '__juso' + reqId;
-  var script = document.createElement('script');
-  var settled = false;
+  var geocoder = new kakao.maps.services.Geocoder();
+  geocoder.addressSearch(q, function (result, status) {
+    _roadResults = [];
 
-  function cleanup() {
-    settled = true;
-    if (window[cbName]) delete window[cbName];
-    if (script.parentNode) script.parentNode.removeChild(script);
-  }
-
-  var timer = setTimeout(function () {
-    if (!settled && reqId === _jusoReqId) {
-      cleanup();
-      acInfo.textContent = '검색 요청이 시간 초과되었습니다.';
+    if (status === kakao.maps.services.Status.OK && result.length > 0) {
+      _roadResults = result.map(function (r) {
+        var roadAddr  = r.road_address;
+        var jibunAddr = r.address;
+        return {
+          road:    roadAddr  ? roadAddr.address_name           : '',
+          jibun:   jibunAddr ? jibunAddr.address_name          : '',
+          sido:    jibunAddr ? jibunAddr.region_1depth_name    : '',
+          sigungu: jibunAddr ? jibunAddr.region_2depth_name    : '',
+          dong:    jibunAddr ? (jibunAddr.region_3depth_h_name || jibunAddr.region_3depth_name) : '',
+          x: r.x,
+          y: r.y,
+        };
+      });
     }
-  }, 6000);
-
-  window[cbName] = function (data) {
-    clearTimeout(timer);
-    cleanup();
-    if (reqId !== _jusoReqId) return;
-
-    var juso = (data.results && data.results.juso) || [];
-    _roadResults = juso.map(function (r) {
-      return {
-        road:    r.roadAddrPart1 || r.roadAddr || '',
-        jibun:   r.jibunAddr || '',
-        sido:    r.siNm     || '',
-        sigungu: r.sggNm    || '',
-        dong:    r.admmNm   || r.emdNm || '',
-      };
-    }).filter(function (r) { return r.road || r.jibun; });
 
     if (!_roadResults.length) {
       acInfo.textContent = '검색 결과가 없습니다';
       acList.innerHTML = '<div style="padding:16px;text-align:center;color:var(--text3);font-size:0.85rem;">일치하는 주소가 없어요<br><small>예) 우암로 127, 해운대해수욕장로 264</small></div>';
+      showAC();
       return;
     }
 
@@ -1576,22 +1568,7 @@ function searchRoadAddress(q) {
     }
 
     renderRoadAC(q);
-  };
-
-  script.onerror = function () {
-    clearTimeout(timer);
-    cleanup();
-    if (reqId === _jusoReqId) showInlineError('주소 검색 서비스에 연결할 수 없습니다.');
-  };
-
-  var KEY = 'U01TX0FVVEgyMDI2MDUyMTE1NTE0MzExODIxMjU=';
-  script.src = 'https://business.juso.go.kr/addrlink/addrLinkApi.do' +
-    '?confmKey=' + encodeURIComponent(KEY) +
-    '&currentPage=1&countPerPage=10' +
-    '&keyword='  + encodeURIComponent(q) +
-    '&resultType=json' +
-    '&callback=' + cbName;
-  document.head.appendChild(script);
+  });
 }
 
 function renderRoadAC(q) {
@@ -1617,6 +1594,38 @@ function renderRoadAC(q) {
 
 // 선택된 주소 → 행정동 → 운임 연결
 function resolveRoadToTariff(addr) {
+  var flat     = window.FLAT || [];
+  var sigungu  = addr.sigungu || '';
+  var dongName = addr.dong    || '';
+
+  // dong이 FLAT에서 시군구 포함 1건으로 확정되면 coord2RegionCode 생략
+  if (sigungu && dongName) {
+    var gt = sigungu.split(' ').filter(Boolean);
+    var quickMatch = flat.filter(function (item) {
+      return gt.every(function (t) { return item.l.indexOf(t) >= 0; }) &&
+             item.l.split(' ').pop() === dongName;
+    });
+    if (quickMatch.length === 1) { _doResolveRoadToTariff(addr); return; }
+  }
+
+  // 좌표가 있으면 coord2RegionCode로 정확한 행정동 조회
+  if (addr.x && addr.y && window.kakao && window.kakao.maps && window.kakao.maps.services) {
+    var geo = new kakao.maps.services.Geocoder();
+    geo.coord2RegionCode(addr.x, addr.y, function (result, status) {
+      if (status === kakao.maps.services.Status.OK) {
+        var h = result.filter(function (e) { return e.region_type === 'H'; })[0];
+        if (h && h.region_3depth_name) {
+          addr = Object.assign({}, addr, {
+            sigungu: h.region_2depth_name || addr.sigungu,
+            dong:    h.region_3depth_name,
+          });
+        }
+      }
+      _doResolveRoadToTariff(addr);
+    });
+    return;
+  }
+
   _doResolveRoadToTariff(addr);
 }
 
