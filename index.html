@@ -1534,18 +1534,20 @@ function searchRoadAddress(q) {
   acList.innerHTML = '';
   showAC();
 
-  var apiUrl = 'https://business.juso.go.kr/addrlink/addrLinkApi.do' +
+  // baseUrl: resultType 없이 구성 → fetch에는 &resultType=json, JSONP에는 &callback=xxx 추가
+  var baseUrl = 'https://business.juso.go.kr/addrlink/addrLinkApi.do' +
     '?confmKey=' + JUSO_KEY +
     '&currentPage=1&countPerPage=10' +
     '&keyword='  + encodeURIComponent(q) +
-    '&admYn=Y' +        // 행정동(admmNm) 필드 반환 필수
-    '&resultType=json';
+    '&admYn=Y';
 
   function onData(data) {
     if (myId !== _jusoReqId) return;
     var juso = (data.results && data.results.juso) || [];
     _roadResults = juso.map(function (r, idx) {
-      if (idx === 0) console.log('[Juso] raw fields:', JSON.stringify(r));
+      if (idx === 0) console.log('[Juso] raw:', JSON.stringify(r));
+      var bdName = (r.bdNm || '').trim();
+      var detBd  = (r.detBdNmList || '').trim();
       return {
         road:    r.roadAddrPart1 || r.roadAddr || '',
         jibun:   r.jibunAddr    || '',
@@ -1553,6 +1555,7 @@ function searchRoadAddress(q) {
         sigungu: ((r.siNm || '') + ' ' + (r.sggNm || '')).trim(),
         dong:    (r.admmNm || r.hemdNm || r.emdNm || '').trim(),
         admCd:   r.admCd || '',
+        bdNm:    bdName || detBd,   // 건물명 (대연롯데캐슬레전드, 세방(주) 등)
       };
     }).filter(function (r) { return r.road || r.jibun; });
 
@@ -1592,12 +1595,13 @@ function searchRoadAddress(q) {
       if (script.parentNode) script.parentNode.removeChild(script);
       onError();
     };
-    script.src = apiUrl + '&callback=' + cbName;
+    // JSONP: resultType=json 제외, callback만 추가 (일부 환경에서 충돌 방지)
+    script.src = baseUrl + '&callback=' + cbName;
     document.head.appendChild(script);
   }
 
   // 1차: fetch (CORS 지원 시)
-  fetch(apiUrl)
+  fetch(baseUrl + '&resultType=json')
     .then(function (r) { return r.json(); })
     .then(function (data) {
       if (data && data.results) { onData(data); }
@@ -1609,18 +1613,19 @@ function searchRoadAddress(q) {
 function renderRoadAC(q) {
   acInfo.textContent = '도로명 주소 검색 결과 ' + _roadResults.length + '건';
   acList.innerHTML = _roadResults.map(function(r, i) {
-    // Main: 시도+시군구 접두어 제거 → "수영로 135" + "(대연4동)"
+    // Main: 시도+시군구 접두어 제거 → "수영로 135, 대연롯데캐슬레전드"
     var fullRoad = r.road || r.jibun;
     var shortRoad = fullRoad;
     if (r.sigungu && fullRoad.indexOf(r.sigungu) === 0) {
       shortRoad = fullRoad.slice(r.sigungu.length).trim();
     }
-    var mainText = shortRoad + (r.dong ? ' (' + r.dong + ')' : '');
+    // 건물명이 있으면 ", 건물명" 추가 (Naver 스타일)
+    var mainText = shortRoad + (r.bdNm ? ', ' + r.bdNm : '');
 
-    // Sub: 시도 축약 + 시군구 → "부산 남구"
+    // Sub: 시도 축약 + 시군구 + (동) → "부산 남구 (대연4동)"
     var shortSido = (r.sido || '').replace(/[남북]?도$|특별시$|광역시$|특별자치시$|특별자치도$/, '');
     var sgg = r.sigungu.replace(r.sido || '', '').trim();
-    var subText = shortSido + (sgg ? ' ' + sgg : '');
+    var subText = shortSido + (sgg ? ' ' + sgg : '') + (r.dong ? ' (' + r.dong + ')' : '');
 
     var displayAddr = escapeHtml(mainText);
     var subAddr = escapeHtml(subText);
