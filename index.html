@@ -1549,8 +1549,8 @@ function searchRoadAddress(q) {
         road:    r.roadAddrPart1 || r.roadAddr || '',
         jibun:   r.jibunAddr    || '',
         sido:    r.siNm         || '',
-        sigungu: r.sggNm        || '',
-        dong:    r.admmNm       || r.hemdNm || r.emdNm || '',
+        sigungu: ((r.siNm || '') + ' ' + (r.sggNm || '')).trim(),
+        dong:    (r.admmNm || r.hemdNm || r.emdNm || '').trim(),
       };
     }).filter(function (r) { return r.road || r.jibun; });
 
@@ -1632,8 +1632,8 @@ function resolveRoadToTariff(addr) {
 
 function _doResolveRoadToTariff(addr) {
   hideAC();
-  var sigungu  = addr.sigungu || '';
-  var dongName = addr.dong    || '';
+  var sigungu  = (addr.sigungu || '').trim();
+  var dongName = (addr.dong    || '').trim();
   var flat     = window.FLAT  || [];
   var results  = [];
 
@@ -1748,6 +1748,13 @@ function setSearchMode(mode) {
 
 document.getElementById('smt-dong').addEventListener('click', function () { setSearchMode('dong'); });
 document.getElementById('smt-road').addEventListener('click', function () { setSearchMode('road'); });
+
+// ── SW 갱신 시 자동 새로고침 ──
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.addEventListener('message', function (e) {
+    if (e.data && e.data.type === 'SW_UPDATED') window.location.reload();
+  });
+}
 
 // ────────────────────────────────────────────
 // 시작
