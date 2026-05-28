@@ -21,8 +21,6 @@
   gtag('js', new Date());
   gtag('config', 'G-5D5CQQX1DJ');
 </script>
-<!-- Kakao 지도 SDK (도로명→행정동 변환: coord2RegionCode) -->
-<script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=b8cdcc306a177e725cff5745e675a432&libraries=services"></script>
 <!-- 행정안전부 Juso API - JSONP/fetch 동적 호출 (별도 SDK 없음) -->
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
 <style>
@@ -1539,11 +1537,8 @@ var _roadResults = [];
 var _jusoReqId   = 0;
 var _coordReqId  = 0;
 var JUSO_KEY     = 'U01TX0FVVEgyMDI2MDUyMTE1NTE0MzExODIxMjU=';
-// Kakao 지도 JavaScript 키 (도로명→행정동 변환용).
-// 발급: https://developers.kakao.com → 내 애플리케이션 → JavaScript 키 복사
-// 등록: 앱 설정 → 플랫폼 → Web → 사이트 도메인에 https://lastdq0911-star.github.io 추가
-// 비어 있으면 기존 Juso(법정동) 방식으로 폴백합니다.
-var KAKAO_JS_KEY = 'b8cdcc306a177e725cff5745e675a432';
+// Kakao REST API 키 (도로명→좌표→행정동 변환용)
+var KAKAO_REST_KEY = '6c3257aac881b8d91470ab06cfdd8920';
 
 function searchRoadAddress(q) {
   var myId = ++_jusoReqId;
@@ -1679,30 +1674,6 @@ function renderRoadAC(q) {
 //       도로명만으로 행정동을 특정할 수 없음. Kakao 지오코더로 좌표→행정동(H) 직접 취득.
 // ────────────────────────────────────────────
 
-var _kakaoLoading = null;
-
-// Kakao 지도 SDK 동적 로드 (services 라이브러리 포함). 키 없으면 false 반환.
-function loadKakaoSDK() {
-  if (window.kakao && window.kakao.maps && window.kakao.maps.services) {
-    return Promise.resolve(true);
-  }
-  if (!KAKAO_JS_KEY) return Promise.resolve(false);
-  if (_kakaoLoading) return _kakaoLoading;
-  _kakaoLoading = new Promise(function (resolve) {
-    var s = document.createElement('script');
-    s.src = 'https://dapi.kakao.com/v2/maps/sdk.js?appkey=' + KAKAO_JS_KEY +
-            '&libraries=services&autoload=false';
-    s.onload = function () {
-      if (window.kakao && window.kakao.maps && window.kakao.maps.load) {
-        window.kakao.maps.load(function () { resolve(true); });
-      } else { resolve(false); }
-    };
-    s.onerror = function () { resolve(false); };
-    document.head.appendChild(s);
-  });
-  return _kakaoLoading;
-}
-
 // Kakao가 줄여 반환하는 시도명(예: "부산")을 FLAT 표기(예: "부산광역시")로 정규화
 var SIDO_FULL = {
   '서울': '서울특별시', '서울특별시': '서울특별시',
@@ -1735,11 +1706,10 @@ function resolveRoadToTariff(addr) {
 
   if (!query) { _doResolveRoadToTariff(addr); return; }
 
-  // Kakao로 행정동 결과를 _doResolveRoadToTariff에 넘김
   function applyKakaoDong(sido, sgg, dong) {
     if (myId !== _coordReqId) return;
     var fullSido = normSido(sido);
-    console.log('[Kakao] 행정동: ' + fullSido + ' ' + sgg + ' ' + dong);
+    console.log('[Kakao REST] 행정동: ' + fullSido + ' ' + sgg + ' ' + dong);
     _doResolveRoadToTariff({
       road: addr.road, jibun: addr.jibun,
       sido: fullSido,
@@ -1750,51 +1720,69 @@ function resolveRoadToTariff(addr) {
     });
   }
 
-  // Kakao 사용 불가/실패 시 기존 Juso 데이터로 폴백 (법정동 기반)
   function fallbackJuso() {
     if (myId !== _coordReqId) return;
     _doResolveRoadToTariff(addr);
   }
 
-  loadKakaoSDK().then(function (ok) {
+  if (!KAKAO_REST_KEY) { fallbackJuso(); return; }
+
+  // Step 1: 주소 검색 → 좌표 취득
+  fetch('https://dapi.kakao.com/v2/local/search/address.json?query=' + encodeURIComponent(query), {
+    headers: { 'Authorization': 'KakaoAK ' + KAKAO_REST_KEY }
+  })
+  .then(function(r) {
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    return r.json();
+  })
+  .then(function(data) {
     if (myId !== _coordReqId) return;
-    if (!ok) { fallbackJuso(); return; }
+    var docs = data.documents || [];
+    if (!docs.length) { fallbackJuso(); return; }
+    var doc = docs[0];
 
-    var kakao    = window.kakao;
-    var S        = kakao.maps.services.Status;
-    var geocoder = new kakao.maps.services.Geocoder();
+    // 1차: address 객체에 행정동명이 있으면 즉시 사용
+    var a = doc.address || {};
+    var hName = (a.region_3depth_h_name || '').trim();
+    if (hName) {
+      applyKakaoDong(a.region_1depth_name, a.region_2depth_name, hName);
+      return;
+    }
 
-    geocoder.addressSearch(query, function (result, status) {
+    // 2차: 좌표 → coord2regioncode로 행정동(H) 조회
+    var x = doc.x, y = doc.y;
+    if (!x || !y) { fallbackJuso(); return; }
+
+    fetch('https://dapi.kakao.com/v2/local/geo/coord2regioncode.json?x=' + x + '&y=' + y, {
+      headers: { 'Authorization': 'KakaoAK ' + KAKAO_REST_KEY }
+    })
+    .then(function(r2) {
+      if (!r2.ok) throw new Error('HTTP ' + r2.status);
+      return r2.json();
+    })
+    .then(function(data2) {
       if (myId !== _coordReqId) return;
-      if (status !== S.OK || !result || !result.length) { fallbackJuso(); return; }
-
-      var hit = result[0];
-      var a   = hit.address || {};
-
-      // 1차: addressSearch 결과에 행정동명(region_3depth_h_name)이 있으면 즉시 사용
-      var hName = (a.region_3depth_h_name || '').trim();
-      if (hName) {
-        applyKakaoDong(a.region_1depth_name, a.region_2depth_name, hName);
+      var docs2 = data2.documents || [];
+      var h = null;
+      for (var i = 0; i < docs2.length; i++) {
+        if (docs2[i].region_type === 'H') { h = docs2[i]; break; }
+      }
+      if (h && h.region_3depth_name) {
+        applyKakaoDong(h.region_1depth_name, h.region_2depth_name, h.region_3depth_name);
         return;
       }
-
-      // 2차: 좌표 → coord2RegionCode 로 행정동(region_type 'H') 조회
-      if (!geocoder.coord2RegionCode || hit.x == null || hit.y == null) { fallbackJuso(); return; }
-      geocoder.coord2RegionCode(hit.x, hit.y, function (res2, st2) {
-        if (myId !== _coordReqId) return;
-        if (st2 === S.OK && res2 && res2.length) {
-          var h = null;
-          for (var i = 0; i < res2.length; i++) {
-            if (res2[i].region_type === 'H') { h = res2[i]; break; }
-          }
-          if (h && h.region_3depth_name) {
-            applyKakaoDong(h.region_1depth_name, h.region_2depth_name, h.region_3depth_name);
-            return;
-          }
-        }
-        fallbackJuso();
-      });
+      fallbackJuso();
+    })
+    .catch(function(e) {
+      console.warn('[Kakao REST coord2regioncode] 실패:', e.message);
+      if (myId !== _coordReqId) return;
+      fallbackJuso();
     });
+  })
+  .catch(function(e) {
+    console.warn('[Kakao REST address] 실패:', e.message);
+    if (myId !== _coordReqId) return;
+    fallbackJuso();
   });
 }
 
