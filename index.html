@@ -1535,6 +1535,7 @@ document.querySelectorAll('[data-mf-fare]').forEach(function (btn) {
 
 var _roadResults = [];
 var _jusoReqId   = 0;
+var _coordReqId  = 0;
 var JUSO_KEY     = 'U01TX0FVVEgyMDI2MDUyMTE1NTE0MzExODIxMjU=';
 
 function searchRoadAddress(q) {
@@ -1666,8 +1667,66 @@ function renderRoadAC(q) {
 }
 
 // 선택된 주소 → 행정동(admmNm) → 운임 연결
+// addrCoordApi.do 는 addrLinkApi.do 보다 hemdNm(행정동명)을 더 안정적으로 반환
 function resolveRoadToTariff(addr) {
-  _doResolveRoadToTariff(addr);
+  var road = (addr.road || '').trim();
+  if (!road) { _doResolveRoadToTariff(addr); return; }
+
+  hideAC();
+  var myId = ++_coordReqId;
+
+  function proceed(enriched) {
+    if (myId !== _coordReqId) return;
+    _doResolveRoadToTariff(enriched);
+  }
+
+  function tryCoordJsonp(fallbackAddr) {
+    var cbName = '_cjcb' + myId;
+    var url = 'https://business.juso.go.kr/addrlink/addrCoordApi.do' +
+      '?confmKey=' + JUSO_KEY + '&resultType=json&callback=' + cbName +
+      '&keyword=' + encodeURIComponent(road);
+    fetch(url)
+      .then(function(r) { return r.text(); })
+      .then(function(text) {
+        if (myId !== _coordReqId) return;
+        try {
+          var s = text.indexOf('('), e = text.lastIndexOf(')');
+          var data = (s >= 0 && e > s) ? JSON.parse(text.slice(s + 1, e)) : null;
+          var first = ((data && data.results && data.results.juso) || [])[0] || {};
+          var hemdNm = (first.hemdNm || first.admmNm || '').trim();
+          var admCd2 = (first.admCd || '').trim();
+          console.log('[CoordJSONP] hemdNm=' + hemdNm + ' admCd=' + admCd2);
+          proceed({ road: addr.road, jibun: addr.jibun, sido: addr.sido,
+            sigungu: addr.sigungu, bdNm: addr.bdNm,
+            dong: hemdNm || fallbackAddr.dong,
+            admCd: admCd2 || fallbackAddr.admCd });
+        } catch(e2) { proceed(fallbackAddr); }
+      })
+      .catch(function() { proceed(fallbackAddr); });
+  }
+
+  fetch('https://business.juso.go.kr/addrlink/addrCoordApi.do' +
+    '?confmKey=' + JUSO_KEY + '&resultType=json&keyword=' + encodeURIComponent(road))
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      if (myId !== _coordReqId) return;
+      var first = ((data.results && data.results.juso) || [])[0] || {};
+      var hemdNm = (first.hemdNm || first.admmNm || '').trim();
+      var admCd2 = (first.admCd || '').trim();
+      console.log('[CoordAPI] hemdNm=' + hemdNm + ' admCd=' + admCd2);
+      if (hemdNm || admCd2) {
+        proceed({ road: addr.road, jibun: addr.jibun, sido: addr.sido,
+          sigungu: addr.sigungu, bdNm: addr.bdNm,
+          dong: hemdNm || addr.dong,
+          admCd: admCd2 || addr.admCd });
+      } else {
+        proceed(addr);
+      }
+    })
+    .catch(function(err) {
+      console.warn('[CoordAPI] fetch 실패(' + err.message + ') → JSONP 시도');
+      if (myId === _coordReqId) tryCoordJsonp(addr);
+    });
 }
 
 // 도로명 주소의 시도+시군구 접두어를 제거한 짧은 레이블 반환
