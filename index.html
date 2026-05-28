@@ -960,6 +960,9 @@ acList.addEventListener('mousedown', function (e) {
   const item = e.target.closest('.ac-item');
   if (!item) return;
   e.preventDefault();
+  e.stopPropagation(); // document.mousedown 버블링 차단
+                       // (resolveRoadToTariff가 innerHTML을 교체하면 e.target이 detach되어
+                       //  closest('#step1')=null → hideAC() 오발동 방지)
   // 도로명 결과
   var roadI = item.getAttribute('data-road-i');
   if (roadI !== null) { resolveRoadToTariff(_roadResults[parseInt(roadI, 10)]); return; }
