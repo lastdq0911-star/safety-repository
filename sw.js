@@ -1,6 +1,6 @@
 'use strict';
 
-const CACHE_VERSION = 'v12';
+const CACHE_VERSION = 'v13';
 
 const SHELL_CACHE = 'safety-shell-' + CACHE_VERSION;
 const DATA_CACHE  = 'safety-data-'  + CACHE_VERSION;
@@ -9,7 +9,9 @@ const PRECACHE_ASSETS = [
   './index.html',
   './manifest.json',
   './icon-192.png',
-  './icon-512.png'
+  './icon-512.png',
+  './sebang-logo.svg',
+  './SEBANG_Gothic.ttf'
 ];
 
 // ── 설치: 앱 셸 미리 캐시 ──
