@@ -39,8 +39,7 @@ body { font-family:'Noto Sans KR',sans-serif; background:var(--bg); color:var(--
 
 /* ── 헤더 ── */
 .header { background:#3d3d3d; padding:0 14px; height:64px; display:flex; align-items:center; gap:10px; position:sticky; top:0; z-index:100; box-shadow:0 2px 10px rgba(0,0,0,0.25); border-bottom:3px solid var(--mint); }
-.sebang-logo { height:20px; object-fit:contain; filter:brightness(0) invert(1); flex-shrink:0; max-width:85px; }
-.sebang-text { font-size:1.3rem; font-weight:900; font-style:italic; color:#fff; font-family:Arial Black,Impact,sans-serif; white-space:nowrap; flex-shrink:0; }
+.sebang-badge { display:inline-flex; align-items:center; background:var(--mint); color:#fff; font-weight:800; font-size:0.82rem; letter-spacing:0.8px; padding:4px 10px; border-radius:5px; white-space:nowrap; flex-shrink:0; font-family:'Noto Sans KR',Arial,sans-serif; }
 .header-divider { width:1px; height:30px; background:rgba(255,255,255,0.25); flex-shrink:0; }
 .header-text { flex:1; min-width:0; text-align:center; }
 .header-text h1 { font-size:1rem; font-weight:700; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
@@ -249,8 +248,7 @@ body { font-family:'Noto Sans KR',sans-serif; background:var(--bg); color:var(--
     flex-shrink:0; position:static;
     height:52px; padding:0 20px; gap:10px;
   }
-  .sebang-logo { height:18px; max-width:78px; }
-  .sebang-text { font-size:1.1rem; }
+  .sebang-badge { font-size:0.75rem; padding:3px 8px; }
   .header-divider { height:26px; }
   .header-text h1 { font-size:0.9rem; }
   .header-text p { font-size:0.57rem; }
@@ -378,8 +376,7 @@ body { font-family:'Noto Sans KR',sans-serif; background:var(--bg); color:var(--
 
 <!-- 헤더 -->
 <div class="header">
-  <img class="sebang-logo" src="https://www.sebang.com/img/logo.png" alt="SEBANG"
-    onerror="this.outerHTML='<span class=&quot;sebang-text&quot;>SEBANG</span>'">
+  <span class="sebang-badge">SEBANG</span>
   <div class="header-divider"></div>
   <div class="header-text">
     <h1>수출입 컨테이너 안전운임</h1>
