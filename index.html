@@ -21,6 +21,8 @@
   gtag('js', new Date());
   gtag('config', 'G-5D5CQQX1DJ');
 </script>
+<!-- Kakao 지도 SDK (도로명→행정동 변환: coord2RegionCode) -->
+<script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=b8cdcc306a177e725cff5745e675a432&libraries=services"></script>
 <!-- 행정안전부 Juso API - JSONP/fetch 동적 호출 (별도 SDK 없음) -->
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
 <style>
@@ -1541,7 +1543,7 @@ var JUSO_KEY     = 'U01TX0FVVEgyMDI2MDUyMTE1NTE0MzExODIxMjU=';
 // 발급: https://developers.kakao.com → 내 애플리케이션 → JavaScript 키 복사
 // 등록: 앱 설정 → 플랫폼 → Web → 사이트 도메인에 https://lastdq0911-star.github.io 추가
 // 비어 있으면 기존 Juso(법정동) 방식으로 폴백합니다.
-var KAKAO_JS_KEY = '';
+var KAKAO_JS_KEY = 'b8cdcc306a177e725cff5745e675a432';
 
 function searchRoadAddress(q) {
   var myId = ++_jusoReqId;
