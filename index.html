@@ -1600,8 +1600,9 @@ function searchRoadAddress(q) {
       if (script.parentNode) script.parentNode.removeChild(script);
       onError();
     };
-    // JSONP: resultType=json 제외, callback만 추가 (일부 환경에서 충돌 방지)
-    script.src = baseUrl + '&callback=' + cbName;
+    // JSONP: resultType=json은 반드시 포함해야 Juso API가 JSON 형식으로 반환함
+    // (없으면 XML 기본 포맷 반환 → callback으로 감싸도 Unexpected number/SyntaxError 발생)
+    script.src = baseUrl + '&resultType=json&callback=' + cbName;
     document.head.appendChild(script);
   }
 
@@ -1609,10 +1610,15 @@ function searchRoadAddress(q) {
   fetch(baseUrl + '&resultType=json')
     .then(function (r) { return r.json(); })
     .then(function (data) {
+      var ec = data && data.results && data.results.common && data.results.common.errorCode;
+      console.log('[Juso fetch] errorCode=' + ec + ' juso=' + ((data.results && data.results.juso || []).length));
       if (data && data.results) { onData(data); }
-      else { tryJsonp(); }
+      else { console.warn('[Juso fetch] 결과 없음 → JSONP 시도'); tryJsonp(); }
     })
-    .catch(tryJsonp);
+    .catch(function (e) {
+      console.warn('[Juso fetch] 실패(' + e.message + ') → JSONP 시도');
+      tryJsonp();
+    });
 }
 
 function renderRoadAC(q) {
