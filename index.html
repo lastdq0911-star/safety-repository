@@ -1681,8 +1681,11 @@ function _doResolveRoadToTariff(addr) {
   hideAC();
   var sigungu  = (addr.sigungu || '').trim();
   var dongName = (addr.dong    || '').trim();
+  var admCd    = (addr.admCd   || '').trim();
   var flat     = window.FLAT  || [];
   var results  = [];
+
+  console.log('[Resolve] sigungu=' + sigungu + ' dong=' + dongName + ' admCd=' + admCd);
 
   function applyGuFilter(list) {
     if (!sigungu) return list;
@@ -1715,6 +1718,22 @@ function _doResolveRoadToTariff(addr) {
         return last.indexOf(base) === 0;
       });
       results = applyGuFilter(prefixHits);
+    }
+  }
+  // 전략 4: admCd 동코드(인덱스7) 자리로 복수 후보 좁히기
+  // 행정동코드(10자리): 시도(2)+시군구(3)+동코드(3)+리(2)
+  // 동코드 마지막 자리(인덱스7)가 대부분 동 번호(1자리)와 대응
+  // 예: "2611010400" → charAt(7)='4' → 대연4동
+  if (results.length > 1 && admCd.length >= 10) {
+    var admChar = admCd.charAt(7);
+    var admNum  = parseInt(admChar, 10);
+    if (!isNaN(admNum) && admNum > 0) {
+      var numReg   = new RegExp(admNum + '[동리읍면]$');
+      var narrowed = results.filter(function(item) {
+        return numReg.test(item.l.split(' ').pop());
+      });
+      console.log('[Resolve] 전략4 admCd[7]=' + admChar + ' → ' + results.length + '→' + (narrowed.length || results.length) + '건');
+      if (narrowed.length >= 1) results = narrowed;
     }
   }
 
