@@ -1017,6 +1017,7 @@ document.addEventListener('mousedown', function (e) {
 // 도로명 모드에서 포커스 시 이전 검색어 유지 (Daum 팝업 제거)
 inp.addEventListener('click', function () {
   if (searchMode !== 'road') return;
+  if (acWrap.style.display !== 'none') return; // 이미 결과 표시 중이면 재호출 불필요
   const q = inp.value.trim();
   if (q && q.length >= 2) searchRoadAddress(q);
 });
@@ -1581,32 +1582,36 @@ function searchRoadAddress(q) {
 
   function tryJsonp() {
     if (myId !== _jusoReqId) return;
+    // <script> 태그 JSONP 주입은 SyntaxError를 유발할 수 있으므로
+    // JSONP URL을 text로 fetch → 수동 파싱 (try-catch로 안전하게 처리)
     var cbName = '_jcb' + myId;
-    var script = document.createElement('script');
-    var timer  = setTimeout(function () {
-      delete window[cbName];
-      if (script.parentNode) script.parentNode.removeChild(script);
-      onError();
-    }, 8000);
-    window[cbName] = function (data) {
-      clearTimeout(timer);
-      delete window[cbName];
-      if (script.parentNode) script.parentNode.removeChild(script);
-      onData(data);
-    };
-    script.onerror = function () {
-      clearTimeout(timer);
-      delete window[cbName];
-      if (script.parentNode) script.parentNode.removeChild(script);
-      onError();
-    };
-    // JSONP: resultType=json은 반드시 포함해야 Juso API가 JSON 형식으로 반환함
-    // (없으면 XML 기본 포맷 반환 → callback으로 감싸도 Unexpected number/SyntaxError 발생)
-    script.src = baseUrl + '&resultType=json&callback=' + cbName;
-    document.head.appendChild(script);
+    var url = baseUrl + '&resultType=json&callback=' + cbName;
+    fetch(url)
+      .then(function (r) {
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.text();
+      })
+      .then(function (text) {
+        if (myId !== _jusoReqId) return;
+        try {
+          var s = text.indexOf('('), e = text.lastIndexOf(')');
+          if (s < 0 || e <= s) throw new Error('callback wrapper 없음');
+          var data = JSON.parse(text.slice(s + 1, e));
+          console.log('[Juso JSONP] 파싱 성공, juso=' + ((data.results && data.results.juso || []).length));
+          onData(data);
+        } catch (parseErr) {
+          console.warn('[Juso JSONP] 파싱 실패:', parseErr.message, '응답:', text.slice(0, 120));
+          onError();
+        }
+      })
+      .catch(function (fetchErr) {
+        console.warn('[Juso JSONP] fetch 실패:', fetchErr.message);
+        if (myId !== _jusoReqId) return;
+        onError();
+      });
   }
 
-  // 1차: fetch (CORS 지원 시)
+  // 1차: fetch JSON (CORS 지원 시)
   fetch(baseUrl + '&resultType=json')
     .then(function (r) { return r.json(); })
     .then(function (data) {
@@ -1792,10 +1797,23 @@ function setSearchMode(mode) {
 document.getElementById('smt-dong').addEventListener('click', function () { setSearchMode('dong'); });
 document.getElementById('smt-road').addEventListener('click', function () { setSearchMode('road'); });
 
-// ── SW 갱신 시 자동 새로고침 ──
+// ── SW 갱신 시 알림 (사용 중 강제 리로드 방지) ──
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.addEventListener('message', function (e) {
-    if (e.data && e.data.type === 'SW_UPDATED') window.location.reload();
+    if (e.data && e.data.type !== 'SW_UPDATED') return;
+    // 아무것도 선택하지 않은 초기 상태면 조용히 리로드
+    if (!state.key && !state.type && !state.fareType) { window.location.reload(); return; }
+    // 사용 중이면 배너로 알림
+    if (document.getElementById('sw-update-bar')) return;
+    var bar = document.createElement('div');
+    bar.id = 'sw-update-bar';
+    bar.style.cssText = 'position:fixed;bottom:0;left:0;right:0;background:#00b8a9;color:#fff;' +
+      'text-align:center;padding:10px 14px;font-size:0.82rem;z-index:9999;' +
+      'display:flex;align-items:center;justify-content:center;gap:10px;';
+    bar.innerHTML = '새 버전이 준비됐습니다.' +
+      '<button onclick="location.reload()" style="background:#fff;color:#00b8a9;border:none;' +
+      'padding:4px 14px;border-radius:5px;font-weight:700;cursor:pointer;font-size:0.82rem;">새로고침</button>';
+    document.body.appendChild(bar);
   });
 }
 
