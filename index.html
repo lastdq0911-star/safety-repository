@@ -1029,17 +1029,6 @@ function selectItem(i) {
   const item = acResults[i];
   if (!item) return;
 
-  // disambiguation 후 사용자가 선택한 경우: admCd → dong_key 캐시 저장
-  if (window._pendingAdmCd && item.k) {
-    try {
-      var admCdMap = JSON.parse(localStorage.getItem('_admCdMap') || '{}');
-      admCdMap[window._pendingAdmCd] = item.k;
-      localStorage.setItem('_admCdMap', JSON.stringify(admCdMap));
-      console.log('[Cache] admCd', window._pendingAdmCd, '->', item.k);
-    } catch(e) {}
-    window._pendingAdmCd = null;
-  }
-
   if (state.key && state.key !== item.k) clearSurcharges();
 
   state.key = item.k;
@@ -1548,6 +1537,11 @@ var _roadResults = [];
 var _jusoReqId   = 0;
 var _coordReqId  = 0;
 var JUSO_KEY     = 'U01TX0FVVEgyMDI2MDUyMTE1NTE0MzExODIxMjU=';
+// Kakao 지도 JavaScript 키 (도로명→행정동 변환용).
+// 발급: https://developers.kakao.com → 내 애플리케이션 → JavaScript 키 복사
+// 등록: 앱 설정 → 플랫폼 → Web → 사이트 도메인에 https://lastdq0911-star.github.io 추가
+// 비어 있으면 기존 Juso(법정동) 방식으로 폴백합니다.
+var KAKAO_JS_KEY = '';
 
 function searchRoadAddress(q) {
   var myId = ++_jusoReqId;
@@ -1677,58 +1671,129 @@ function renderRoadAC(q) {
   kbIndex = -1;
 }
 
-// 선택된 주소 → 행정동(admmNm) → 운임 연결
-// 전체 도로명으로 addrLinkApi.do 재검색 → hemdNm 취득 (같은 API 키 사용)
-function resolveRoadToTariff(addr) {
-  var road = (addr.road || '').trim();
-  if (!road) { _doResolveRoadToTariff(addr); return; }
+// ────────────────────────────────────────────
+// 선택된 도로명주소 → 행정동 자동 변환 → 운임 연결
+// 핵심: Juso(addrLinkApi)는 "법정동"만 반환하고 법정동→행정동은 1:多 관계라
+//       도로명만으로 행정동을 특정할 수 없음. Kakao 지오코더로 좌표→행정동(H) 직접 취득.
+// ────────────────────────────────────────────
 
+var _kakaoLoading = null;
+
+// Kakao 지도 SDK 동적 로드 (services 라이브러리 포함). 키 없으면 false 반환.
+function loadKakaoSDK() {
+  if (window.kakao && window.kakao.maps && window.kakao.maps.services) {
+    return Promise.resolve(true);
+  }
+  if (!KAKAO_JS_KEY) return Promise.resolve(false);
+  if (_kakaoLoading) return _kakaoLoading;
+  _kakaoLoading = new Promise(function (resolve) {
+    var s = document.createElement('script');
+    s.src = 'https://dapi.kakao.com/v2/maps/sdk.js?appkey=' + KAKAO_JS_KEY +
+            '&libraries=services&autoload=false';
+    s.onload = function () {
+      if (window.kakao && window.kakao.maps && window.kakao.maps.load) {
+        window.kakao.maps.load(function () { resolve(true); });
+      } else { resolve(false); }
+    };
+    s.onerror = function () { resolve(false); };
+    document.head.appendChild(s);
+  });
+  return _kakaoLoading;
+}
+
+// Kakao가 줄여 반환하는 시도명(예: "부산")을 FLAT 표기(예: "부산광역시")로 정규화
+var SIDO_FULL = {
+  '서울': '서울특별시', '서울특별시': '서울특별시',
+  '부산': '부산광역시', '부산광역시': '부산광역시',
+  '대구': '대구광역시', '대구광역시': '대구광역시',
+  '인천': '인천광역시', '인천광역시': '인천광역시',
+  '광주': '광주광역시', '광주광역시': '광주광역시',
+  '대전': '대전광역시', '대전광역시': '대전광역시',
+  '울산': '울산광역시', '울산광역시': '울산광역시',
+  '세종': '세종특별자치시', '세종시': '세종특별자치시', '세종특별자치시': '세종특별자치시',
+  '경기': '경기도', '경기도': '경기도',
+  '강원': '강원특별자치도', '강원도': '강원특별자치도', '강원특별자치도': '강원특별자치도',
+  '충북': '충청북도', '충청북도': '충청북도',
+  '충남': '충청남도', '충청남도': '충청남도',
+  '전북': '전북특별자치도', '전라북도': '전북특별자치도', '전북특별자치도': '전북특별자치도',
+  '전남': '전라남도', '전라남도': '전라남도',
+  '경북': '경상북도', '경상북도': '경상북도',
+  '경남': '경상남도', '경상남도': '경상남도',
+  '제주': '제주특별자치도', '제주도': '제주특별자치도', '제주특별자치도': '제주특별자치도'
+};
+function normSido(s) {
+  s = (s || '').trim();
+  return SIDO_FULL[s] || s;
+}
+
+function resolveRoadToTariff(addr) {
+  var query = (addr.road || addr.jibun || '').trim();
   hideAC();
   var myId = ++_coordReqId;
 
-  function applyRefined(first) {
+  if (!query) { _doResolveRoadToTariff(addr); return; }
+
+  // Kakao로 행정동 결과를 _doResolveRoadToTariff에 넘김
+  function applyKakaoDong(sido, sgg, dong) {
     if (myId !== _coordReqId) return;
-    var hemdNm = (first.hemdNm || first.admmNm || '').trim();
-    var admCd2 = (first.admCd || '').trim();
-    console.log('[Refine] hemdNm=' + hemdNm + ' admCd=' + admCd2);
+    var fullSido = normSido(sido);
+    console.log('[Kakao] 행정동: ' + fullSido + ' ' + sgg + ' ' + dong);
     _doResolveRoadToTariff({
-      road: addr.road, jibun: addr.jibun, sido: addr.sido,
-      sigungu: addr.sigungu, bdNm: addr.bdNm,
-      dong: hemdNm || addr.dong,
-      admCd: admCd2 || addr.admCd
+      road: addr.road, jibun: addr.jibun,
+      sido: fullSido,
+      sigungu: (fullSido + ' ' + (sgg || '')).trim(),
+      bdNm: addr.bdNm,
+      dong: (dong || '').trim(),
+      admCd: ''
     });
   }
 
-  // 전체 도로명(road)으로 addrLinkApi.do 재검색 → 1건 매칭 → hemdNm 취득
-  // addrCoordApi.do 와 달리 현재 키로 동작함
-  var baseUrl = 'https://business.juso.go.kr/addrlink/addrLinkApi.do' +
-    '?confmKey=' + JUSO_KEY + '&currentPage=1&countPerPage=1&admYn=Y' +
-    '&keyword=' + encodeURIComponent(road);
+  // Kakao 사용 불가/실패 시 기존 Juso 데이터로 폴백 (법정동 기반)
+  function fallbackJuso() {
+    if (myId !== _coordReqId) return;
+    _doResolveRoadToTariff(addr);
+  }
 
-  fetch(baseUrl + '&resultType=json')
-    .then(function(r) { return r.json(); })
-    .then(function(data) {
+  loadKakaoSDK().then(function (ok) {
+    if (myId !== _coordReqId) return;
+    if (!ok) { fallbackJuso(); return; }
+
+    var kakao    = window.kakao;
+    var S        = kakao.maps.services.Status;
+    var geocoder = new kakao.maps.services.Geocoder();
+
+    geocoder.addressSearch(query, function (result, status) {
       if (myId !== _coordReqId) return;
-      var juso = (data.results && data.results.juso) || [];
-      applyRefined(juso[0] || {});
-    })
-    .catch(function() {
-      if (myId !== _coordReqId) return;
-      // JSONP 폴백 (addrLinkApi.do callback 지원)
-      var cbName = '_rjcb' + myId;
-      fetch(baseUrl + '&resultType=json&callback=' + cbName)
-        .then(function(r) { return r.text(); })
-        .then(function(text) {
-          if (myId !== _coordReqId) return;
-          try {
-            var s = text.indexOf('('), e = text.lastIndexOf(')');
-            var data = (s >= 0 && e > s) ? JSON.parse(text.slice(s + 1, e)) : null;
-            var juso = (data && data.results && data.results.juso) || [];
-            applyRefined(juso[0] || {});
-          } catch(e2) { applyRefined({}); }
-        })
-        .catch(function() { if (myId === _coordReqId) applyRefined({}); });
+      if (status !== S.OK || !result || !result.length) { fallbackJuso(); return; }
+
+      var hit = result[0];
+      var a   = hit.address || {};
+
+      // 1차: addressSearch 결과에 행정동명(region_3depth_h_name)이 있으면 즉시 사용
+      var hName = (a.region_3depth_h_name || '').trim();
+      if (hName) {
+        applyKakaoDong(a.region_1depth_name, a.region_2depth_name, hName);
+        return;
+      }
+
+      // 2차: 좌표 → coord2RegionCode 로 행정동(region_type 'H') 조회
+      if (!geocoder.coord2RegionCode || hit.x == null || hit.y == null) { fallbackJuso(); return; }
+      geocoder.coord2RegionCode(hit.x, hit.y, function (res2, st2) {
+        if (myId !== _coordReqId) return;
+        if (st2 === S.OK && res2 && res2.length) {
+          var h = null;
+          for (var i = 0; i < res2.length; i++) {
+            if (res2[i].region_type === 'H') { h = res2[i]; break; }
+          }
+          if (h && h.region_3depth_name) {
+            applyKakaoDong(h.region_1depth_name, h.region_2depth_name, h.region_3depth_name);
+            return;
+          }
+        }
+        fallbackJuso();
+      });
     });
+  });
 }
 
 // 도로명 주소의 시도+시군구 접두어를 제거한 짧은 레이블 반환
@@ -1747,31 +1812,6 @@ function _doResolveRoadToTariff(addr) {
   var results  = [];
 
   console.log('[Resolve] sigungu=' + sigungu + ' dong=' + dongName + ' admCd=' + admCd);
-
-  // admCd 캐시 조회 (이전에 사용자가 disambig 목록에서 선택한 매핑)
-  if (admCd) {
-    try {
-      var admCdMap = JSON.parse(localStorage.getItem('_admCdMap') || '{}');
-      var cachedKey = admCdMap[admCd];
-      if (cachedKey) {
-        var cachedItem = flat.filter(function(f) { return f.k === cachedKey; })[0];
-        if (cachedItem) {
-          console.log('[Resolve] admCd 캐시 히트:', admCd, '->', cachedKey);
-          acResults = [cachedItem];
-          inp.value = cachedItem.l;
-          (function() {
-            searchMode = 'dong';
-            inp.readOnly = false;
-            document.getElementById('smt-dong').classList.add('active');
-            document.getElementById('smt-road').classList.remove('active');
-          })();
-          inp.placeholder = '예) 해운대, 반여동, 경주시...';
-          selectItem(0);
-          return;
-        }
-      }
-    } catch(e) {}
-  }
 
   function applyGuFilter(list) {
     if (!sigungu) return list;
@@ -1806,37 +1846,9 @@ function _doResolveRoadToTariff(addr) {
       results = applyGuFilter(prefixHits);
     }
   }
-  // 전략 4: admCd 마지막 5자리(행정동 고유번호)를 이용해 동 번호 추출 시도
-  // admCd = 시도(2)+시군구(3)+행정동번호(3)+리(2). 행정동번호 끝자리가 동 번호와 대응하는 경우가 많음.
-  // 단, 이 방법은 일부 지역에서만 유효하므로 보조적으로만 사용
-  if (results.length > 1 && admCd.length >= 10) {
-    // 행정동번호 3자리: charAt(5,6,7) → 마지막 자리(charAt(7))가 동 번호인 경우 시도
-    var admChar = admCd.charAt(7);
-    var admNum  = parseInt(admChar, 10);
-    if (!isNaN(admNum) && admNum > 0) {
-      var numReg   = new RegExp(admNum + '[동리읍면]$');
-      var narrowed = results.filter(function(item) {
-        return numReg.test(item.l.split(' ').pop());
-      });
-      console.log('[Resolve] 전략4 admCd[7]=' + admChar + ' → ' + results.length + '→' + narrowed.length + '건');
-      // charAt(6)도 시도 (일부 지역은 앞자리가 동 번호)
-      if (narrowed.length === 0 || narrowed.length === results.length) {
-        var admChar6 = admCd.charAt(6);
-        var admNum6  = parseInt(admChar6, 10);
-        if (!isNaN(admNum6) && admNum6 > 0) {
-          var numReg6 = new RegExp(admNum6 + '[동리읍면]$');
-          var narrowed6 = results.filter(function(item) {
-            return numReg6.test(item.l.split(' ').pop());
-          });
-          if (narrowed6.length >= 1 && narrowed6.length < results.length) {
-            narrowed = narrowed6;
-            console.log('[Resolve] 전략4b admCd[6]=' + admChar6 + ' → ' + narrowed.length + '건');
-          }
-        }
-      }
-      if (narrowed.length >= 1 && narrowed.length < results.length) results = narrowed;
-    }
-  }
+  // 참고: admCd는 "법정동코드"라 행정동 번호와 직접 대응하지 않으므로
+  //       admCd 기반 휴리스틱은 사용하지 않음. 행정동 특정은 Kakao 결과에 의존.
+  //       Kakao 사용 불가 시(폴백)에만 아래 운임/이름 매칭으로 후보 표시.
 
   // 운임 데이터 필터 (TARIFF 있는 항목만)
   if (tariffLoaded && results.length) {
@@ -1892,8 +1904,6 @@ function _doResolveRoadToTariff(addr) {
   }
 
   // 복수 행정동 후보: 입력값에 도로명 유지, read-only, 목록 표시
-  // admCd를 임시 저장 → 사용자가 선택 시 매핑 캐시에 저장
-  window._pendingAdmCd = admCd || null;
   var roadLabel = _shortRoadLabel(addr);
   inp.value = roadLabel;    // 도로명 주소 유지 (초기화 방지)
   switchToDong();           // searchMode='dong', readOnly=false
