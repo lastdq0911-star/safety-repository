@@ -1667,7 +1667,7 @@ function renderRoadAC(q) {
 }
 
 // 선택된 주소 → 행정동(admmNm) → 운임 연결
-// addrCoordApi.do 는 addrLinkApi.do 보다 hemdNm(행정동명)을 더 안정적으로 반환
+// 전체 도로명으로 addrLinkApi.do 재검색 → hemdNm 취득 (같은 API 키 사용)
 function resolveRoadToTariff(addr) {
   var road = (addr.road || '').trim();
   if (!road) { _doResolveRoadToTariff(addr); return; }
@@ -1675,57 +1675,48 @@ function resolveRoadToTariff(addr) {
   hideAC();
   var myId = ++_coordReqId;
 
-  function proceed(enriched) {
+  function applyRefined(first) {
     if (myId !== _coordReqId) return;
-    _doResolveRoadToTariff(enriched);
+    var hemdNm = (first.hemdNm || first.admmNm || '').trim();
+    var admCd2 = (first.admCd || '').trim();
+    console.log('[Refine] hemdNm=' + hemdNm + ' admCd=' + admCd2);
+    _doResolveRoadToTariff({
+      road: addr.road, jibun: addr.jibun, sido: addr.sido,
+      sigungu: addr.sigungu, bdNm: addr.bdNm,
+      dong: hemdNm || addr.dong,
+      admCd: admCd2 || addr.admCd
+    });
   }
 
-  function tryCoordJsonp(fallbackAddr) {
-    var cbName = '_cjcb' + myId;
-    var url = 'https://business.juso.go.kr/addrlink/addrCoordApi.do' +
-      '?confmKey=' + JUSO_KEY + '&resultType=json&callback=' + cbName +
-      '&keyword=' + encodeURIComponent(road);
-    fetch(url)
-      .then(function(r) { return r.text(); })
-      .then(function(text) {
-        if (myId !== _coordReqId) return;
-        try {
-          var s = text.indexOf('('), e = text.lastIndexOf(')');
-          var data = (s >= 0 && e > s) ? JSON.parse(text.slice(s + 1, e)) : null;
-          var first = ((data && data.results && data.results.juso) || [])[0] || {};
-          var hemdNm = (first.hemdNm || first.admmNm || '').trim();
-          var admCd2 = (first.admCd || '').trim();
-          console.log('[CoordJSONP] hemdNm=' + hemdNm + ' admCd=' + admCd2);
-          proceed({ road: addr.road, jibun: addr.jibun, sido: addr.sido,
-            sigungu: addr.sigungu, bdNm: addr.bdNm,
-            dong: hemdNm || fallbackAddr.dong,
-            admCd: admCd2 || fallbackAddr.admCd });
-        } catch(e2) { proceed(fallbackAddr); }
-      })
-      .catch(function() { proceed(fallbackAddr); });
-  }
+  // 전체 도로명(road)으로 addrLinkApi.do 재검색 → 1건 매칭 → hemdNm 취득
+  // addrCoordApi.do 와 달리 현재 키로 동작함
+  var baseUrl = 'https://business.juso.go.kr/addrlink/addrLinkApi.do' +
+    '?confmKey=' + JUSO_KEY + '&currentPage=1&countPerPage=1&admYn=Y' +
+    '&keyword=' + encodeURIComponent(road);
 
-  fetch('https://business.juso.go.kr/addrlink/addrCoordApi.do' +
-    '?confmKey=' + JUSO_KEY + '&resultType=json&keyword=' + encodeURIComponent(road))
+  fetch(baseUrl + '&resultType=json')
     .then(function(r) { return r.json(); })
     .then(function(data) {
       if (myId !== _coordReqId) return;
-      var first = ((data.results && data.results.juso) || [])[0] || {};
-      var hemdNm = (first.hemdNm || first.admmNm || '').trim();
-      var admCd2 = (first.admCd || '').trim();
-      console.log('[CoordAPI] hemdNm=' + hemdNm + ' admCd=' + admCd2);
-      if (hemdNm || admCd2) {
-        proceed({ road: addr.road, jibun: addr.jibun, sido: addr.sido,
-          sigungu: addr.sigungu, bdNm: addr.bdNm,
-          dong: hemdNm || addr.dong,
-          admCd: admCd2 || addr.admCd });
-      } else {
-        proceed(addr);
-      }
+      var juso = (data.results && data.results.juso) || [];
+      applyRefined(juso[0] || {});
     })
-    .catch(function(err) {
-      console.warn('[CoordAPI] fetch 실패(' + err.message + ') → JSONP 시도');
-      if (myId === _coordReqId) tryCoordJsonp(addr);
+    .catch(function() {
+      if (myId !== _coordReqId) return;
+      // JSONP 폴백 (addrLinkApi.do callback 지원)
+      var cbName = '_rjcb' + myId;
+      fetch(baseUrl + '&resultType=json&callback=' + cbName)
+        .then(function(r) { return r.text(); })
+        .then(function(text) {
+          if (myId !== _coordReqId) return;
+          try {
+            var s = text.indexOf('('), e = text.lastIndexOf(')');
+            var data = (s >= 0 && e > s) ? JSON.parse(text.slice(s + 1, e)) : null;
+            var juso = (data && data.results && data.results.juso) || [];
+            applyRefined(juso[0] || {});
+          } catch(e2) { applyRefined({}); }
+        })
+        .catch(function() { if (myId === _coordReqId) applyRefined({}); });
     });
 }
 
@@ -1805,6 +1796,18 @@ function _doResolveRoadToTariff(addr) {
     if (withData.length) results = withData;
   }
 
+  // 전략 5: 운임 동일 후보 → 자동 선택 (차이 없으면 첫 번째 선택)
+  if (tariffLoaded && results.length > 1) {
+    var getTariffSig = function(item) {
+      var tk = TARIFF[item.k] || TARIFF[normalizeKeyForOldNotice(item.k)];
+      if (!tk) return null;
+      return JSON.stringify({ dist: tk.dist, toll: tk.toll, type: tk.type });
+    };
+    var sigs = results.map(getTariffSig);
+    var allSame = sigs[0] !== null && sigs.every(function(s) { return s === sigs[0]; });
+    if (allSame) results = [results[0]];
+  }
+
   // 동 이름 마지막 토큰 완전 일치 → 1건 확정
   var exact = results.filter(function(item) {
     return item.l.split(' ').pop() === dongName;
@@ -1882,19 +1885,7 @@ document.getElementById('smt-road').addEventListener('click', function () { setS
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.addEventListener('message', function (e) {
     if (e.data && e.data.type !== 'SW_UPDATED') return;
-    // 아무것도 선택하지 않은 초기 상태면 조용히 리로드
-    if (!state.key && !state.type && !state.fareType) { window.location.reload(); return; }
-    // 사용 중이면 배너로 알림
-    if (document.getElementById('sw-update-bar')) return;
-    var bar = document.createElement('div');
-    bar.id = 'sw-update-bar';
-    bar.style.cssText = 'position:fixed;bottom:0;left:0;right:0;background:#00b8a9;color:#fff;' +
-      'text-align:center;padding:10px 14px;font-size:0.82rem;z-index:9999;' +
-      'display:flex;align-items:center;justify-content:center;gap:10px;';
-    bar.innerHTML = '새 버전이 준비됐습니다.' +
-      '<button onclick="location.reload()" style="background:#fff;color:#00b8a9;border:none;' +
-      'padding:4px 14px;border-radius:5px;font-weight:700;cursor:pointer;font-size:0.82rem;">새로고침</button>';
-    document.body.appendChild(bar);
+    window.location.reload();
   });
 }
 
