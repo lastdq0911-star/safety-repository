@@ -88,7 +88,7 @@ body { font-family:'Noto Sans KR',sans-serif; background:var(--bg); color:var(--
 #ac-info { padding:8px 14px; font-size:0.7rem; color:var(--text3); background:#fafafa; border-bottom:1px solid #f0f0f0; }
 #ac-list { max-height:260px; overflow-y:auto; -webkit-overflow-scrolling:touch; overscroll-behavior:contain; }
 .ac-item {
-  display:flex; align-items:center; gap:10px; padding:0 14px; height:50px;
+  display:flex; align-items:center; gap:10px; padding:8px 14px; min-height:50px;
   font-size:0.9rem; color:#1a1a1a; border-bottom:1px solid #f5f5f5;
   touch-action:manipulation; user-select:none; -webkit-user-select:none; cursor:pointer;
 }
@@ -1620,8 +1620,9 @@ function renderRoadAC(q) {
     if (r.sigungu && fullRoad.indexOf(r.sigungu) === 0) {
       shortRoad = fullRoad.slice(r.sigungu.length).trim();
     }
-    // 건물명이 있으면 ", 건물명" 추가 (Naver 스타일)
-    var mainText = shortRoad + (r.bdNm ? ', ' + r.bdNm : '');
+    // 건물명이 있으면 ", 건물명" 추가 (Naver 스타일, 최대 20자)
+    var bdLabel = r.bdNm ? r.bdNm.slice(0, 20) + (r.bdNm.length > 20 ? '…' : '') : '';
+    var mainText = shortRoad + (bdLabel ? ', ' + bdLabel : '');
 
     // Sub: 시도 축약 + 시군구 + (동) → "부산 남구 (대연4동)"
     var shortSido = (r.sido || '').replace(/[남북]?도$|특별시$|광역시$|특별자치시$|특별자치도$/, '');
