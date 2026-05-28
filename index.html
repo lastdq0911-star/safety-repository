@@ -1029,6 +1029,17 @@ function selectItem(i) {
   const item = acResults[i];
   if (!item) return;
 
+  // disambiguation 후 사용자가 선택한 경우: admCd → dong_key 캐시 저장
+  if (window._pendingAdmCd && item.k) {
+    try {
+      var admCdMap = JSON.parse(localStorage.getItem('_admCdMap') || '{}');
+      admCdMap[window._pendingAdmCd] = item.k;
+      localStorage.setItem('_admCdMap', JSON.stringify(admCdMap));
+      console.log('[Cache] admCd', window._pendingAdmCd, '->', item.k);
+    } catch(e) {}
+    window._pendingAdmCd = null;
+  }
+
   if (state.key && state.key !== item.k) clearSurcharges();
 
   state.key = item.k;
@@ -1737,6 +1748,31 @@ function _doResolveRoadToTariff(addr) {
 
   console.log('[Resolve] sigungu=' + sigungu + ' dong=' + dongName + ' admCd=' + admCd);
 
+  // admCd 캐시 조회 (이전에 사용자가 disambig 목록에서 선택한 매핑)
+  if (admCd) {
+    try {
+      var admCdMap = JSON.parse(localStorage.getItem('_admCdMap') || '{}');
+      var cachedKey = admCdMap[admCd];
+      if (cachedKey) {
+        var cachedItem = flat.filter(function(f) { return f.k === cachedKey; })[0];
+        if (cachedItem) {
+          console.log('[Resolve] admCd 캐시 히트:', admCd, '->', cachedKey);
+          acResults = [cachedItem];
+          inp.value = cachedItem.l;
+          (function() {
+            searchMode = 'dong';
+            inp.readOnly = false;
+            document.getElementById('smt-dong').classList.add('active');
+            document.getElementById('smt-road').classList.remove('active');
+          })();
+          inp.placeholder = '예) 해운대, 반여동, 경주시...';
+          selectItem(0);
+          return;
+        }
+      }
+    } catch(e) {}
+  }
+
   function applyGuFilter(list) {
     if (!sigungu) return list;
     var gt = sigungu.split(' ').filter(Boolean);
@@ -1770,11 +1806,11 @@ function _doResolveRoadToTariff(addr) {
       results = applyGuFilter(prefixHits);
     }
   }
-  // 전략 4: admCd 동코드(인덱스7) 자리로 복수 후보 좁히기
-  // 행정동코드(10자리): 시도(2)+시군구(3)+동코드(3)+리(2)
-  // 동코드 마지막 자리(인덱스7)가 대부분 동 번호(1자리)와 대응
-  // 예: "2611010400" → charAt(7)='4' → 대연4동
+  // 전략 4: admCd 마지막 5자리(행정동 고유번호)를 이용해 동 번호 추출 시도
+  // admCd = 시도(2)+시군구(3)+행정동번호(3)+리(2). 행정동번호 끝자리가 동 번호와 대응하는 경우가 많음.
+  // 단, 이 방법은 일부 지역에서만 유효하므로 보조적으로만 사용
   if (results.length > 1 && admCd.length >= 10) {
+    // 행정동번호 3자리: charAt(5,6,7) → 마지막 자리(charAt(7))가 동 번호인 경우 시도
     var admChar = admCd.charAt(7);
     var admNum  = parseInt(admChar, 10);
     if (!isNaN(admNum) && admNum > 0) {
@@ -1782,8 +1818,23 @@ function _doResolveRoadToTariff(addr) {
       var narrowed = results.filter(function(item) {
         return numReg.test(item.l.split(' ').pop());
       });
-      console.log('[Resolve] 전략4 admCd[7]=' + admChar + ' → ' + results.length + '→' + (narrowed.length || results.length) + '건');
-      if (narrowed.length >= 1) results = narrowed;
+      console.log('[Resolve] 전략4 admCd[7]=' + admChar + ' → ' + results.length + '→' + narrowed.length + '건');
+      // charAt(6)도 시도 (일부 지역은 앞자리가 동 번호)
+      if (narrowed.length === 0 || narrowed.length === results.length) {
+        var admChar6 = admCd.charAt(6);
+        var admNum6  = parseInt(admChar6, 10);
+        if (!isNaN(admNum6) && admNum6 > 0) {
+          var numReg6 = new RegExp(admNum6 + '[동리읍면]$');
+          var narrowed6 = results.filter(function(item) {
+            return numReg6.test(item.l.split(' ').pop());
+          });
+          if (narrowed6.length >= 1 && narrowed6.length < results.length) {
+            narrowed = narrowed6;
+            console.log('[Resolve] 전략4b admCd[6]=' + admChar6 + ' → ' + narrowed.length + '건');
+          }
+        }
+      }
+      if (narrowed.length >= 1 && narrowed.length < results.length) results = narrowed;
     }
   }
 
@@ -1796,16 +1847,19 @@ function _doResolveRoadToTariff(addr) {
     if (withData.length) results = withData;
   }
 
-  // 전략 5: 운임 동일 후보 → 자동 선택 (차이 없으면 첫 번째 선택)
+  // 전략 5: 모든 후보의 전체 운임 데이터가 완전히 동일하면 자동 선택
   if (tariffLoaded && results.length > 1) {
     var getTariffSig = function(item) {
       var tk = TARIFF[item.k] || TARIFF[normalizeKeyForOldNotice(item.k)];
       if (!tk) return null;
-      return JSON.stringify({ dist: tk.dist, toll: tk.toll, type: tk.type });
+      return JSON.stringify(tk);  // 전체 운임 데이터 비교 (모든 항구 포함)
     };
-    var sigs = results.map(getTariffSig);
-    var allSame = sigs[0] !== null && sigs.every(function(s) { return s === sigs[0]; });
-    if (allSame) results = [results[0]];
+    var sigs5 = results.map(getTariffSig);
+    var allSame5 = sigs5[0] !== null && sigs5.every(function(s) { return s === sigs5[0]; });
+    if (allSame5) {
+      console.log('[Resolve] 전략5: 전체 운임 동일 → 자동 선택');
+      results = [results[0]];
+    }
   }
 
   // 동 이름 마지막 토큰 완전 일치 → 1건 확정
@@ -1838,6 +1892,8 @@ function _doResolveRoadToTariff(addr) {
   }
 
   // 복수 행정동 후보: 입력값에 도로명 유지, read-only, 목록 표시
+  // admCd를 임시 저장 → 사용자가 선택 시 매핑 캐시에 저장
+  window._pendingAdmCd = admCd || null;
   var roadLabel = _shortRoadLabel(addr);
   inp.value = roadLabel;    // 도로명 주소 유지 (초기화 방지)
   switchToDong();           // searchMode='dong', readOnly=false
