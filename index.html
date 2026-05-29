@@ -974,7 +974,18 @@ function hideAC() { acWrap.style.display = 'none'; inp.classList.remove('ac-open
 let searchMode = 'dong'; // 'dong' | 'road'
 
 let _debounceTimer = null;
+
+function clearDestinationState() {
+  if (!state.key) return;
+  state.key = null; state.label = '';
+  state.entry = null; state.portData = null;
+  clearDone('sn1', 'sv1', '1');
+  document.getElementById('result').style.display = 'none';
+  document.getElementById('sur-result').classList.remove('show');
+}
+
 inp.addEventListener('input', function () {
+  clearDestinationState(); // 입력 변경 시 이전 선택 해제
   if (searchMode === 'road') {
     // 도로명 모드: 카카오 주소 검색 드롭다운
     clearTimeout(_debounceTimer);
@@ -1020,6 +1031,7 @@ inp.addEventListener('input', function () {
       });
       return '<div class="ac-item" role="option" aria-selected="false" data-i="' + i + '"><span class="ac-icon" aria-hidden="true">📍</span><span>' + label + '</span></div>';
     }).join('');
+    acList.scrollTop = 0;
     showAC();
     kbIndex = -1;
   }, 150);
@@ -1788,6 +1800,7 @@ function renderRoadAC(q) {
            '<span style="font-size:0.71rem;color:var(--text3);">📍 ' + subAddr + '</span>' +
            '</span></div>';
   }).join('');
+  acList.scrollTop = 0;
   showAC();
   kbIndex = -1;
 }
@@ -2036,11 +2049,13 @@ function _doResolveRoadToTariff(addr) {
            (sggLabel ? '<span style="font-size:0.71rem;color:var(--text3);">' + escapeHtml(sggLabel) + '</span>' : '') +
            '</span></div>';
   }).join('');
+  acList.scrollTop = 0;
   showAC();
   kbIndex = -1;
 }
 
 function setSearchMode(mode) {
+  clearDestinationState();
   searchMode = mode;
   document.getElementById('smt-dong').classList.toggle('active', mode === 'dong');
   document.getElementById('smt-road').classList.toggle('active', mode === 'road');
