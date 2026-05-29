@@ -1457,6 +1457,9 @@ var _hadSWController = false;
 if ('serviceWorker' in navigator) {
   _hadSWController = !!navigator.serviceWorker.controller;
   navigator.serviceWorker.register('./sw.js')
+    .then(function (reg) {
+      reg.update(); // 페이지 열 때마다 즉시 새 버전 확인
+    })
     .catch(function (err) { console.warn('SW 등록 실패:', err); });
 }
 
