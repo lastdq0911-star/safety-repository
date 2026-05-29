@@ -262,9 +262,8 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
   }
 
   /* ── 2. 헤더 ── */
-  .header { flex-shrink:0; position:static; height:54px; }
-  /* 흰색 배경을 content-box(=콘텐츠 카드 폭)에만 칠해 상단 폭을 하단과 일치 */
-  .header-inner { max-width:var(--page-max); margin:0 auto; padding:0 var(--page-pad); gap:12px; background-clip:content-box; box-shadow:none; border-bottom:none; }
+  .header { flex-shrink:0; position:static; height:54px; max-width:var(--page-max); margin:0 auto; width:100%; padding:0 var(--page-pad); }
+  .header-inner { height:100%; padding:0 16px; gap:12px; box-shadow:0 1px 8px rgba(0,0,0,0.09); border-bottom:3px solid var(--mint); }
   .sebang-logo { height:30px; width:auto; }
   .header-divider { height:28px; }
   .header-text h1 { font-size:0.95rem; }
@@ -272,8 +271,8 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
   .vat { font-size:0.6rem; padding:4px 9px; }
 
   /* ── 3. 배너 ── */
-  .banner { flex-shrink:0; }
-  .banner-inner { max-width:var(--page-max); margin:0 auto; padding:0 var(--page-pad); min-height:30px; background-clip:content-box; border-bottom:none; }
+  .banner { flex-shrink:0; max-width:var(--page-max); margin:0 auto; width:100%; padding:0 var(--page-pad); }
+  .banner-inner { padding:5px 16px; gap:12px; min-height:30px; }
   .banner-label { font-size:0.65rem; }
   .banner-select { font-size:0.68rem; }
   .banner-gov { font-size:0.62rem; }
@@ -1066,12 +1065,14 @@ inp.addEventListener('keydown', function (e) {
   const items = acList.querySelectorAll('.ac-item');
   if (e.key === 'ArrowDown') {
     e.preventDefault();
+    clearTimeout(_debounceTimer);
     if (acWrap.style.display === 'none') return;
-    setKbFocus(Math.min(kbIndex + 1, items.length - 1));
+    setKbFocus(kbIndex < 0 ? 0 : Math.min(kbIndex + 1, items.length - 1));
   } else if (e.key === 'ArrowUp') {
     e.preventDefault();
+    clearTimeout(_debounceTimer);
     if (acWrap.style.display === 'none') return;
-    setKbFocus(Math.max(kbIndex - 1, 0));
+    setKbFocus(kbIndex <= 0 ? 0 : kbIndex - 1);
   } else if (e.key === 'Enter') {
     e.preventDefault();
     var focusedItem = kbIndex >= 0 ? acList.querySelectorAll('.ac-item')[kbIndex] : null;
@@ -1319,11 +1320,11 @@ function toggleSur(el) {
   calcSur();
 
   if (!was) {
-    // 할증 선택 → sur-result로 스크롤
-    doScroll(document.getElementById('sur-result'));
+    // 할증 선택 → 금액 영역으로 스크롤
+    doScroll(document.querySelector('.result-wrap'));
   } else if (remaining > 0) {
-    // 할증 일부 해제 (남은 할증 있음) → sur-result로 스크롤
-    doScroll(document.getElementById('sur-result'));
+    // 할증 일부 해제 (남은 할증 있음) → 금액 영역으로 스크롤
+    doScroll(document.querySelector('.result-wrap'));
   } else if (surWasShowing) {
     // 할증 전체 해제 → 기본 result-wrap으로 스크롤
     doScroll(document.querySelector('.result-wrap'));
@@ -2040,7 +2041,7 @@ function setSearchMode(mode) {
   if (mode === 'dong') {
     inp.readOnly = false;
     inp.placeholder = '예) 해운대, 반여동, 경주시...';
-    inp.value = state.label || '';
+    inp.value = '';
     if (!('ontouchstart' in window)) inp.focus();
   } else {
     inp.readOnly = false;
