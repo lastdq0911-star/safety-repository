@@ -2060,7 +2060,11 @@ if ('serviceWorker' in navigator) {
       '?subject=' + encodeURIComponent(subject) +
       '&body='    + encodeURIComponent(body);
 
-    window.open(mailto, '_blank');
+    var a = document.createElement('a');
+    a.href = mailto;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
   });
 })();
 
