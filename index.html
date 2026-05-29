@@ -11,7 +11,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="안전운임">
-<meta name="theme-color" content="#3d3d3d">
+<meta name="theme-color" content="#00b8a9">
 <title>안전운임 조회</title>
 <!-- Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-5D5CQQX1DJ"></script>
@@ -33,7 +33,7 @@
   font-display: swap;
 }
 :root {
-  --bg:#ebebeb; --bg2:#fff; --bg3:#f5f5f5;
+  --bg:#e8f1fb; --bg2:#fff; --bg3:#f5f5f5;
   --gray:#5a5a5a; --gray-dark:#3d3d3d;
   --mint:#00b8a9; --mint-dim:rgba(0,184,169,0.10);
   --gold:#c47800;
@@ -46,16 +46,16 @@
 body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; padding-bottom:20px; }
 
 /* ── 헤더 ── */
-.header { background:#3d3d3d; padding:0 12px; height:58px; display:flex; align-items:center; gap:8px; position:sticky; top:0; z-index:100; box-shadow:0 2px 10px rgba(0,0,0,0.25); border-bottom:3px solid var(--mint); }
-.sebang-logo { height:26px; width:auto; object-fit:contain; filter:brightness(0) invert(1); flex-shrink:0; }
-.header-divider { width:1px; height:26px; background:rgba(255,255,255,0.25); flex-shrink:0; }
+.header { background:#fff; padding:0 12px; height:58px; display:flex; align-items:center; gap:8px; position:sticky; top:0; z-index:100; box-shadow:0 1px 10px rgba(0,0,0,0.10); border-bottom:3px solid var(--mint); }
+.sebang-logo { height:26px; width:auto; object-fit:contain; flex-shrink:0; }
+.header-divider { width:1px; height:26px; background:var(--border); flex-shrink:0; }
 .header-text { flex:1; min-width:0; text-align:center; }
-.header-text h1 { font-size:0.92rem; font-weight:700; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.header-text p { font-size:0.57rem; color:rgba(255,255,255,0.55); margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.vat { font-size:0.6rem; font-weight:700; color:#fff; background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.35); padding:3px 7px; border-radius:5px; white-space:nowrap; flex-shrink:0; }
+.header-text h1 { font-size:0.92rem; font-weight:700; color:var(--gray-dark); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.header-text p { font-size:0.57rem; color:var(--text2); margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.vat { font-size:0.6rem; font-weight:700; color:var(--mint); background:var(--mint-dim); border:1px solid rgba(0,184,169,0.3); padding:3px 7px; border-radius:5px; white-space:nowrap; flex-shrink:0; }
 
 /* ── 배너 ── */
-.banner { background:#f5f5f5; border-bottom:1px solid var(--border); padding:8px 18px; display:flex; align-items:center; gap:8px; }
+.banner { background:#fff; border-bottom:1px solid var(--border); padding:8px 18px; display:flex; align-items:center; gap:8px; }
 .banner-label { font-size:0.7rem; color:var(--text2); flex-shrink:0; }
 .banner-select { font-size:0.75rem; font-weight:700; color:var(--gray-dark); background:transparent; border:none; outline:none; cursor:pointer; font-family:inherit; }
 .banner-gov { margin-left:auto; font-size:0.65rem; color:var(--text3); white-space:nowrap; }
@@ -121,22 +121,30 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
 /* ── 할증 ── */
 .sur-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
 .sur-item { appearance:none; -webkit-appearance:none; font-family:inherit; text-align:left; width:100%; background:var(--bg3); border:1.5px solid var(--border); border-radius:var(--radius-sm); padding:12px; cursor:pointer; transition:all 0.15s; min-height:64px; display:flex; flex-direction:column; justify-content:center; }
-.sur-item.checked { background:#efefef; border-color:var(--gray); }
-.sur-item.checked-warn { background:#f0fffe; border-color:var(--mint); }
+.sur-item.checked { background:#EFF6FF; border-color:#2563EB; }
+.sur-item.checked-warn { background:#FFFBEB; border-color:#D97706; }
 .sur-top { display:flex; align-items:center; gap:7px; }
 .sur-check { width:20px; height:20px; border-radius:5px; border:1.5px solid var(--border); background:#fff; display:flex; align-items:center; justify-content:center; font-size:12px; flex-shrink:0; transition:all 0.15s; }
-.sur-item.checked .sur-check { background:var(--gray); border-color:var(--gray); color:#fff; }
-.sur-item.checked-warn .sur-check { background:var(--mint); border-color:var(--mint); color:#fff; }
+.sur-item.checked .sur-check { background:#2563EB; border-color:#2563EB; color:#fff; }
+.sur-item.checked-warn .sur-check { background:#D97706; border-color:#D97706; color:#fff; }
 .sur-name { font-size:0.78rem; font-weight:600; color:var(--text); }
 .sur-rate { font-size:0.68rem; color:var(--text2); margin-top:5px; padding-left:27px; }
-.sur-item.checked .sur-rate { color:var(--gray); font-weight:700; }
-.sur-item.checked-warn .sur-rate { color:var(--mint); font-weight:700; }
+.sur-item.checked .sur-name { color:#1D4ED8; }
+.sur-item.checked-warn .sur-name { color:#92400E; }
+.sur-item.checked .sur-rate { color:#2563EB; font-weight:700; }
+.sur-item.checked-warn .sur-rate { color:#D97706; font-weight:700; }
 .weight-input-wrap { margin-top:10px; padding:12px; background:var(--bg3); border-radius:9px; border:1px solid var(--border2); display:none; }
 .weight-input-wrap.show { display:block; }
 .weight-row { display:flex; align-items:center; gap:8px; margin-bottom:8px; }
 .weight-row:last-child { margin-bottom:0; }
 .weight-label { font-size:0.72rem; color:var(--text2); min-width:110px; }
 .weight-input { width:64px; padding:8px; border-radius:7px; background:#fff; border:1.5px solid var(--border); color:var(--text); font-size:0.9rem; font-family:'JetBrains Mono',monospace; text-align:center; outline:none; -webkit-appearance:none; }
+
+/* ── 할증 카드 활성 (amber) 상태 ── */
+#step4-card.sur-active { background:#FFFBEB; border-color:#F59E0B; border-left-color:#F59E0B; }
+#step4-card.sur-active .step-head { background:#FEF3C7; border-bottom-color:rgba(245,158,11,0.3); }
+.sur-reset-btn { appearance:none; -webkit-appearance:none; background:rgba(217,119,6,0.12); border:1.5px solid rgba(217,119,6,0.35); color:#D97706; width:28px; height:28px; border-radius:7px; cursor:pointer; font-size:0.82rem; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-left:4px; transition:all 0.15s; font-family:inherit; padding:0; }
+.sur-reset-btn:active { transform:scale(0.9); }
 
 /* ── 로딩 ── */
 #loading { text-align:center; padding:40px 20px; color:var(--text2); font-size:0.85rem; }
@@ -546,11 +554,12 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
 <div class="pc-right">
 
 <!-- STEP 4: 할증 -->
-<div class="step">
+<div class="step" id="step4-card">
   <div class="step-head">
     <div class="step-num" id="sn4">4</div>
-    <span class="step-title">할증 <span class="step-tag">(선택사항)</span></span>
+    <span class="step-title" id="step4-title">할증 <span class="step-tag">(선택사항)</span></span>
     <span class="step-val" id="sv4" style="margin-left:auto;"></span>
+    <button class="sur-reset-btn" id="sur-reset-btn" style="display:none;" onclick="clearSurcharges()">🔄</button>
   </div>
   <div class="step-body">
     <div class="sur-grid">
@@ -903,6 +912,7 @@ function clearSurcharges() {
   document.getElementById('w20').value = '';
   clearDone('sn4', 'sv4', '4');
   document.getElementById('sur-result').classList.remove('show');
+  var _s4=document.getElementById('step4-card'); if(_s4){_s4.classList.remove('sur-active'); var _rb=document.getElementById('sur-reset-btn'); if(_rb)_rb.style.display='none'; var _t4=document.getElementById('step4-title'); if(_t4)_t4.innerHTML='할증 <span class="step-tag">(선택사항)</span>';}
 }
 
 // 고시 전환 시 전체 상태 초기화
@@ -1364,7 +1374,11 @@ function calcSur() {
     });
   }
 
-  if (!state.portData || !allRates.length || !state.fareType) { surEl.classList.remove('show'); return; }
+  if (!state.portData || !allRates.length || !state.fareType) {
+    surEl.classList.remove('show');
+    var _s4=document.getElementById('step4-card'); if(_s4){_s4.classList.remove('sur-active'); var _rb=document.getElementById('sur-reset-btn'); if(_rb)_rb.style.display='none'; var _t4=document.getElementById('step4-title'); if(_t4)_t4.innerHTML='할증 <span class="step-tag">(선택사항)</span>';}
+    return;
+  }
 
   const idx = FARE_TYPE_IDX[state.fareType];
   const pctRates  = allRates.filter(function (r) { return !r.fixed; });
@@ -1397,6 +1411,13 @@ function calcSur() {
     '적용: ' + allRates.map(function (r) { return r.label; }).join(', ') +
     (parts.length ? ' / ' + parts.join(' + ') : '');
   surEl.classList.add('show');
+  var _s4c=document.getElementById('step4-card');
+  if(_s4c){
+    _s4c.classList.add('sur-active');
+    var _rb=document.getElementById('sur-reset-btn'); if(_rb)_rb.style.display='flex';
+    var _t4=document.getElementById('step4-title');
+    if(_t4)_t4.innerHTML='⚠️ 할증 적용 <span style="color:#D97706;font-weight:800;">' + Math.max(rate40,rate20).toFixed(2) + '%</span>';
+  }
 }
 
 // ────────────────────────────────────────────
