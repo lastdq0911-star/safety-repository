@@ -41,14 +41,14 @@
   --border:#d0d0d0; --border2:#e8e8e8;
   --shadow:0 2px 14px rgba(0,0,0,0.10);
   --radius:14px; --radius-sm:10px;
-  --page-max:1400px; --page-pad:5%;
+  --page-max:1280px; --page-pad:5%;
 }
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
 body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; padding-bottom:20px; }
 
 /* ── 헤더 ── */
-.header { background:#fff; height:58px; position:sticky; top:0; z-index:100; box-shadow:0 1px 10px rgba(0,0,0,0.10); border-bottom:3px solid var(--mint); }
-.header-inner { display:flex; align-items:center; gap:8px; padding:0 12px; height:100%; width:100%; }
+.header { background:var(--bg); height:58px; position:sticky; top:0; z-index:100; }
+.header-inner { display:flex; align-items:center; gap:8px; padding:0 12px; height:100%; width:100%; background:#fff; box-shadow:0 1px 10px rgba(0,0,0,0.10); border-bottom:3px solid var(--mint); }
 .sebang-logo { height:26px; width:auto; object-fit:contain; flex-shrink:0; }
 .header-divider { width:1px; height:26px; background:var(--border); flex-shrink:0; }
 .header-text { flex:1; min-width:0; text-align:center; }
@@ -57,8 +57,8 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
 .vat { font-size:0.6rem; font-weight:700; color:var(--mint); background:var(--mint-dim); border:1px solid rgba(0,184,169,0.3); padding:3px 7px; border-radius:5px; white-space:nowrap; flex-shrink:0; }
 
 /* ── 배너 ── */
-.banner { background:#fff; border-bottom:1px solid var(--border); }
-.banner-inner { display:flex; align-items:center; gap:8px; padding:8px 18px; width:100%; }
+.banner { background:var(--bg); }
+.banner-inner { display:flex; align-items:center; gap:8px; padding:8px 18px; width:100%; background:#fff; border-bottom:1px solid var(--border); }
 .banner-label { font-size:0.7rem; color:var(--text2); flex-shrink:0; }
 .banner-select { font-size:0.75rem; font-weight:700; color:var(--gray-dark); background:transparent; border:none; outline:none; cursor:pointer; font-family:inherit; }
 .banner-gov { margin-left:auto; font-size:0.68rem; color:var(--text2); white-space:nowrap; font-weight:600; }
