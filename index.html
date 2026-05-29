@@ -62,6 +62,7 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
 
 /* ── STEP 카드 ── */
 .step { margin:14px 14px 0; background:var(--bg2); border:1px solid var(--border); border-left:4px solid var(--mint); border-radius:var(--radius); overflow:visible; box-shadow:var(--shadow); position:relative; }
+#step1 { position:sticky; top:58px; z-index:50; }
 .step-head { padding:12px 16px; display:flex; align-items:center; gap:10px; border-bottom:1px solid var(--border2); background:var(--bg3); border-radius:calc(var(--radius) - 1px) calc(var(--radius) - 1px) 0 0; }
 .step-num { width:26px; height:26px; border-radius:50%; flex-shrink:0; background:#e8e8e8; border:1.5px solid #c0c0c0; color:var(--text2); font-size:0.75rem; font-weight:700; display:flex; align-items:center; justify-content:center; transition:all 0.2s; }
 .step-num.done { cursor:pointer; background:var(--mint); color:#fff; border-color:var(--mint); }
@@ -390,6 +391,12 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
 #contact-modal.open { display:flex; }
 .contact-box { background:#fff; width:100%; max-width:520px; border-radius:18px 18px 0 0; overflow:hidden; max-height:92vh; display:flex; flex-direction:column; box-shadow:0 -4px 30px rgba(0,0,0,0.25); }
 .contact-head { background:#3d3d3d; padding:14px 18px; display:flex; align-items:center; gap:10px; border-bottom:3px solid var(--mint); flex-shrink:0; }
+@media (min-width:900px) {
+  #contact-modal { align-items:center; }
+  .contact-box { border-radius:18px; max-width:480px; }
+  .contact-head { cursor:grab; }
+  .contact-head:active { cursor:grabbing; }
+}
 .contact-head-title { font-size:0.95rem; font-weight:800; color:#fff; flex:1; }
 .contact-close { background:none; border:none; color:rgba(255,255,255,0.65); font-size:1.35rem; cursor:pointer; line-height:1; padding:4px; transition:color 0.1s; }
 .contact-close:hover { color:#fff; }
@@ -2011,26 +2018,55 @@ if ('serviceWorker' in navigator) {
 // 세방(주) 문의하기 모달 (EmailJS)
 // ────────────────────────────────────────────
 (function () {
-  // ★ EmailJS 가입 후 아래 세 값을 교체하세요 ★
   var EJS_PUBLIC_KEY  = '26DwFrJZo01UnQumw';
   var EJS_SERVICE_ID  = 'service_sebang123';
   var EJS_TEMPLATE_ID = 'template_7nhn0hm';
 
-  if (window.emailjs) emailjs.init({ publicKey: EJS_PUBLIC_KEY });
+  var modal       = document.getElementById('contact-modal');
+  var openBtn     = document.getElementById('contact-fab');
+  var closeBtn    = document.getElementById('contact-close-btn');
+  var submitBtn   = document.getElementById('contact-submit-btn');
+  var contactBox  = modal.querySelector('.contact-box');
+  var contactHead = modal.querySelector('.contact-head');
 
-  var modal     = document.getElementById('contact-modal');
-  var openBtn   = document.getElementById('contact-fab');
-  var closeBtn  = document.getElementById('contact-close-btn');
-  var submitBtn = document.getElementById('contact-submit-btn');
+  // ── 드래그 (데스크탑 마우스 전용) ──────────────
+  var drag = { on: false, sx: 0, sy: 0, tx: 0, ty: 0 };
 
+  contactHead.addEventListener('mousedown', function (e) {
+    if (window.innerWidth < 900) return;
+    drag.on = true;
+    drag.sx = e.clientX - drag.tx;
+    drag.sy = e.clientY - drag.ty;
+    contactBox.style.userSelect = 'none';
+    e.preventDefault();
+  });
+
+  document.addEventListener('mousemove', function (e) {
+    if (!drag.on) return;
+    drag.tx = e.clientX - drag.sx;
+    drag.ty = e.clientY - drag.sy;
+    contactBox.style.transform = 'translate(' + drag.tx + 'px,' + drag.ty + 'px)';
+  });
+
+  document.addEventListener('mouseup', function () {
+    if (drag.on) {
+      drag.on = false;
+      contactBox.style.userSelect = '';
+    }
+  });
+
+  // ── 열기 / 닫기 ─────────────────────────────
   function openModal() {
     modal.classList.add('open');
     document.body.style.overflow = 'hidden';
   }
+
   function closeModal() {
     modal.classList.remove('open');
     document.body.style.overflow = '';
     setSubmitState('idle');
+    drag.tx = 0; drag.ty = 0;
+    contactBox.style.transform = '';
   }
 
   function setSubmitState(state) {
@@ -2050,13 +2086,9 @@ if ('serviceWorker' in navigator) {
 
   openBtn.addEventListener('click', openModal);
   closeBtn.addEventListener('click', closeModal);
-  modal.addEventListener('click', function (e) {
-    if (e.target === modal) closeModal();
-  });
-  document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape' && modal.classList.contains('open')) closeModal();
-  });
+  // X 버튼으로만 닫기 — 배경 클릭 / ESC 비활성화
 
+  // ── 전송 ────────────────────────────────────
   submitBtn.addEventListener('click', function () {
     var name  = document.getElementById('c-name').value.trim();
     var phone = document.getElementById('c-phone').value.trim();
@@ -2071,12 +2103,13 @@ if ('serviceWorker' in navigator) {
       return;
     }
 
-    if (!window.emailjs || EJS_PUBLIC_KEY === 'YOUR_PUBLIC_KEY') {
-      alert('EmailJS 키가 설정되지 않았습니다.\nEJS_PUBLIC_KEY / EJS_SERVICE_ID / EJS_TEMPLATE_ID를 입력해 주세요.');
+    if (!window.emailjs) {
+      alert('이메일 서비스를 불러오는 중입니다. 잠시 후 다시 시도해 주세요.');
       return;
     }
 
     setSubmitState('loading');
+    emailjs.init({ publicKey: EJS_PUBLIC_KEY });
 
     emailjs.send(EJS_SERVICE_ID, EJS_TEMPLATE_ID, {
       subject:    '[세방(주) 문의]' + (name ? ' ' + name : ''),
@@ -2095,7 +2128,7 @@ if ('serviceWorker' in navigator) {
     })
     .catch(function (err) {
       setSubmitState('idle');
-      alert('전송 실패: ' + (err.text || JSON.stringify(err)) + '\nEmailJS 설정을 확인해 주세요.');
+      alert('전송 실패: ' + (err.text || JSON.stringify(err)));
     });
   });
 })();
