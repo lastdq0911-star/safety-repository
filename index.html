@@ -2057,8 +2057,8 @@ function _doResolveRoadToTariff(addr) {
 function setSearchMode(mode) {
   clearDestinationState();
   searchMode = mode;
-  document.getElementById('smt-dong').classList.remove('active');
-  document.getElementById('smt-road').classList.remove('active');
+  document.getElementById('smt-dong').classList.toggle('active', mode === 'dong');
+  document.getElementById('smt-road').classList.toggle('active', mode === 'road');
   hideAC();
   if (mode === 'dong') {
     inp.readOnly = false;
