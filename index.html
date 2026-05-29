@@ -123,18 +123,18 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
 /* ── 할증 ── */
 .sur-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
 .sur-item { appearance:none; -webkit-appearance:none; font-family:inherit; text-align:left; width:100%; background:var(--bg3); border:1.5px solid var(--border); border-radius:var(--radius-sm); padding:12px; cursor:pointer; transition:all 0.15s; min-height:64px; display:flex; flex-direction:column; justify-content:center; }
-.sur-item.checked { background:#EFF6FF; border-color:#2563EB; }
-.sur-item.checked-warn { background:#FFFBEB; border-color:#D97706; }
+.sur-item.checked { background:var(--mint-dim); border-color:var(--mint); }
+.sur-item.checked-warn { background:var(--mint-dim); border-color:var(--mint); }
 .sur-top { display:flex; align-items:center; gap:7px; }
 .sur-check { width:20px; height:20px; border-radius:5px; border:1.5px solid var(--border); background:#fff; display:flex; align-items:center; justify-content:center; font-size:12px; flex-shrink:0; transition:all 0.15s; }
-.sur-item.checked .sur-check { background:#2563EB; border-color:#2563EB; color:#fff; }
-.sur-item.checked-warn .sur-check { background:#D97706; border-color:#D97706; color:#fff; }
+.sur-item.checked .sur-check { background:var(--mint); border-color:var(--mint); color:#fff; }
+.sur-item.checked-warn .sur-check { background:var(--mint); border-color:var(--mint); color:#fff; }
 .sur-name { font-size:0.78rem; font-weight:600; color:var(--text); }
 .sur-rate { font-size:0.68rem; color:var(--text2); margin-top:5px; padding-left:27px; }
-.sur-item.checked .sur-name { color:#1D4ED8; }
-.sur-item.checked-warn .sur-name { color:#92400E; }
-.sur-item.checked .sur-rate { color:#2563EB; font-weight:700; }
-.sur-item.checked-warn .sur-rate { color:#D97706; font-weight:700; }
+.sur-item.checked .sur-name { color:#007a72; }
+.sur-item.checked-warn .sur-name { color:#007a72; }
+.sur-item.checked .sur-rate { color:var(--mint); font-weight:700; }
+.sur-item.checked-warn .sur-rate { color:var(--mint); font-weight:700; }
 .weight-input-wrap { margin-top:10px; padding:12px; background:var(--bg3); border-radius:9px; border:1px solid var(--border2); display:none; }
 .weight-input-wrap.show { display:block; }
 .weight-row { display:flex; align-items:center; gap:8px; margin-bottom:8px; }
@@ -142,10 +142,10 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
 .weight-label { font-size:0.72rem; color:var(--text2); min-width:110px; }
 .weight-input { width:64px; padding:8px; border-radius:7px; background:#fff; border:1.5px solid var(--border); color:var(--text); font-size:0.9rem; font-family:'JetBrains Mono',monospace; text-align:center; outline:none; -webkit-appearance:none; }
 
-/* ── 할증 카드 활성 (amber) 상태 ── */
-#step4-card.sur-active { background:#FFFBEB; border-color:#F59E0B; border-left-color:#F59E0B; }
-#step4-card.sur-active .step-head { background:#FEF3C7; border-bottom-color:rgba(245,158,11,0.3); }
-.sur-reset-btn { appearance:none; -webkit-appearance:none; background:rgba(217,119,6,0.12); border:1.5px solid rgba(217,119,6,0.35); color:#D97706; width:28px; height:28px; border-radius:7px; cursor:pointer; font-size:0.82rem; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-left:4px; transition:all 0.15s; font-family:inherit; padding:0; }
+/* ── 할증 카드 활성 상태 ── */
+#step4-card.sur-active { background:rgba(0,184,169,0.04); border-color:var(--mint); border-left-color:var(--mint); }
+#step4-card.sur-active .step-head { background:rgba(0,184,169,0.10); border-bottom-color:rgba(0,184,169,0.25); }
+.sur-reset-btn { appearance:none; -webkit-appearance:none; background:rgba(0,184,169,0.12); border:1.5px solid rgba(0,184,169,0.35); color:var(--mint); width:28px; height:28px; border-radius:7px; cursor:pointer; font-size:0.82rem; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-left:4px; transition:all 0.15s; font-family:inherit; padding:0; }
 .sur-reset-btn:active { transform:scale(0.9); }
 
 /* ── 로딩 ── */
@@ -462,7 +462,7 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
   <div class="step-body">
     <div class="smt-tabs">
       <button class="smt-btn active" id="smt-dong">🔍 행정동 검색</button>
-      <button class="smt-btn" id="smt-road">🗺 도로명 주소</button>
+      <button class="smt-btn" id="smt-road">🗺 도로명 검색</button>
     </div>
     <div class="search-wrap">
       <span class="search-icon" id="search-icon-main">🔍</span>
@@ -801,8 +801,7 @@ function loadNoticeData(notice) {
 }
 
 function updateNoticeUI(notice) {
-  document.getElementById('banner-gov').textContent =
-    notice.year + '년 국토교통부 고시 ' + notice.gov;
+  document.getElementById('banner-gov').textContent = '';
 }
 
 function showLoading(label) {
@@ -1416,7 +1415,7 @@ function calcSur() {
     _s4c.classList.add('sur-active');
     var _rb=document.getElementById('sur-reset-btn'); if(_rb)_rb.style.display='flex';
     var _t4=document.getElementById('step4-title');
-    if(_t4)_t4.innerHTML='⚠️ 할증 적용 <span style="color:#D97706;font-weight:800;">' + Math.max(rate40,rate20).toFixed(2) + '%</span>';
+    if(_t4)_t4.innerHTML='✅ 할증 적용 <span style="color:var(--mint);font-weight:800;">' + Math.max(rate40,rate20).toFixed(2) + '%</span>';
   }
 }
 
