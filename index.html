@@ -2057,11 +2057,15 @@ function setSearchMode(mode) {
   }
 }
 
-// 클릭 또는 마우스 올림으로 검색 모드 전환
+// 클릭으로 검색 모드 전환
 document.getElementById('smt-dong').addEventListener('click', function () { setSearchMode('dong'); });
 document.getElementById('smt-road').addEventListener('click', function () { setSearchMode('road'); });
-document.getElementById('smt-dong').addEventListener('mouseenter', function () { setSearchMode('dong'); });
-document.getElementById('smt-road').addEventListener('mouseenter', function () { setSearchMode('road'); });
+
+// 검색창에 마우스 올리면 현재 모드 버튼 활성화
+inp.addEventListener('mouseenter', function () {
+  document.getElementById('smt-dong').classList.toggle('active', searchMode === 'dong');
+  document.getElementById('smt-road').classList.toggle('active', searchMode === 'road');
+});
 
 // ── SW 업데이트 시 자동 새로고침 (controllerchange = 가장 신뢰성 높음) ──
 if ('serviceWorker' in navigator) {
