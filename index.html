@@ -976,7 +976,6 @@ let searchMode = 'dong'; // 'dong' | 'road'
 let _debounceTimer = null;
 
 function clearDestinationState() {
-  if (!state.key) return;
   state.key = null; state.label = '';
   state.entry = null; state.portData = null;
   clearDone('sn1', 'sv1', '1');
