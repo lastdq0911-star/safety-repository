@@ -110,8 +110,7 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
 .hint-text { display:none; }
 .hint-text b { color:var(--gray-dark); font-weight:700; }
 /* ── 검색 모드 탭 ── */
-.smt-tabs { display:none; gap:4px; margin-bottom:7px; }
-.smt-tabs.visible { display:flex; }
+.smt-tabs { display:flex; gap:4px; margin-bottom:7px; }
 .smt-btn { flex:1; padding:7px 6px; border-radius:7px; border:1.5px solid var(--border); background:var(--bg3); color:var(--text2); font-size:0.75rem; font-weight:600; font-family:inherit; cursor:pointer; transition:all 0.15s; }
 .smt-btn.active { background:var(--gray-dark); border-color:var(--gray-dark); color:#fff; }
 .daum-embed-notice { padding:6px 14px; font-size:0.68rem; color:var(--text3); background:#fafafa; border-bottom:1px solid #f0f0f0; }
@@ -460,7 +459,7 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
   </div>
   <div class="step-body">
     <div class="smt-tabs">
-      <button class="smt-btn active" id="smt-dong">🔍 행정동 검색</button>
+      <button class="smt-btn" id="smt-dong">🔍 행정동 검색</button>
       <button class="smt-btn" id="smt-road">🗺 도로명 검색</button>
     </div>
     <div class="search-wrap">
@@ -936,8 +935,6 @@ function resetAll() {
   const smtDong = document.getElementById('smt-dong');
   const smtRoad = document.getElementById('smt-road');
   if (smtDong) { smtDong.classList.add('active'); smtRoad.classList.remove('active'); }
-  const smtTabs = document.querySelector('.smt-tabs');
-  if (smtTabs) smtTabs.classList.remove('visible');
   hideAC();
 
   clearDone('sn1', 'sv1', '1');
@@ -2060,13 +2057,11 @@ function setSearchMode(mode) {
   }
 }
 
+// 클릭 또는 마우스 올림으로 검색 모드 전환
 document.getElementById('smt-dong').addEventListener('click', function () { setSearchMode('dong'); });
 document.getElementById('smt-road').addEventListener('click', function () { setSearchMode('road'); });
-
-// 검색창 클릭 시 모드 탭 표시
-inp.addEventListener('focus', function () {
-  document.querySelector('.smt-tabs').classList.add('visible');
-});
+document.getElementById('smt-dong').addEventListener('mouseenter', function () { setSearchMode('dong'); });
+document.getElementById('smt-road').addEventListener('mouseenter', function () { setSearchMode('road'); });
 
 // ── SW 업데이트 시 자동 새로고침 (controllerchange = 가장 신뢰성 높음) ──
 if ('serviceWorker' in navigator) {
