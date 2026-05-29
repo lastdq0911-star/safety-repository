@@ -981,6 +981,10 @@ function clearDestinationState() {
   clearDone('sn1', 'sv1', '1');
   document.getElementById('result').style.display = 'none';
   document.getElementById('sur-result').classList.remove('show');
+  // 모달이 열려 있으면 즉시 하이라이트 제거
+  if (document.getElementById('rate-modal').classList.contains('open')) {
+    buildAllPanels();
+  }
 }
 
 inp.addEventListener('input', function () {
@@ -1629,6 +1633,7 @@ function openRateModal() {
 
   document.getElementById('modal-notice-text').textContent = activeNotice.label;
   buildAllPanels();
+  document.querySelector('.modal-body').scrollTop = 0;
   document.getElementById('rate-modal').classList.add('open');
   document.body.style.overflow = 'hidden';
 }
