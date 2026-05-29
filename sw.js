@@ -1,6 +1,6 @@
 'use strict';
 
-const CACHE_VERSION = 'v33';
+const CACHE_VERSION = 'v34';
 
 const SHELL_CACHE = 'safety-shell-' + CACHE_VERSION;
 const DATA_CACHE  = 'safety-data-'  + CACHE_VERSION;
@@ -27,7 +27,7 @@ self.addEventListener('install', function (e) {
   );
 });
 
-// ── 활성화: 구버전 캐시 정리 + 열린 탭에 갱신 알림 ──
+// ── 활성화: 구버전 캐시 정리 ──
 self.addEventListener('activate', function (e) {
   e.waitUntil(
     caches.keys()
@@ -39,15 +39,6 @@ self.addEventListener('activate', function (e) {
         );
       })
       .then(function () { return self.clients.claim(); })
-      .then(function () {
-        // 모든 열린 탭에 페이지 새로고침 요청
-        return self.clients.matchAll({ type: 'window' });
-      })
-      .then(function (clients) {
-        clients.forEach(function (client) {
-          client.postMessage({ type: 'SW_UPDATED' });
-        });
-      })
   );
 });
 
@@ -61,7 +52,10 @@ self.addEventListener('fetch', function (e) {
 
   const path = url.pathname;
 
-  // index.html / 루트: 항상 네트워크 우선 (코드 갱신 즉시 반영)
+  // sw.js 자신은 가로채지 않음
+  if (path.endsWith('/sw.js')) return;
+
+  // index.html / 루트: 항상 네트워크 우선 (HTTP 캐시 무시)
   if (path.endsWith('/index.html') || path.endsWith('/') || path === '/safety-repository') {
     e.respondWith(networkFirst(req, SHELL_CACHE));
     return;
@@ -73,7 +67,7 @@ self.addEventListener('fetch', function (e) {
     return;
   }
 
-  // 고시 운임 데이터 청크: 캐시 우선 (변경 없음)
+  // 고시 운임 데이터 청크: 캐시 우선
   if (/\/\d{4}-\d{2}\/data\d+\.js$/.test(path)) {
     e.respondWith(cacheFirst(req, DATA_CACHE));
     return;
@@ -83,12 +77,9 @@ self.addEventListener('fetch', function (e) {
   e.respondWith(cacheFirst(req, SHELL_CACHE));
 });
 
-// ────────────────────────────────────────────
-// 캐싱 전략
-// ────────────────────────────────────────────
-
 function networkFirst(req, cacheName) {
-  return fetch(req)
+  // cache:'reload' → HTTP 캐시를 무시하고 항상 서버에서 실제 최신본 가져옴
+  return fetch(req.url, { cache: 'reload' })
     .then(function (res) {
       if (res.ok) {
         caches.open(cacheName).then(function (c) { c.put(req, res.clone()); });

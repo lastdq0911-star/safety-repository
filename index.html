@@ -2011,13 +2011,11 @@ function setSearchMode(mode) {
 document.getElementById('smt-dong').addEventListener('click', function () { setSearchMode('dong'); });
 document.getElementById('smt-road').addEventListener('click', function () { setSearchMode('road'); });
 
-// ── SW 갱신 시 알림 (최초 설치 시에는 새로고침하지 않음) ──
+// ── SW 업데이트 시 자동 새로고침 (controllerchange = 가장 신뢰성 높음) ──
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.addEventListener('message', function (e) {
-    if (!e.data || e.data.type !== 'SW_UPDATED') return;
-    // 최초 설치(제어 중인 SW가 없던 경우)에는 새로고침 생략 → 팝업 등 UI 유지
-    if (!_hadSWController) return;
-    window.location.reload();
+  // controllerchange: 새 SW가 실제로 제어권을 가져갔을 때 발생
+  navigator.serviceWorker.addEventListener('controllerchange', function () {
+    if (_hadSWController) window.location.reload();
   });
 }
 
