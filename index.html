@@ -595,17 +595,17 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
     <span class="bnav-icon">🔍</span>
     <span>안전운임 조회</span>
   </button>
-  <button class="bnav-btn bnav-contact" id="bnav-contact" aria-label="라인올물류에 문의하기">
+  <button class="bnav-btn bnav-contact" id="bnav-contact" aria-label="세방(주) 문의하기">
     <span class="bnav-icon">✉️</span>
-    <span>라인올물류 문의</span>
+    <span>세방(주) 문의하기</span>
   </button>
 </nav>
 
-<!-- 라인올물류 문의 모달 -->
+<!-- 세방(주) 문의하기 모달 -->
 <div id="contact-modal" role="dialog" aria-modal="true" aria-labelledby="contact-modal-title">
   <div class="contact-box">
     <div class="contact-head">
-      <span class="contact-head-title" id="contact-modal-title">✉️ 라인올물류에 문의하기</span>
+      <span class="contact-head-title" id="contact-modal-title">✉️ 세방(주) 문의하기</span>
       <button class="contact-close" id="contact-close-btn" aria-label="닫기">✕</button>
     </div>
     <div class="contact-body">
@@ -626,7 +626,7 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
         <textarea class="contact-input contact-textarea" id="c-msg" placeholder="문의하실 내용을 입력해 주세요&#10;(노선, 컨테이너 규격, 요청사항 등)"></textarea>
       </div>
       <button class="contact-submit" id="contact-submit-btn">✉️ 메일 보내기</button>
-      <p class="contact-note">버튼을 누르면 이메일 앱(Gmail 등)이 열립니다.<br>수신: 세방(주) 라인올물류 담당자</p>
+      <p class="contact-note">버튼을 누르면 이메일 앱(Gmail 등)이 열립니다.<br>수신: 세방(주) 담당자</p>
     </div>
   </div>
 </div>
@@ -2015,11 +2015,11 @@ if ('serviceWorker' in navigator) {
 }
 
 // ────────────────────────────────────────────
-// 라인올물류 문의 모달
+// 세방(주) 문의하기 모달
 // ────────────────────────────────────────────
 (function () {
   // TODO: 실제 세방(주) 담당자 이메일 주소로 교체
-  var CONTACT_EMAIL = 'contact@lineall.co.kr';
+  var CONTACT_EMAIL = 'lastdq0911@sebang.com';
 
   var modal      = document.getElementById('contact-modal');
   var openBtn    = document.getElementById('bnav-contact');
@@ -2057,7 +2057,7 @@ if ('serviceWorker' in navigator) {
       return;
     }
 
-    var subject = '[라인올물류 문의]' + (name ? ' ' + name : '');
+    var subject = '[세방(주) 문의하기]' + (name ? ' ' + name : '');
     var body = '';
     if (name)  body += '이름/회사: ' + name  + '\n';
     if (phone) body += '연락처: '   + phone  + '\n';
