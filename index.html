@@ -2009,7 +2009,7 @@ function _doResolveRoadToTariff(addr) {
   function switchToDong() {
     searchMode = 'dong';
     inp.readOnly = false;
-    document.getElementById('smt-dong').classList.add('active');
+    document.getElementById('smt-dong').classList.remove('active');
     document.getElementById('smt-road').classList.remove('active');
   }
 
@@ -2057,8 +2057,8 @@ function _doResolveRoadToTariff(addr) {
 function setSearchMode(mode) {
   clearDestinationState();
   searchMode = mode;
-  document.getElementById('smt-dong').classList.toggle('active', mode === 'dong');
-  document.getElementById('smt-road').classList.toggle('active', mode === 'road');
+  document.getElementById('smt-dong').classList.remove('active');
+  document.getElementById('smt-road').classList.remove('active');
   hideAC();
   if (mode === 'dong') {
     inp.readOnly = false;
