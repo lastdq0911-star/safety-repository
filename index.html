@@ -1466,6 +1466,9 @@ function resetStep(step) {
     state.key = null; state.label = '';
     state.entry = null; state.portData = null;
     inp.value = '';
+    document.getElementById('smt-dong').classList.remove('active');
+    document.getElementById('smt-road').classList.remove('active');
+    hideAC();
   } else if (step === 2) {
     state.type = null;
     document.getElementById('btn-왕복').classList.remove('active');
