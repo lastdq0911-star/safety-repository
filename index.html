@@ -22,6 +22,7 @@
   gtag('config', 'G-5D5CQQX1DJ');
 </script>
 <!-- 행정안전부 Juso API - JSONP/fetch 동적 호출 (별도 SDK 없음) -->
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
 <style>
 @font-face {
@@ -618,7 +619,7 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
         <textarea class="contact-input contact-textarea" id="c-msg" placeholder="문의하실 내용을 입력해 주세요&#10;(노선, 컨테이너 규격, 요청사항 등)"></textarea>
       </div>
       <button class="contact-submit" id="contact-submit-btn">✉️ 메일 보내기</button>
-      <p class="contact-note">버튼을 누르면 이메일 앱(Gmail 등)이 열립니다.<br>수신: 세방(주) 담당자</p>
+      <p class="contact-note">전송 버튼을 누르면 담당자에게 바로 전달됩니다.<br>수신: 세방(주) 담당자</p>
     </div>
   </div>
 </div>
@@ -2007,16 +2008,20 @@ if ('serviceWorker' in navigator) {
 }
 
 // ────────────────────────────────────────────
-// 세방(주) 문의하기 모달
+// 세방(주) 문의하기 모달 (EmailJS)
 // ────────────────────────────────────────────
 (function () {
-  // TODO: 실제 세방(주) 담당자 이메일 주소로 교체
-  var CONTACT_EMAIL = 'lastdq0911@sebang.com';
+  // ★ EmailJS 가입 후 아래 세 값을 교체하세요 ★
+  var EJS_PUBLIC_KEY  = 'YOUR_PUBLIC_KEY';   // Account → General → Public Key
+  var EJS_SERVICE_ID  = 'YOUR_SERVICE_ID';   // Email Services → Service ID
+  var EJS_TEMPLATE_ID = 'YOUR_TEMPLATE_ID';  // Email Templates → Template ID
 
-  var modal      = document.getElementById('contact-modal');
-  var openBtn    = document.getElementById('contact-fab');
-  var closeBtn   = document.getElementById('contact-close-btn');
-  var submitBtn  = document.getElementById('contact-submit-btn');
+  if (window.emailjs) emailjs.init({ publicKey: EJS_PUBLIC_KEY });
+
+  var modal     = document.getElementById('contact-modal');
+  var openBtn   = document.getElementById('contact-fab');
+  var closeBtn  = document.getElementById('contact-close-btn');
+  var submitBtn = document.getElementById('contact-submit-btn');
 
   function openModal() {
     modal.classList.add('open');
@@ -2025,6 +2030,22 @@ if ('serviceWorker' in navigator) {
   function closeModal() {
     modal.classList.remove('open');
     document.body.style.overflow = '';
+    setSubmitState('idle');
+  }
+
+  function setSubmitState(state) {
+    if (state === 'loading') {
+      submitBtn.disabled = true;
+      submitBtn.textContent = '전송 중...';
+    } else if (state === 'success') {
+      submitBtn.disabled = true;
+      submitBtn.textContent = '✅ 전송 완료!';
+      submitBtn.style.background = '#2e8b57';
+    } else {
+      submitBtn.disabled = false;
+      submitBtn.textContent = '✉️ 메일 보내기';
+      submitBtn.style.background = '';
+    }
   }
 
   openBtn.addEventListener('click', openModal);
@@ -2043,28 +2064,39 @@ if ('serviceWorker' in navigator) {
     var msg   = document.getElementById('c-msg').value.trim();
 
     if (!msg) {
-      document.getElementById('c-msg').focus();
-      document.getElementById('c-msg').style.borderColor = '#c00';
-      setTimeout(function () { document.getElementById('c-msg').style.borderColor = ''; }, 1500);
+      var ta = document.getElementById('c-msg');
+      ta.focus();
+      ta.style.borderColor = '#c00';
+      setTimeout(function () { ta.style.borderColor = ''; }, 1500);
       return;
     }
 
-    var subject = '[세방(주) 문의하기]' + (name ? ' ' + name : '');
-    var body = '';
-    if (name)  body += '이름/회사: ' + name  + '\n';
-    if (phone) body += '연락처: '   + phone  + '\n';
-    if (email) body += '이메일: '   + email  + '\n';
-    body += '\n문의 내용:\n' + msg;
+    if (!window.emailjs || EJS_PUBLIC_KEY === 'YOUR_PUBLIC_KEY') {
+      alert('EmailJS 키가 설정되지 않았습니다.\nEJS_PUBLIC_KEY / EJS_SERVICE_ID / EJS_TEMPLATE_ID를 입력해 주세요.');
+      return;
+    }
 
-    var mailto = 'mailto:' + CONTACT_EMAIL +
-      '?subject=' + encodeURIComponent(subject) +
-      '&body='    + encodeURIComponent(body);
+    setSubmitState('loading');
 
-    var a = document.createElement('a');
-    a.href = mailto;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+    emailjs.send(EJS_SERVICE_ID, EJS_TEMPLATE_ID, {
+      subject:    '[세방(주) 문의]' + (name ? ' ' + name : ''),
+      from_name:  name  || '(미입력)',
+      from_phone: phone || '(미입력)',
+      from_email: email || '(미입력)',
+      message:    msg
+    })
+    .then(function () {
+      setSubmitState('success');
+      document.getElementById('c-name').value  = '';
+      document.getElementById('c-phone').value = '';
+      document.getElementById('c-email').value = '';
+      document.getElementById('c-msg').value   = '';
+      setTimeout(closeModal, 1800);
+    })
+    .catch(function (err) {
+      setSubmitState('idle');
+      alert('전송 실패: ' + (err.text || JSON.stringify(err)) + '\nEmailJS 설정을 확인해 주세요.');
+    });
   });
 })();
 
