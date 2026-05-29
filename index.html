@@ -1107,10 +1107,6 @@ function selectItem(i) {
   hideAC();
   inp.blur();
   setDone('sn1', 'sv1', item.l.split(' ').slice(-2).join(' '));
-  if (window.innerWidth < 900) {
-    var _s2 = document.querySelectorAll('.step')[1];
-    if (_s2) setTimeout(function () { _s2.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 150);
-  }
   tryShowResult();
 }
 
