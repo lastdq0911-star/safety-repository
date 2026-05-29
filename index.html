@@ -907,6 +907,12 @@ function clearSurcharges() {
   document.getElementById('weight-wrap').classList.remove('show');
   document.getElementById('w40').value = '';
   document.getElementById('w20').value = '';
+  if (state.portData) {
+    FARE_TYPES.forEach(function (k, i) {
+      document.getElementById('f40-' + k).textContent = fmt(state.portData.f40[i]);
+      document.getElementById('f20-' + k).textContent = fmt(state.portData.f20[i]);
+    });
+  }
   clearDone('sn4', 'sv4', '4');
   document.getElementById('sur-result').classList.remove('show');
   var _s4=document.getElementById('step4-card'); if(_s4){_s4.classList.remove('sur-active'); var _rb=document.getElementById('sur-reset-btn'); if(_rb)_rb.style.display='none'; var _t4=document.getElementById('step4-title'); if(_t4)_t4.innerHTML='할증 <span class="step-tag">(선택사항)</span>';}
