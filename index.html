@@ -70,8 +70,6 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
 .step-tag { font-size:0.65rem; color:var(--text3); font-weight:400; margin-left:4px; }
 .step-val { font-size:0.75rem; color:var(--mint); font-weight:700; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 .step-body { padding:10px 16px; }
-#step1.collapsed .step-head { border-bottom:none; border-radius:calc(var(--radius) - 1px); }
-#step1.collapsed .step-body { display:none; }
 
 /* ── 검색창 ── */
 .search-wrap { position:relative; z-index:200; }
@@ -881,12 +879,6 @@ function clearDone(numId, valId, numTxt) {
   document.getElementById(valId).textContent = '';
 }
 
-document.getElementById('sn1').addEventListener('click', function () {
-  if (!this.classList.contains('done')) return;
-  document.getElementById('step1').classList.remove('collapsed');
-  setTimeout(function () { document.getElementById('search-input').focus(); }, 50);
-});
-
 function showInlineError(msg) {
   const el = document.getElementById('inline-error');
   el.textContent = msg;
@@ -931,7 +923,6 @@ function resetAll() {
   hideAC();
 
   clearDone('sn1', 'sv1', '1');
-  document.getElementById('step1').classList.remove('collapsed');
   clearDone('sn2', 'sv2', '2');
   clearDone('sn3', 'sv3', '3');
 
@@ -1116,7 +1107,10 @@ function selectItem(i) {
   hideAC();
   inp.blur();
   setDone('sn1', 'sv1', item.l.split(' ').slice(-2).join(' '));
-  document.getElementById('step1').classList.add('collapsed');
+  if (window.innerWidth < 900) {
+    var _s2 = document.querySelectorAll('.step')[1];
+    if (_s2) setTimeout(function () { _s2.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 150);
+  }
   tryShowResult();
 }
 
