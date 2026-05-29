@@ -42,7 +42,7 @@
   --radius:14px; --radius-sm:10px;
 }
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; padding-bottom:60px; }
+body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; padding-bottom:56px; }
 
 /* ── 헤더 ── */
 .header { background:#3d3d3d; padding:0 12px; height:58px; display:flex; align-items:center; gap:8px; position:sticky; top:0; z-index:100; box-shadow:0 2px 10px rgba(0,0,0,0.25); border-bottom:3px solid var(--mint); }
@@ -190,7 +190,7 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
 #inline-error { display:none; margin:10px 14px 0; padding:11px 13px; background:#fff0f0; border:1px solid rgba(200,0,0,0.20); border-left:3px solid #c00; border-radius:var(--radius-sm); font-size:0.72rem; color:#c00; line-height:1.7; }
 
 /* ── 오프라인 배지 ── */
-#offline-badge { display:none; position:fixed; bottom:14px; left:50%; transform:translateX(-50%); background:#555; color:#fff; font-size:0.7rem; font-weight:700; padding:6px 14px; border-radius:20px; z-index:999; white-space:nowrap; box-shadow:0 2px 10px rgba(0,0,0,0.25); }
+#offline-badge { display:none; position:fixed; bottom:70px; left:50%; transform:translateX(-50%); background:#555; color:#fff; font-size:0.7rem; font-weight:700; padding:6px 14px; border-radius:20px; z-index:999; white-space:nowrap; box-shadow:0 2px 10px rgba(0,0,0,0.25); }
 #offline-badge.show { display:block; }
 
 /* ── 거리별 운임표 모달 ── */
@@ -377,6 +377,33 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
   .sur-detail { margin-top:7px; padding-top:7px; font-size:0.62rem; line-height:1.65; }
   .sur-multi-note { margin-top:5px; font-size:0.6rem; }
 }
+
+/* ── 하단 네비게이션 ── */
+#bottom-nav { position:fixed; bottom:0; left:0; right:0; height:56px; background:#3d3d3d; display:flex; border-top:2px solid var(--mint); z-index:200; }
+.bnav-btn { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; border:none; background:transparent; color:rgba(255,255,255,0.5); font-family:inherit; font-size:0.62rem; font-weight:600; cursor:pointer; transition:color 0.15s,background 0.15s; padding:0 4px; }
+.bnav-btn .bnav-icon { font-size:1.25rem; line-height:1; }
+.bnav-btn.bnav-active { color:#fff; }
+.bnav-btn.bnav-contact { color:var(--mint); }
+.bnav-btn.bnav-contact:hover, .bnav-btn.bnav-contact:active { color:#fff; background:rgba(0,184,169,0.18); }
+
+/* ── 문의 모달 ── */
+#contact-modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:600; align-items:flex-end; justify-content:center; }
+#contact-modal.open { display:flex; }
+.contact-box { background:#fff; width:100%; max-width:520px; border-radius:18px 18px 0 0; overflow:hidden; max-height:92vh; display:flex; flex-direction:column; box-shadow:0 -4px 30px rgba(0,0,0,0.25); }
+.contact-head { background:#3d3d3d; padding:14px 18px; display:flex; align-items:center; gap:10px; border-bottom:3px solid var(--mint); flex-shrink:0; }
+.contact-head-title { font-size:0.95rem; font-weight:800; color:#fff; flex:1; }
+.contact-close { background:none; border:none; color:rgba(255,255,255,0.65); font-size:1.35rem; cursor:pointer; line-height:1; padding:4px; transition:color 0.1s; }
+.contact-close:hover { color:#fff; }
+.contact-body { padding:18px 18px 24px; overflow-y:auto; flex:1; }
+.contact-field { margin-bottom:14px; }
+.contact-label { display:block; font-size:0.74rem; font-weight:700; color:var(--text2); margin-bottom:5px; }
+.contact-input { width:100%; padding:10px 12px; border:1.5px solid var(--border); border-radius:8px; font-family:inherit; font-size:0.88rem; color:var(--text); background:#fff; outline:none; transition:border-color 0.15s; }
+.contact-input:focus { border-color:var(--mint); }
+.contact-textarea { resize:vertical; min-height:96px; }
+.contact-submit { width:100%; padding:13px; background:var(--mint); color:#fff; border:none; border-radius:10px; font-family:inherit; font-size:0.92rem; font-weight:800; cursor:pointer; transition:background 0.15s; margin-top:6px; }
+.contact-submit:hover { background:#009e91; }
+.contact-submit:active { background:#007f75; }
+.contact-note { font-size:0.68rem; color:var(--text3); text-align:center; margin-top:10px; line-height:1.6; }
 </style>
 </head>
 <body>
@@ -561,6 +588,48 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
 <div id="offline-badge">📵 오프라인 — 캐시된 데이터 사용 중</div>
 
 </div><!-- /pc-wrap -->
+
+<!-- 하단 네비게이션 -->
+<nav id="bottom-nav" aria-label="하단 메뉴">
+  <button class="bnav-btn bnav-active" id="bnav-home" aria-label="안전운임 조회">
+    <span class="bnav-icon">🔍</span>
+    <span>안전운임 조회</span>
+  </button>
+  <button class="bnav-btn bnav-contact" id="bnav-contact" aria-label="라인올물류에 문의하기">
+    <span class="bnav-icon">✉️</span>
+    <span>라인올물류 문의</span>
+  </button>
+</nav>
+
+<!-- 라인올물류 문의 모달 -->
+<div id="contact-modal" role="dialog" aria-modal="true" aria-labelledby="contact-modal-title">
+  <div class="contact-box">
+    <div class="contact-head">
+      <span class="contact-head-title" id="contact-modal-title">✉️ 라인올물류에 문의하기</span>
+      <button class="contact-close" id="contact-close-btn" aria-label="닫기">✕</button>
+    </div>
+    <div class="contact-body">
+      <div class="contact-field">
+        <label class="contact-label" for="c-name">이름 / 회사명</label>
+        <input class="contact-input" id="c-name" type="text" placeholder="홍길동 / (주)물류회사" autocomplete="name">
+      </div>
+      <div class="contact-field">
+        <label class="contact-label" for="c-phone">연락처</label>
+        <input class="contact-input" id="c-phone" type="tel" placeholder="010-0000-0000" autocomplete="tel">
+      </div>
+      <div class="contact-field">
+        <label class="contact-label" for="c-email">회신받을 이메일</label>
+        <input class="contact-input" id="c-email" type="email" placeholder="yourname@company.com" autocomplete="email">
+      </div>
+      <div class="contact-field">
+        <label class="contact-label" for="c-msg">문의 내용 <span style="color:#c00;">*</span></label>
+        <textarea class="contact-input contact-textarea" id="c-msg" placeholder="문의하실 내용을 입력해 주세요&#10;(노선, 컨테이너 규격, 요청사항 등)"></textarea>
+      </div>
+      <button class="contact-submit" id="contact-submit-btn">✉️ 메일 보내기</button>
+      <p class="contact-note">버튼을 누르면 이메일 앱(Gmail 등)이 열립니다.<br>수신: 세방(주) 라인올물류 담당자</p>
+    </div>
+  </div>
+</div>
 
 <!-- 거리별 운임표 모달 -->
 <div id="rate-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title-text">
@@ -1944,6 +2013,64 @@ if ('serviceWorker' in navigator) {
     window.location.reload();
   });
 }
+
+// ────────────────────────────────────────────
+// 라인올물류 문의 모달
+// ────────────────────────────────────────────
+(function () {
+  // TODO: 실제 세방(주) 담당자 이메일 주소로 교체
+  var CONTACT_EMAIL = 'contact@lineall.co.kr';
+
+  var modal      = document.getElementById('contact-modal');
+  var openBtn    = document.getElementById('bnav-contact');
+  var closeBtn   = document.getElementById('contact-close-btn');
+  var submitBtn  = document.getElementById('contact-submit-btn');
+
+  function openModal() {
+    modal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeModal() {
+    modal.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  openBtn.addEventListener('click', openModal);
+  closeBtn.addEventListener('click', closeModal);
+  modal.addEventListener('click', function (e) {
+    if (e.target === modal) closeModal();
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && modal.classList.contains('open')) closeModal();
+  });
+
+  submitBtn.addEventListener('click', function () {
+    var name  = document.getElementById('c-name').value.trim();
+    var phone = document.getElementById('c-phone').value.trim();
+    var email = document.getElementById('c-email').value.trim();
+    var msg   = document.getElementById('c-msg').value.trim();
+
+    if (!msg) {
+      document.getElementById('c-msg').focus();
+      document.getElementById('c-msg').style.borderColor = '#c00';
+      setTimeout(function () { document.getElementById('c-msg').style.borderColor = ''; }, 1500);
+      return;
+    }
+
+    var subject = '[라인올물류 문의]' + (name ? ' ' + name : '');
+    var body = '';
+    if (name)  body += '이름/회사: ' + name  + '\n';
+    if (phone) body += '연락처: '   + phone  + '\n';
+    if (email) body += '이메일: '   + email  + '\n';
+    body += '\n문의 내용:\n' + msg;
+
+    var mailto = 'mailto:' + CONTACT_EMAIL +
+      '?subject=' + encodeURIComponent(subject) +
+      '&body='    + encodeURIComponent(body);
+
+    window.open(mailto, '_blank');
+  });
+})();
 
 // ────────────────────────────────────────────
 // 시작
