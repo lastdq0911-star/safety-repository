@@ -1456,9 +1456,14 @@ window.onbeforeunload = function () { window.scrollTo(0, 0); };
 var _hadSWController = false;
 if ('serviceWorker' in navigator) {
   _hadSWController = !!navigator.serviceWorker.controller;
-  navigator.serviceWorker.register('./sw.js')
+  // updateViaCache:'none' → sw.js를 HTTP 캐시 무시하고 항상 새로 가져와 버전 비교
+  navigator.serviceWorker.register('./sw.js', { updateViaCache: 'none' })
     .then(function (reg) {
-      reg.update(); // 페이지 열 때마다 즉시 새 버전 확인
+      reg.update(); // 즉시 새 버전 확인
+      // 탭으로 되돌아올 때마다 재확인 → 배포 후 다음 접속 시 자동 반영
+      document.addEventListener('visibilitychange', function () {
+        if (document.visibilityState === 'visible') reg.update();
+      });
     })
     .catch(function (err) { console.warn('SW 등록 실패:', err); });
 }
