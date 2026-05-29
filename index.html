@@ -174,6 +174,8 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
 .fare-row.selected-type .fl { color:var(--gray-dark); font-weight:700; font-size:0.72rem; }
 .fare-row.selected-type .fv { color:var(--gray-dark); font-size:1rem; font-weight:800; }
 .fare-row.dimmed { opacity:0.3; }
+.fv-sur { display:block; color:var(--mint); font-weight:800; }
+.fv-orig { display:block; color:#bbb; font-size:0.76em; font-weight:400; }
 
 /* ── 할증 최종운임 ── */
 .sur-result { margin:10px 14px 0; background:linear-gradient(135deg,#f8f8f8,#f0f0f0); border:1.5px solid var(--gray); border-top:3px solid var(--mint); border-radius:var(--radius-sm); box-shadow:var(--shadow); scroll-margin-top:80px; visibility:hidden; height:0; overflow:hidden; padding:0; margin-top:0; border:none; }
@@ -1353,6 +1355,15 @@ function calcSur() {
   else clearDone('sn4', 'sv4', '4');
 
   const surEl = document.getElementById('sur-result');
+
+  // 항상 운임 행을 기본값으로 초기화 (이전 할증 표시 제거)
+  if (state.portData) {
+    FARE_TYPES.forEach(function (k, i) {
+      document.getElementById('f40-' + k).textContent = fmt(state.portData.f40[i]);
+      document.getElementById('f20-' + k).textContent = fmt(state.portData.f20[i]);
+    });
+  }
+
   if (!state.portData || !allRates.length || !state.fareType) { surEl.classList.remove('show'); return; }
 
   const idx = FARE_TYPE_IDX[state.fareType];
@@ -1366,6 +1377,13 @@ function calcSur() {
   const final40 = Math.round(state.portData.f40[idx] * (1 + rate40 / 100) / 100) * 100 + fixedTotal;
   const final20 = Math.round(state.portData.f20[idx] * (1 + rate20 / 100) / 100) * 100 + fixedTotal;
   const lbl = FARE_LABEL_MAP[state.fareType];
+
+  // 선택된 운임 유형 행: 할증 금액 + 기존 금액 실선 표시
+  var ftKey = state.fareType;
+  document.getElementById('f40-' + ftKey).innerHTML =
+    '<span class="fv-sur">' + fmt(final40) + '</span><s class="fv-orig">' + fmt(state.portData.f40[idx]) + '</s>';
+  document.getElementById('f20-' + ftKey).innerHTML =
+    '<span class="fv-sur">' + fmt(final20) + '</span><s class="fv-orig">' + fmt(state.portData.f20[idx]) + '</s>';
 
   document.getElementById('sr-label-40').textContent = '40FT ' + lbl + ' (최종)';
   document.getElementById('sr-label-20').textContent = '20FT ' + lbl + ' (최종)';
