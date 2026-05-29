@@ -34,13 +34,14 @@
 }
 :root {
   --bg:#f0faf9; --bg2:#fff; --bg3:#f5f5f5;
-  --gray:#5a5a5a; --gray-dark:#3d3d3d;
+  --gray:#45565f; --gray-dark:#24333c;
   --mint:#00b8a9; --mint-dim:rgba(0,184,169,0.10);
   --gold:#c47800;
-  --text:#1a1a1a; --text2:#5a5a5a; --text3:#9a9a9a;
+  --text:#1f2a30; --text2:#566069; --text3:#9aa3a8;
   --border:#d0d0d0; --border2:#e8e8e8;
   --shadow:0 2px 14px rgba(0,0,0,0.10);
   --radius:14px; --radius-sm:10px;
+  --page-max:1400px; --page-pad:5%;
 }
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
 body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; padding-bottom:20px; }
@@ -262,7 +263,7 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
 
   /* ── 2. 헤더 ── */
   .header { flex-shrink:0; position:static; height:54px; }
-  .header-inner { max-width:1400px; margin:0 auto; padding:0 5%; gap:12px; }
+  .header-inner { max-width:var(--page-max); margin:0 auto; padding:0 var(--page-pad); gap:12px; }
   .sebang-logo { height:30px; width:auto; }
   .header-divider { height:28px; }
   .header-text h1 { font-size:0.95rem; }
@@ -271,7 +272,7 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
 
   /* ── 3. 배너 ── */
   .banner { flex-shrink:0; }
-  .banner-inner { max-width:1400px; margin:0 auto; padding:5px 5%; }
+  .banner-inner { max-width:var(--page-max); margin:0 auto; padding:5px var(--page-pad); }
   .banner-label { font-size:0.65rem; }
   .banner-select { font-size:0.68rem; }
   .banner-gov { font-size:0.62rem; }
@@ -282,9 +283,9 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
     display:grid;
     grid-template-columns:minmax(0,1fr) 340px;
     gap:16px;
-    padding:10px 5%;
+    padding:10px var(--page-pad);
     overflow:hidden;
-    max-width:1400px;
+    max-width:var(--page-max);
     margin-left:auto;
     margin-right:auto;
     width:100%;
