@@ -33,7 +33,7 @@
   font-display: swap;
 }
 :root {
-  --bg:#e8f1fb; --bg2:#fff; --bg3:#f5f5f5;
+  --bg:#f0faf9; --bg2:#fff; --bg3:#f5f5f5;
   --gray:#5a5a5a; --gray-dark:#3d3d3d;
   --mint:#00b8a9; --mint-dim:rgba(0,184,169,0.10);
   --gold:#c47800;
@@ -58,7 +58,7 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
 .banner { background:#fff; border-bottom:1px solid var(--border); padding:8px 18px; display:flex; align-items:center; gap:8px; }
 .banner-label { font-size:0.7rem; color:var(--text2); flex-shrink:0; }
 .banner-select { font-size:0.75rem; font-weight:700; color:var(--gray-dark); background:transparent; border:none; outline:none; cursor:pointer; font-family:inherit; }
-.banner-gov { margin-left:auto; font-size:0.65rem; color:var(--text3); white-space:nowrap; }
+.banner-gov { margin-left:auto; font-size:0.68rem; color:var(--text2); white-space:nowrap; font-weight:600; }
 
 /* ── STEP 카드 ── */
 .step { margin:14px 14px 0; background:var(--bg2); border:1px solid var(--border); border-left:4px solid var(--mint); border-radius:var(--radius); overflow:visible; box-shadow:var(--shadow); position:relative; }
@@ -263,7 +263,7 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
   /* ── 2. 헤더 ── */
   .header {
     flex-shrink:0; position:static;
-    height:54px; padding:0 20px; gap:12px;
+    height:54px; padding:0 max(5%, calc((100% - 1400px) / 2)); gap:12px;
   }
   .sebang-logo { height:30px; width:auto; }
   .header-divider { height:28px; }
@@ -272,7 +272,7 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
   .vat { font-size:0.6rem; padding:4px 9px; }
 
   /* ── 3. 배너 ── */
-  .banner { flex-shrink:0; padding:5px 5%; }
+  .banner { flex-shrink:0; padding:5px max(5%, calc((100% - 1400px) / 2)); }
   .banner-label { font-size:0.65rem; }
   .banner-select { font-size:0.68rem; }
   .banner-gov { font-size:0.62rem; }
@@ -432,7 +432,7 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
   <div class="header-divider"></div>
   <div class="header-text">
     <h1>수출입 컨테이너 안전운임</h1>
-    <p id="header-gov-text">데이터 로딩 중...</p>
+    <p id="header-gov-text" style="display:none;"></p>
   </div>
   <div class="vat">VAT 별도</div>
 </div>
@@ -798,9 +798,8 @@ function loadNoticeData(notice) {
 }
 
 function updateNoticeUI(notice) {
-  document.getElementById('header-gov-text').textContent =
+  document.getElementById('banner-gov').textContent =
     notice.year + '년 국토교통부 고시 ' + notice.gov;
-  document.getElementById('banner-gov').textContent = notice.gov;
 }
 
 function showLoading(label) {
