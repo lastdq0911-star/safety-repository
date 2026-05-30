@@ -955,6 +955,12 @@ function resetAll() {
   document.getElementById('r-km').textContent = '';
   document.getElementById('result').style.display = 'none';
   hideInlineError();
+
+  // 모달이 열려 있으면 즉시 갱신 (고시 전환 등)
+  modalFareIdx = 0;
+  if (document.getElementById('rate-modal').classList.contains('open')) {
+    buildAllPanels();
+  }
 }
 
 // ────────────────────────────────────────────
@@ -1627,7 +1633,9 @@ function buildAllPanels() {
 
 function openRateModal() {
   if (!activeNotice) { showInlineError('고시 데이터 로딩 후 이용하실 수 있습니다.'); return; }
-  if (state.fareType) modalFareIdx = FARE_TYPE_IDX[state.fareType];
+
+  // 현재 선택된 운임 유형 반영, 없으면 0(안전위탁)으로 초기화
+  modalFareIdx = state.fareType ? FARE_TYPE_IDX[state.fareType] : 0;
 
   var fareKey = FARE_TYPES[modalFareIdx];
   document.querySelectorAll('[data-mf-fare]').forEach(function (btn) {
@@ -1635,6 +1643,8 @@ function openRateModal() {
   });
 
   document.getElementById('modal-notice-text').textContent = activeNotice.label;
+  // 패널 항상 열린 상태로 초기화
+  document.getElementById('rt-panel-base').classList.add('open');
   buildAllPanels();
   document.querySelector('.modal-body').scrollTop = 0;
   document.getElementById('rate-modal').classList.add('open');
