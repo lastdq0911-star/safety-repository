@@ -205,7 +205,7 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
 #offline-badge.show { display:block; }
 
 /* ── 거리별 운임표 모달 ── */
-#rate-table-btn { appearance:none; font-family:inherit; margin-left:auto; padding:4px 11px; border-radius:6px; border:1.5px solid var(--border); background:#fff; color:var(--gray-dark); font-size:0.68rem; font-weight:700; cursor:pointer; white-space:nowrap; transition:all 0.15s; }
+#rate-table-btn { appearance:none; font-family:inherit; margin-left:auto; padding:4px 11px; border-radius:6px; border:1.5px solid var(--border); background:#fff; color:var(--gray-dark); font-size:0.68rem; font-weight:700; cursor:pointer; white-space:nowrap; transition:all 0.15s; touch-action:manipulation; }
 #rate-table-btn:hover { background:var(--gray-dark); color:#fff; border-color:var(--gray-dark); }
 .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.55); z-index:500; align-items:center; justify-content:center; padding:16px; }
 .modal-overlay.open { display:flex; }
@@ -1666,6 +1666,10 @@ document.querySelectorAll('.rt-panel-head').forEach(function (head) {
 });
 
 document.getElementById('rate-table-btn').addEventListener('click', openRateModal);
+document.getElementById('rate-table-btn').addEventListener('touchend', function (e) {
+  e.preventDefault();
+  openRateModal();
+});
 document.getElementById('modal-close-btn').addEventListener('click', closeRateModal);
 document.getElementById('rate-modal').addEventListener('click', function (e) {
   if (e.target === document.getElementById('rate-modal')) closeRateModal();
