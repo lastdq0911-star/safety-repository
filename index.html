@@ -1646,9 +1646,12 @@ function openRateModal() {
   // 패널 항상 열린 상태로 초기화
   document.getElementById('rt-panel-base').classList.add('open');
   buildAllPanels();
-  document.querySelector('.modal-body').scrollTop = 0;
   document.getElementById('rate-modal').classList.add('open');
   document.body.style.overflow = 'hidden';
+  // 모달이 실제로 표시된 후 스크롤 최상단으로
+  requestAnimationFrame(function () {
+    document.querySelector('.modal-body').scrollTop = 0;
+  });
 }
 
 function closeRateModal() {
