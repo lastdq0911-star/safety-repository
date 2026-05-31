@@ -1040,8 +1040,8 @@ inp.addEventListener('input', function () {
       });
       return '<div class="ac-item" role="option" aria-selected="false" data-i="' + i + '"><span class="ac-icon" aria-hidden="true">📍</span><span>' + label + '</span></div>';
     }).join('');
-    acList.scrollTop = 0;
     showAC();
+    acList.scrollTop = 0;
     kbIndex = -1;
   }, 150);
 });
@@ -1824,8 +1824,8 @@ function renderRoadAC(q) {
            '<span style="font-size:0.71rem;color:var(--text3);">📍 ' + subAddr + '</span>' +
            '</span></div>';
   }).join('');
-  acList.scrollTop = 0;
   showAC();
+  acList.scrollTop = 0;
   kbIndex = -1;
 }
 
@@ -2073,8 +2073,8 @@ function _doResolveRoadToTariff(addr) {
            (sggLabel ? '<span style="font-size:0.71rem;color:var(--text3);">' + escapeHtml(sggLabel) + '</span>' : '') +
            '</span></div>';
   }).join('');
-  acList.scrollTop = 0;
   showAC();
+  acList.scrollTop = 0;
   kbIndex = -1;
 }
 
