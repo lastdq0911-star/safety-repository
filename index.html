@@ -41,9 +41,10 @@
   --border:#d0d0d0; --border2:#e8e8e8;
   --shadow:0 2px 14px rgba(0,0,0,0.10);
   --radius:14px; --radius-sm:10px;
-  --page-max:1280px; --page-pad:5%;
+  --page-max:1408px; --page-pad:5%;
 }
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+html { font-size:17px; }
 body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; padding-bottom:20px; }
 
 /* ── 헤더 ── */
@@ -282,7 +283,7 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
   .pc-wrap {
     flex:1; min-height:0;
     display:grid;
-    grid-template-columns:minmax(0,1fr) 340px;
+    grid-template-columns:minmax(0,1fr) 374px;
     gap:16px;
     padding:10px var(--page-pad);
     overflow:hidden;
