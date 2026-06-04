@@ -183,10 +183,10 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
 .fare-row { display:flex; justify-content:space-between; align-items:center; padding:9px 0; border-bottom:1px solid var(--border2); transition:all 0.2s; }
 .fare-row:last-child { border-bottom:none; }
 .fl { font-size:0.67rem; color:var(--text2); }
-.fv { font-family:'JetBrains Mono',monospace; font-size:0.8rem; font-weight:600; color:var(--text); white-space:nowrap; }
-.fare-row.selected-type { background:#f5f5f5; border-radius:7px; padding:8px 8px; margin:2px -8px; border:1px solid #c0c0c0 !important; flex-direction:column; align-items:flex-start; gap:2px; }
-.fare-row.selected-type .fl { color:var(--gray-dark); font-weight:700; font-size:0.68rem; }
-.fare-row.selected-type .fv { color:var(--gray-dark); font-size:0.92rem; font-weight:800; }
+.fv { font-family:'JetBrains Mono',monospace; font-size:0.8rem; font-weight:600; color:var(--text); }
+.fare-row.selected-type { background:#f5f5f5; border-radius:7px; padding:9px 8px; margin:2px -8px; border:1px solid #c0c0c0 !important; }
+.fare-row.selected-type .fl { color:var(--gray-dark); font-weight:700; font-size:0.72rem; }
+.fare-row.selected-type .fv { color:var(--gray-dark); font-size:1rem; font-weight:800; text-align:right; }
 .fare-row.dimmed { opacity:0.3; }
 .fv-orig { display:block; color:#b0b0b0; font-size:0.76em; font-weight:400; line-height:1.3; }
 .fv-sur { display:block; color:var(--mint); font-weight:800; font-size:1.05em; line-height:1.3; }
@@ -404,9 +404,8 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
   .fare-row { padding:3px 0; }
   .fl { font-size:0.65rem; }
   .fv { font-size:0.8rem; }
-  .fare-row.selected-type { flex-direction:row; align-items:center; padding:5px 8px; gap:0; }
-  .fare-row.selected-type .fl { font-size:0.72rem; }
-  .fare-row.selected-type .fv { font-size:0.9rem; text-align:right; }
+  .fare-row.selected-type { padding:5px 8px; }
+  .fare-row.selected-type .fv { font-size:0.9rem; }
   /* VAT 노트: 결과 카드 맨 아래 고정 */
   .note { flex-shrink:0; margin:0; padding:6px 11px; font-size:0.6rem; line-height:1.45; }
 
