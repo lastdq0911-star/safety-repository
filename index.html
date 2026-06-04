@@ -203,7 +203,7 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
 #clause-modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:600; align-items:flex-end; justify-content:center; }
 #clause-modal.open { display:flex; }
 .clause-box { background:#fff; width:100%; max-width:900px; border-radius:18px 18px 0 0; overflow:hidden; max-height:92vh; display:flex; flex-direction:column; box-shadow:0 -4px 30px rgba(0,0,0,0.25); }
-.clause-head { background:var(--gray-dark); padding:11px 14px; display:flex; align-items:center; gap:7px; border-bottom:3px solid var(--mint); flex-shrink:0; position:relative; }
+.clause-head { background:var(--gray-dark); padding:11px 14px; display:flex; align-items:center; gap:7px; border-bottom:3px solid var(--mint); flex-shrink:0; position:relative; cursor:grab; user-select:none; }
 .clause-head-title { font-size:0.88rem; font-weight:800; color:#fff; position:absolute; left:50%; transform:translateX(-50%); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:60%; pointer-events:none; }
 .clause-close { background:none; border:none; color:rgba(255,255,255,0.65); font-size:1.3rem; cursor:pointer; line-height:1; padding:4px; transition:color 0.1s; font-family:inherit; }
 .clause-close:hover { color:#fff; }
@@ -262,7 +262,7 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
 .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.55); z-index:500; align-items:center; justify-content:center; padding:16px; }
 .modal-overlay.open { display:flex; }
 .modal-box { background:#fff; border-radius:16px; width:100%; max-width:560px; max-height:88vh; display:flex; flex-direction:column; box-shadow:0 8px 40px rgba(0,0,0,0.3); overflow:hidden; }
-.modal-head { background:#3d3d3d; padding:13px 18px; display:flex; align-items:center; gap:10px; border-bottom:3px solid var(--mint); flex-shrink:0; }
+.modal-head { background:#3d3d3d; padding:13px 18px; display:flex; align-items:center; gap:10px; border-bottom:3px solid var(--mint); flex-shrink:0; cursor:grab; user-select:none; }
 .modal-title { font-size:0.92rem; font-weight:700; color:#fff; flex:1; }
 .modal-notice { font-size:0.64rem; color:rgba(255,255,255,0.55); white-space:nowrap; }
 .modal-close { appearance:none; background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.3); color:#fff; font-size:0.9rem; width:28px; height:28px; border-radius:7px; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:background 0.15s; }
@@ -1460,6 +1460,9 @@ function selectPort(portName) {
   });
   applyFareHighlight();
   calcSur();
+  if (document.getElementById('rate-modal').classList.contains('open')) {
+    buildAllPanels();
+  }
 }
 
 // ────────────────────────────────────────────
@@ -1752,13 +1755,8 @@ function buildAllPanels() {
     (FARE_LABEL_MAP[fareKey] || fareKey) + ' · 왕복 운임';
 
   var baseMap = buildBaseDistMap();
-  // 2026-02만 하이라이트 지원 (TARIFF 실거리 = 고시 km 일치)
-  // 구 고시는 TARIFF dist와 고시 별표 km이 상이하므로 하이라이트 없음
-  var currentDist = null;
-  if (activeNotice && activeNotice.id === '2026-02' && state.entry && state.type === '왕복') {
-    var _bs = state.entry['부산신항'];
-    if (_bs) currentDist = _bs.dist;
-  }
+  // 현재 선택된 기점(포트)의 거리를 하이라이트 기준으로 사용
+  var currentDist = (state.portData && state.type === '왕복') ? state.portData.dist : null;
   var dists = Object.keys(baseMap).map(Number).sort(function (a, b) { return a - b; });
   var tbody = document.getElementById('tbody-base');
   if (!dists.length) {
@@ -1767,9 +1765,12 @@ function buildAllPanels() {
     function w(n) { return Number(n).toLocaleString('ko-KR') + '원'; }
     tbody.innerHTML = dists.map(function (dist) {
       var r = baseMap[dist];
-      var hl = dist === currentDist ? ' class="rt-highlight"' : '';
+      var isHL = dist === currentDist;
+      var f20 = (isHL && state.portData) ? state.portData.f20[modalFareIdx] : r.f20;
+      var f40 = (isHL && state.portData) ? state.portData.f40[modalFareIdx] : r.f40;
+      var hl = isHL ? ' class="rt-highlight"' : '';
       return '<tr' + hl + '><td>' + dist + '</td><td>' + (dist * 2) + '</td>' +
-             '<td>' + w(r.f20) + '</td><td>' + w(r.f40) + '</td></tr>';
+             '<td>' + w(f20) + '</td><td>' + w(f40) + '</td></tr>';
     }).join('');
   }
 
@@ -1794,9 +1795,10 @@ function openRateModal() {
   // 패널 항상 열린 상태로 초기화
   document.getElementById('rt-panel-base').classList.add('open');
   buildAllPanels();
+  var rateBox = document.querySelector('.modal-box');
+  if (rateBox._resetDrag) rateBox._resetDrag();
   document.getElementById('rate-modal').classList.add('open');
   document.body.style.overflow = 'hidden';
-  // 모달이 실제로 표시된 후 스크롤 최상단으로
   requestAnimationFrame(function () {
     document.querySelector('.modal-body').scrollTop = 0;
   });
@@ -1935,6 +1937,8 @@ function openModal() {
   selArt=null; D.chapters.forEach(function(_,i){expanded[i]=false;}); srch.value='';
   titleEl.textContent='수출입 컨테이너 품목 안전운임 부대조항';
   detPh.style.display=''; detView.style.display='none';
+  var cBox = document.querySelector('.clause-box');
+  if (cBox && cBox._resetDrag) cBox._resetDrag();
   renderTOC(); modal.classList.add('open'); document.body.style.overflow='hidden';
 }
 function closeModal() { modal.classList.remove('open'); document.body.style.overflow=''; }
@@ -2556,6 +2560,38 @@ if ('serviceWorker' in navigator) {
 // 시작
 // ────────────────────────────────────────────
 initNotices();
+
+// ── 드래그 이동 (거리별 운임표 · 부대조항 모달) ──
+(function () {
+  function makeDraggable(boxEl, handleEl) {
+    var ox = 0, oy = 0;
+    handleEl.addEventListener('mousedown', function (e) {
+      if (e.button !== 0) return;
+      if (e.target.closest('button,a,input,select,textarea')) return;
+      var startX = e.clientX - ox;
+      var startY = e.clientY - oy;
+      handleEl.style.cursor = 'grabbing';
+      function onMove(e) {
+        ox = e.clientX - startX;
+        oy = e.clientY - startY;
+        boxEl.style.transform = 'translate(' + ox + 'px,' + oy + 'px)';
+      }
+      function onUp() {
+        handleEl.style.cursor = 'grab';
+        document.removeEventListener('mousemove', onMove);
+        document.removeEventListener('mouseup', onUp);
+      }
+      document.addEventListener('mousemove', onMove);
+      document.addEventListener('mouseup', onUp);
+      e.preventDefault();
+    });
+    boxEl._resetDrag = function () { ox = 0; oy = 0; boxEl.style.transform = ''; };
+  }
+  makeDraggable(document.querySelector('.modal-box'), document.querySelector('.modal-head'));
+  var cBox = document.querySelector('.clause-box');
+  var cHead = document.querySelector('.clause-head');
+  if (cBox && cHead) makeDraggable(cBox, cHead);
+}());
 
 })();
 </script>
