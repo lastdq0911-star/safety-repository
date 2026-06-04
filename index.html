@@ -124,7 +124,7 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
 
 /* ── 할증 ── */
 .sur-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
-.sur-item { appearance:none; -webkit-appearance:none; font-family:inherit; text-align:left; width:100%; background:var(--bg3); border:1.5px solid var(--border); border-radius:var(--radius-sm); padding:13px; cursor:pointer; transition:all 0.15s; min-height:68px; display:flex; flex-direction:column; justify-content:center; }
+.sur-item { appearance:none; -webkit-appearance:none; font-family:inherit; text-align:left; width:100%; background:var(--bg3); border:1.5px solid var(--border); border-radius:var(--radius-sm); padding:13px; cursor:pointer; transition:all 0.15s; min-height:84px; display:flex; flex-direction:column; justify-content:center; }
 .sur-item.checked { background:var(--mint-dim); border-color:var(--mint); }
 .sur-item.checked-warn { background:var(--mint-dim); border-color:var(--mint); }
 .sur-top { display:flex; align-items:center; gap:7px; }
@@ -1836,7 +1836,7 @@ var titleEl = document.getElementById('clause-modal-title');
 var expanded = {};
 var selArt   = null;
 
-D.chapters.forEach(function(_, i) { expanded[i] = true; });
+D.chapters.forEach(function(_, i) { expanded[i] = false; });
 
 function hl(text, q) {
   if (!q) return text;
@@ -1919,7 +1919,7 @@ function doCopy(text, btn) {
 
 document.getElementById('cl-copy-link').addEventListener('click', function() {
   if (!selArt) return;
-  var url = window.location.href.split('#')[0]+'#부대조항-'+selArt.num;
+  var url = window.location.href.split('#')[0]+'#clause-'+selArt.num;
   doCopy('[안전운임 부대조항 '+selArt.num+'. ('+selArt.title+')] '+url, this);
 });
 document.getElementById('cl-copy-text').addEventListener('click', function() {
@@ -1928,7 +1928,7 @@ document.getElementById('cl-copy-text').addEventListener('click', function() {
 });
 
 function openModal() {
-  selArt=null; D.chapters.forEach(function(_,i){expanded[i]=true;}); srch.value='';
+  selArt=null; D.chapters.forEach(function(_,i){expanded[i]=false;}); srch.value='';
   titleEl.textContent='수출입 컨테이너 품목 안전운임 부대조항';
   detPh.style.display=''; detView.style.display='none';
   renderTOC(); modal.classList.add('open'); document.body.style.overflow='hidden';
@@ -1944,6 +1944,16 @@ document.getElementById('clause-btn').addEventListener('click', openModal);
 document.getElementById('clause-btn').addEventListener('touchend', function(e){e.preventDefault();openModal();});
 document.getElementById('clause-close-btn').addEventListener('click', closeModal);
 modal.addEventListener('click', function(e){if(e.target===modal)closeModal();});
+
+function handleClauseHash() {
+  var m = window.location.hash.match(/^#clause-(\d+)$/);
+  if (!m) return;
+  var num = parseInt(m[1]);
+  openModal();
+  selectArt(num);
+}
+setTimeout(handleClauseHash, 600);
+window.addEventListener('hashchange', handleClauseHash);
 }());
 document.getElementById('rate-modal').addEventListener('click', function (e) {
   if (e.target === document.getElementById('rate-modal')) closeRateModal();
