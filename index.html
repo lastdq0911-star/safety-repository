@@ -55,7 +55,7 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
 .header-text { flex:1; min-width:0; text-align:center; }
 .header-text h1 { font-size:0.92rem; font-weight:700; color:var(--gray-dark); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .header-text p { font-size:0.57rem; color:var(--text2); margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.vat { font-size:0.6rem; font-weight:700; color:var(--mint); background:var(--mint-dim); border:1px solid rgba(0,184,169,0.3); padding:3px 7px; border-radius:5px; white-space:nowrap; flex-shrink:0; }
+.vat { font-size:0.6rem; font-weight:700; color:var(--gray-dark); background:#fff; border:1px solid var(--border); padding:3px 7px; border-radius:5px; white-space:nowrap; flex-shrink:0; }
 
 /* ── 배너 ── */
 .banner { background:var(--bg); }
@@ -202,46 +202,52 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
 /* ── 부대조항 모달 ── */
 #clause-modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:600; align-items:flex-end; justify-content:center; }
 #clause-modal.open { display:flex; }
-.clause-box { background:#fff; width:100%; max-width:680px; border-radius:18px 18px 0 0; overflow:hidden; max-height:90vh; display:flex; flex-direction:column; box-shadow:0 -4px 30px rgba(0,0,0,0.25); }
-.clause-head { background:var(--gray-dark); padding:12px 16px; display:flex; align-items:center; gap:8px; border-bottom:3px solid var(--mint); flex-shrink:0; }
-.clause-back { appearance:none; background:none; border:none; color:rgba(255,255,255,0.75); font-size:1.5rem; cursor:pointer; line-height:1; padding:0 4px 0 0; transition:color 0.1s; font-family:inherit; display:none; }
-.clause-back:hover { color:#fff; }
+.clause-box { background:#fff; width:100%; max-width:900px; border-radius:18px 18px 0 0; overflow:hidden; max-height:92vh; display:flex; flex-direction:column; box-shadow:0 -4px 30px rgba(0,0,0,0.25); }
+.clause-head { background:var(--gray-dark); padding:11px 14px; display:flex; align-items:center; gap:7px; border-bottom:3px solid var(--mint); flex-shrink:0; }
+.cl-mob-back { appearance:none; background:none; border:none; color:rgba(255,255,255,0.75); font-size:1.4rem; cursor:pointer; line-height:1; padding:0 2px 0 0; display:none; font-family:inherit; transition:color 0.1s; }
+.cl-mob-back:hover { color:#fff; }
 .clause-head-title { font-size:0.91rem; font-weight:800; color:#fff; flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-.clause-close { background:none; border:none; color:rgba(255,255,255,0.65); font-size:1.35rem; cursor:pointer; line-height:1; padding:4px; transition:color 0.1s; font-family:inherit; }
+.clause-close { background:none; border:none; color:rgba(255,255,255,0.65); font-size:1.3rem; cursor:pointer; line-height:1; padding:4px; transition:color 0.1s; font-family:inherit; }
 .clause-close:hover { color:#fff; }
-.clause-crumb { padding:7px 16px 0; display:none; flex-wrap:wrap; gap:3px; align-items:center; flex-shrink:0; }
-.clause-crumb.show { display:flex; }
-.crumb-item { font-size:0.63rem; color:var(--text3); }
-.crumb-link { color:var(--mint); cursor:pointer; text-decoration:underline; }
-.crumb-sep { font-size:0.6rem; color:var(--border); }
-.clause-body { padding:12px 14px 28px; overflow-y:auto; flex:1; -webkit-overflow-scrolling:touch; }
-/* 1단계: 섹션 선택 카드 */
-.cnav-card { display:flex; align-items:center; gap:14px; padding:16px 16px; background:#f8fffe; border:1.5px solid rgba(0,184,169,0.2); border-radius:12px; margin-bottom:10px; cursor:pointer; transition:all 0.15s; }
-.cnav-card:hover,.cnav-card:active { background:#edfdf9; border-color:var(--mint); box-shadow:0 2px 10px rgba(0,184,169,0.12); }
-.cnav-badge { background:var(--mint); color:#fff; font-size:0.68rem; font-weight:800; padding:3px 9px; border-radius:6px; white-space:nowrap; flex-shrink:0; letter-spacing:0.02em; }
-.cnav-card-content { flex:1; min-width:0; }
-.cnav-card-title { font-size:0.84rem; font-weight:800; color:var(--gray-dark); line-height:1.4; }
-.cnav-card-sub { font-size:0.62rem; color:var(--text3); margin-top:2px; }
-.cnav-card-arrow { font-size:1.3rem; color:var(--mint); flex-shrink:0; line-height:1; }
-/* 2단계: 장(章) 목록 */
-.cnav-item { display:flex; align-items:center; gap:12px; padding:12px 14px; border:1px solid var(--border2); border-radius:10px; margin-bottom:7px; cursor:pointer; transition:all 0.15s; }
-.cnav-item:hover,.cnav-item:active { background:var(--bg3); border-color:var(--mint); }
-.cnav-dot { width:8px; height:8px; border-radius:50%; background:var(--mint); flex-shrink:0; }
-.cnav-item-content { flex:1; min-width:0; }
-.cnav-item-title { font-size:0.81rem; font-weight:700; color:var(--gray-dark); }
-.cnav-item-desc { font-size:0.61rem; color:var(--text3); margin-top:1px; }
-.cnav-item-arrow { font-size:1rem; color:var(--text3); flex-shrink:0; }
-/* 3단계: 조항 내용 */
-.ca-chapter { display:none; }
-.ca-art { margin:10px 0 4px; padding:8px 10px 5px; border-left:3px solid var(--mint); background:#f8fffe; border-radius:0 8px 8px 0; }
-.ca-num { font-weight:800; color:var(--mint); font-size:0.79rem; margin-right:5px; }
-.ca-artbody { font-size:0.77rem; color:var(--gray-dark); font-weight:700; line-height:1.55; }
-.ca-sub { font-size:0.73rem; color:var(--text); line-height:1.65; padding:1px 0; }
-.ca-sub1 { padding-left:14px; }
-.ca-sub2 { padding-left:30px; color:var(--text2); }
-.ca-p { font-size:0.73rem; color:var(--text); line-height:1.65; margin:2px 0; }
-.ca-ind0,.ca-ind1,.ca-ind2,.ca-ind3 { padding-left:0; }
-.ca-govnote { font-size:0.61rem; color:var(--text3); background:#fffbe6; border-left:3px solid var(--gold); padding:7px 11px; border-radius:0 6px 6px 0; margin-top:14px; line-height:1.6; }
+.clause-layout { display:flex; flex:1; min-height:0; overflow:hidden; }
+.cl-toc { width:220px; flex-shrink:0; display:flex; flex-direction:column; border-right:1px solid var(--border2); min-height:0; }
+.cl-search-wrap { padding:9px 10px 5px; flex-shrink:0; }
+.cl-search { width:100%; box-sizing:border-box; padding:7px 10px; border:1.5px solid var(--border); border-radius:8px; font-size:0.72rem; font-family:inherit; color:var(--text); outline:none; background:#fff; }
+.cl-search:focus { border-color:var(--mint); }
+.cl-toc-acts { padding:0 10px 6px; display:flex; gap:5px; flex-shrink:0; }
+.cl-toc-act { appearance:none; font-family:inherit; font-size:0.61rem; color:var(--text3); background:none; border:1px solid var(--border2); border-radius:5px; padding:3px 7px; cursor:pointer; transition:all 0.12s; }
+.cl-toc-act:hover { background:var(--bg3); color:var(--text); }
+.cl-toc-tree { flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; }
+.cl-ch-head { display:flex; align-items:center; gap:5px; padding:7px 10px 6px; cursor:pointer; background:var(--bg3); border-bottom:1px solid var(--border2); position:sticky; top:0; z-index:1; }
+.cl-ch-toggle { font-size:0.7rem; color:var(--mint); flex-shrink:0; width:12px; }
+.cl-ch-title { font-size:0.73rem; font-weight:800; color:var(--gray-dark); }
+.cl-ch-body.collapsed { display:none; }
+.cl-art { display:flex; align-items:flex-start; gap:6px; padding:5px 10px 5px 18px; cursor:pointer; transition:background 0.1s; border-bottom:1px solid rgba(0,0,0,0.04); }
+.cl-art:hover { background:rgba(0,184,169,0.06); }
+.cl-art.active { background:rgba(0,184,169,0.12); border-left:3px solid var(--mint); padding-left:15px; }
+.cl-art-num { font-size:0.65rem; font-weight:800; color:var(--mint); flex-shrink:0; min-width:17px; padding-top:1px; }
+.cl-art-title { font-size:0.68rem; color:var(--text); line-height:1.45; }
+.cl-art-title mark { background:rgba(255,200,0,0.4); border-radius:2px; padding:0 1px; font-style:normal; }
+.cl-no-result { padding:16px 12px; font-size:0.72rem; color:var(--text3); text-align:center; }
+.cl-detail { flex:1; min-width:0; display:flex; flex-direction:column; min-height:0; }
+.cl-detail-ph { display:flex; flex-direction:column; align-items:center; justify-content:center; flex:1; gap:10px; color:var(--text3); }
+.cl-ph-icon { font-size:2.2rem; }
+.cl-ph-text { font-size:0.72rem; text-align:center; padding:0 20px; line-height:1.5; }
+.cl-detail-view { display:none; flex-direction:column; flex:1; min-height:0; }
+.cl-dv-head { padding:9px 16px 8px; border-bottom:1px solid var(--border2); flex-shrink:0; }
+.dv-ch { font-size:0.6rem; color:var(--mint); font-weight:700; display:block; margin-bottom:2px; }
+.dv-num-title { font-size:0.81rem; font-weight:800; color:var(--gray-dark); line-height:1.4; }
+.cl-dv-body { flex:1; overflow-y:auto; padding:10px 16px 8px; -webkit-overflow-scrolling:touch; }
+.cl-dv-foot { padding:8px 14px; border-top:1px solid var(--border2); display:flex; gap:8px; flex-shrink:0; background:#fafafa; }
+.cl-copy-btn { appearance:none; font-family:inherit; font-size:0.7rem; font-weight:700; padding:6px 13px; border-radius:7px; border:1.5px solid var(--border); background:#fff; color:var(--gray-dark); cursor:pointer; transition:all 0.15s; }
+.cl-copy-btn:hover { background:var(--gray-dark); color:#fff; border-color:var(--gray-dark); }
+.art-lead { font-size:0.75rem; color:var(--text); line-height:1.65; margin:0 0 5px; }
+.art-sub { font-size:0.72rem; color:var(--text); line-height:1.65; }
+.art-sub1 { padding-left:14px; }
+.art-sub2 { padding-left:28px; color:var(--text2); }
+.art-p { font-size:0.72rem; color:var(--text); line-height:1.65; margin:2px 0; }
+.art-govnote { font-size:0.6rem; color:var(--text3); background:#fffbe6; border-left:3px solid var(--gold); padding:6px 10px; border-radius:0 6px 6px 0; margin-top:12px; line-height:1.6; }
+@media (max-width:639px) { .cl-toc { width:100%; border-right:none; } .cl-detail { display:none; } }
 
 /* ── 인라인 에러 ── */
 #inline-error { display:none; margin:10px 14px 0; padding:11px 13px; background:#fff0f0; border:1px solid rgba(200,0,0,0.20); border-left:3px solid #c00; border-radius:var(--radius-sm); font-size:0.72rem; color:#c00; line-height:1.7; }
@@ -253,8 +259,8 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
 /* ── 거리별 운임표 모달 ── */
 #rate-table-btn { appearance:none; font-family:inherit; margin-left:auto; padding:4px 11px; border-radius:6px; border:1.5px solid var(--border); background:#fff; color:var(--gray-dark); font-size:0.68rem; font-weight:700; cursor:pointer; white-space:nowrap; transition:all 0.15s; touch-action:manipulation; }
 #rate-table-btn:hover { background:var(--gray-dark); color:#fff; border-color:var(--gray-dark); }
-#clause-btn { appearance:none; -webkit-appearance:none; font-family:inherit; padding:4px 11px; border-radius:6px; border:1.5px solid rgba(0,184,169,0.5); background:rgba(0,184,169,0.08); color:var(--mint); font-size:0.68rem; font-weight:700; cursor:pointer; white-space:nowrap; transition:all 0.15s; touch-action:manipulation; }
-#clause-btn:hover { background:var(--mint); color:#fff; border-color:var(--mint); }
+#clause-btn { appearance:none; -webkit-appearance:none; font-family:inherit; padding:4px 11px; border-radius:6px; border:1.5px solid var(--border); background:#fff; color:var(--gray-dark); font-size:0.68rem; font-weight:700; cursor:pointer; white-space:nowrap; transition:all 0.15s; touch-action:manipulation; }
+#clause-btn:hover { background:var(--gray-dark); color:#fff; border-color:var(--gray-dark); }
 .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.55); z-index:500; align-items:center; justify-content:center; padding:16px; }
 .modal-overlay.open { display:flex; }
 .modal-box { background:#fff; border-radius:16px; width:100%; max-width:560px; max-height:88vh; display:flex; flex-direction:column; box-shadow:0 8px 40px rgba(0,0,0,0.3); overflow:hidden; }
@@ -446,7 +452,7 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
 
   /* ── 부대조항 모달 PC ── */
   #clause-modal { align-items:center; }
-  .clause-box { border-radius:18px; max-height:86vh; }
+  .clause-box { border-radius:18px; max-height:87vh; }
 }
 
 /* ── 세방(주) 문의 FAB ── */
@@ -675,13 +681,37 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
 <div id="clause-modal" role="dialog" aria-modal="true" aria-labelledby="clause-modal-title">
   <div class="clause-box">
     <div class="clause-head">
-      <button class="clause-back" id="clause-back-btn" aria-label="뒤로">‹</button>
+      <button class="cl-mob-back" id="cl-mob-back" aria-label="목차로">‹</button>
       <span>📋</span>
-      <span id="clause-modal-title" class="clause-head-title">안전운임 부대조항</span>
+      <span id="clause-modal-title" class="clause-head-title">부대조항 목차</span>
       <button class="clause-close" id="clause-close-btn" aria-label="닫기">✕</button>
     </div>
-    <div id="clause-crumb" class="clause-crumb"></div>
-    <div class="clause-body" id="clause-body"></div>
+    <div class="clause-layout">
+      <div class="cl-toc" id="cl-toc">
+        <div class="cl-search-wrap">
+          <input class="cl-search" id="cl-search" type="search" placeholder="🔍 조항 검색 (예: 대기료)">
+        </div>
+        <div class="cl-toc-acts">
+          <button class="cl-toc-act" id="cl-expand-all">전체 펼치기</button>
+          <button class="cl-toc-act" id="cl-collapse-all">전체 접기</button>
+        </div>
+        <div class="cl-toc-tree" id="cl-toc-tree"></div>
+      </div>
+      <div class="cl-detail" id="cl-detail">
+        <div class="cl-detail-ph" id="cl-detail-ph">
+          <div class="cl-ph-icon">📋</div>
+          <div class="cl-ph-text">좌측 목차에서<br>조항을 선택하세요</div>
+        </div>
+        <div class="cl-detail-view" id="cl-detail-view">
+          <div class="cl-dv-head" id="cl-dv-head"></div>
+          <div class="cl-dv-body" id="cl-dv-body"></div>
+          <div class="cl-dv-foot">
+            <button class="cl-copy-btn" id="cl-copy-link">🔗 링크복사</button>
+            <button class="cl-copy-btn" id="cl-copy-text">📄 내용복사</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -757,24 +787,44 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
 
 <!-- flat.js만 동기 로드 (검색용 지역 목록 294KB) — 운임 데이터는 고시 선택 시 동적 로드 -->
 <script>
-window._CLAUSE_DATA={sections:[
-{id:0,badge:'별표 1',title:'수출입 컨테이너 품목<br>안전운임 부대조항',desc:'제1호 관련',icon:'🚢',chapters:[
-{title:'제1장 정의',desc:'제1조 ~ 제2조',html:'<div class="ca-chapter">제1장 정의</div>\n<div class="ca-art"><span class="ca-num">1.</span><span class="ca-artbody">(안전운임의 정의) 화물자동차 안전운임이란 화물차주에 대한 적정한 운임의 보장을 통하여 과로, 과속, 과적 운행을 방지하는 등 교통안전을 확보하기 위하여 필요한 최소한의 운임으로 다음 각 목으로 구분한다.</span></div>\n<div class="ca-sub ca-sub1">가. 안전운송운임: 화주가 운수사업자 또는 화물차주에게 지급하는 운임</div>\n<div class="ca-sub ca-sub1">나. 안전위탁운임: 운수사업자가 화물차주에게 지급하는 운임</div>\n<div class="ca-sub ca-sub1">다. 운수사업자 간 운임: 운수사업자가 「화물자동차 운수사업법」(이하 “법”이라 한다) 제2조제4호, 제11조의2제2항에 따라 다른 운송사업자(「고용보험 및 산업재해보상보험의 보험료징수 등에 관한 법률」에 따라 고용보험 및 산재보험을 납입하고, 화물차주에게 직접 배차하는 경우에 한한다)에게 운송을 주선 또는 위탁하는 경우 법 제5조의12에 따른 안전위탁운임 이상의 운임을 지급하기 위해 필요한 최소한의 운임</div>\n<div class="ca-art"><span class="ca-num">2.</span><span class="ca-artbody">(안전운임의 적용 대상) 컨테이너 품목 안전운임의 적용을 받는 주체는 다음 각 목과 같다.</span></div>\n<div class="ca-sub ca-sub1">가. &quot;화주(貨主)&quot;란 운수사업자 또는 화물차주에게 화물 운송을 위탁하는 자로서 다음 1)에서 3)까지의 어느 하나에 해당하는 자를 말한다.</div>\n<div class="ca-sub ca-sub2">1) 화주: 자기 명의의 화물을 수출입 컨테이너로 운송하기 위하여 운수사업자 또는 화물차주와 계약을 체결하여 운송을 위탁하는 자로서 이 경우 「물류정책기본법」 제2조제1항제11호에 따른 국제물류주선업에 종사하는 자를 포함한다.</div>\n<div class="ca-sub ca-sub2">2) 선사: 「해운법」 제2조제3호에 따른 해상화물운송사업을 경영하는 자로서, 수출입 컨테이너의 세척 등 관리를 위해 운수사업자 또는 화물차주에게 운송을 위탁하는 자에 한정한다.</div>\n<div class="ca-sub ca-sub2">3) 터미널 운영사: 「항만운송사업법」 제2조제6항에 따른 자로서, 터미널 간 수출입 컨테이너의 운송을 위해 운수사업자 또는 화물차주에게 운송을 위탁하는 자에 한정한다.</div>\n<div class="ca-sub ca-sub1">나. &quot;운수사업자&quot;란 법 제3조제3항에 따른 운송사업자, 제24조제2항에 따른 운송주선사업자 및 운송가맹사업자를 말한다.</div>\n<div class="ca-sub ca-sub1">다. &quot;화물차주&quot;란 화물을 직접 운송하는 자로서 다음 1)에서 2)까지의 어느 하나에 해당하는 사람을 말한다.</div>\n<div class="ca-sub ca-sub2">1) 법 제3조제1항제2호에 따라 개인화물자동차 운송사업의 허가를 받은 사람</div>\n<div class="ca-sub ca-sub2">2) 법 제40조제1항에 따라 운송사업자로부터 경영의 일부를 위탁받은 사람</div>'},
-{title:'제2장 운임적용 원칙',desc:'제3조 ~ 제8조',html:'<div class="ca-chapter">제2장 운임적용 원칙</div>\n<div class="ca-art"><span class="ca-num">3.</span><span class="ca-artbody">(안전운임과 기존 운임과의 관계) 화물자동차 안전운임이란 화물차주에 대한 적정한 운임의 보장을 통하여 과로, 과속, 과적 운행을 방지하는 등 교통안전을 확보하기 위하여 필요한 최소한의 운임으로서, 안전위탁운임을 이유로 현재 지급하고 있는 운임을 낮게 지급할 수 없다.</span></div>\n<div class="ca-art"><span class="ca-num">4.</span><span class="ca-artbody">(차주 대상 비용 공제 또는 청구) 운수사업자는 차주에게 안전위탁운임을 지급한 이후 안전운임 산정 시 차주 원가항목에 반영된 다음 각 목 외의 비용을 공제하거나 청구할 수 없다. 단, 주선사업자가 중개‧대리하여 화주가 직접 차주에게 안전운송운임을 지불한 경우에는 차주가 해당 주선사업자에게 주선요금을 납부하여야 한다.</span></div>\n<div class="ca-sub ca-sub1">가. 지입료(법 제40조에 따라 차량과 그 경영의 일부를 위탁하거나 차량을 현물출자한 사람에게 그 경영의 일부를 위탁한 경우에 한함)</div>\n<div class="ca-sub ca-sub1">나. 주차료(주차장을 이용하는 경우에 한함)</div>\n<div class="ca-sub ca-sub1">다. 산재보험료 및 고용보험료의 노무제공자(차주) 부담분</div>\n<div class="ca-art"><span class="ca-num">5.</span><span class="ca-artbody">(운임 지급원칙) 당월 운송분 안전위탁운임은 익월 말일 이내 현금으로 지급한다. 단, 부득이한 경우에도 당월 마감일 후 45일을 초과할 수 없다.</span></div>\n<div class="ca-art"><span class="ca-num">6.</span><span class="ca-artbody">(거리 측정방식) 구간별 거리표의 거리 측정방식은 다음 각 목과 같다.</span></div>\n<div class="ca-sub ca-sub1">가. 기‧종점 간 구간거리에 터미널 내 운송거리를 더하여 측정한다.</div>\n<div class="ca-sub ca-sub1">나. 기‧종점 간 구간거리는 대표 터미널에서 종점이 위치한 읍‧면‧동 주민센터까지의 거리로, 거리 측정은 네이버 지도(거리우선, 차종 5종, 4축 이상, 특수화물차 적용)를 이용하여 오전 06시에 측정하는 것을 기준으로 한다.</div>\n<div class="ca-sub ca-sub1">다. 본 운임에 기‧종점이 고시되지 않은 구간의 거리는 가목과 나목을 기준으로 하여 당사자간 협의 하에 적용한다.</div>\n<div class="ca-art"><span class="ca-num">7.</span><span class="ca-artbody">(운임 및 운송거리 적용방법) 본 부대조항에서 적용되는 모든 운임 및 요금은 십 원 단위에서 반올림하여 적용(단, 부가가치세는 제외)하며, 거리(km)는 소수점 첫째자리에서 반올림하여 적용한다.</span></div>\n<div class="ca-art"><span class="ca-num">8.</span><span class="ca-artbody">(부가가치세) 본 부대조항이 정한 모든 금액은 부가가치세가 포함되지 않은 금액이다.</span></div>'},
-{title:'제3장 운송 및 규격 형태에 따른 운임 적용',desc:'제9조 ~ 제20조',html:'<div class="ca-chapter">제3장 운송 및 규격 형태에 따른 운임 적용</div>\n<div class="ca-art"><span class="ca-num">9.</span><span class="ca-artbody">(왕복·편도 운송운임) 컨테이너 품목 안전운임은 다음 각 목을 따른다.</span></div>\n<div class="ca-sub ca-sub1">가. 모든 운임은 왕복운임을 적용한다. 단, 수도권 화주공장(서울‧인천‧경기 및 강원 춘천‧강원 홍천 지역)에서 작업하며 공(空)컨테이너의 반납 또는 수령 장소가 의왕ICD인 경우에는 편도운임을 적용한다. 단, 공컨테이너의 반납장소가 인천터미널일 경우 의왕ICD 편도운임 적용 후 4만원을 추가로 지급한다.</div>\n<div class="ca-sub ca-sub1">나. 할증품목 등 특수컨테이너(냉동‧냉장컨테이너, 오픈탑(O/T) 컨테이너, FR컨테이너 등)는 가목 단서에 해당하는 경우라도 왕복운임을 적용한다.</div>\n<div class="ca-art"><span class="ca-num">10.</span><span class="ca-artbody">(복화운송운임) 복화 운송의 경우 왕복운임의 100%를 추가 적용하며, 복화 사용료 및 추가 발생 비용 등은 아래 각 목에 따라 적용한다.</span></div>\n<div class="ca-sub ca-sub1">가. 동일컨테이너를 사용한 복화의 경우, 해당구간 왕복운임의 100%를 추가 지급하되 선사에게 지급하는 복화 사용료는 차주가 실비로 부담한다.</div>\n<div class="ca-sub ca-sub1">나. 컨테이너가 교체되는 복화의 경우, 해당구간 왕복운임의 100%를 추가로 지급하되 복화 사용료 및 추가발생 비용은 차주와 운수사업자 간 합의하여야 하며, 추가발생 운임에서만 공제해야 한다.</div>\n<div class="ca-art"><span class="ca-num">11.</span><span class="ca-artbody">(COMBINE 운송) 20FT 컨테이너를 2개 운송하는 COMBINE 운송운임은 다음 각 목을 따른다.</span></div>\n<div class="ca-sub ca-sub1">가. COMBINE 운송 시에는 각각의 컨테이너에 20FT 운임의 100%를 적용한다.</div>\n<div class="ca-sub ca-sub1">나. 다음 1)에서 4)까지 요건을 모두 충족한 COMBINE 운송 시에는 20FT 컨테이너 운임의 180%를 적용한다.(수입‧수출 컨테이너에 동일 적용, 배후단지‧환적화물은 제외)</div>\n<div class="ca-sub ca-sub2">1) 컨테이너 2개의 화주가 동일할 것</div>\n<div class="ca-sub ca-sub2">2) 냉동·냉장, 위험물, 탱크 등 할증 대상 컨테이너가 아닐 것</div>\n<div class="ca-sub ca-sub2">3) 컨테이너 2개의 중량 합계가 20톤 미만일 것</div>\n<div class="ca-sub ca-sub2">4) 동일 장소에서 상차하고, 동일 장소에서 하차할 것</div>\n<div class="ca-sub ca-sub1">다. COMBINE 운송 중 상행과 하행 시 운송하는 컨테이너가 20FT 2개, 20FT 1개로 각각 다른 경우에는 다음과 같이 20FT 컨테이너 운임의 140%를 적용한다.</div>\n<div class="ca-sub ca-sub2">1) 20FT 컨테이너 2개 운송 시 : 20FT 컨테이너 각각 왕복운임의 40%</div>\n<div class="ca-sub ca-sub2">2) 20FT 컨테이너 1개 운송 시 : 20FT 컨테이너 왕복운임의 60%</div>\n<div class="ca-sub ca-sub1">라. COMBINE 운송 중 상행과 하행 시 운송하는 컨테이너가 20FT 컨테이너 2개, 40FT 컨테이너 1개로 각각 다른 경우에는 다음과 같이 운임을 적용한다.</div>\n<div class="ca-sub ca-sub2">1) 20FT 컨테이너 2개 운송 시 : 20FT 컨테이너 각각 왕복운임의 40%</div>\n<div class="ca-sub ca-sub2">2) 40FT 컨테이너 1개 운송 시 : 40FT 컨테이너 왕복운임의 60%</div>\n<div class="ca-art"><span class="ca-num">12.</span><span class="ca-artbody">(밥테일 운송) 화주의 요청 또는 화주의 요청을 받은 운수사업자의 요청으로 화주 문전에 샤시를 장치하고 트랙터만으로 다시 기점으로 돌아오는 밥테일 운송의 경우, 다음 각 목에 따라 운임을 적용한다.</span></div>\n<div class="ca-sub ca-sub1">가. 1회 왕복 시 해당 구간 왕복 운임의 100%를 적용한다.</div>\n<div class="ca-sub ca-sub1">나. 2회 왕복 시 해당 구간 왕복 운임의 200%를 적용한다.</div>\n<div class="ca-art"><span class="ca-num">13.</span><span class="ca-artbody">(온그라운드 운송) 화주 공장 또는 창고 등 화주 문전에 컨테이너를 샤시에서 내려놓은 상태에서 화물을 적입 또는 적출하는 온그라운드 작업이 발생하는 운송의 경우에는 다음 각 목에 따라 운임을 적용하며, 화물차주에게 별도의 상·하차비, 셔틀비 등을 청구할 수 없다.</span></div>\n<div class="ca-sub ca-sub1">가. 컨테이너를 내려놓은 후 샤시만 기점으로 돌아오는 경우 해당 구간 왕복 운임의 100%를 적용한다.</div>\n<div class="ca-sub ca-sub1">나. 공차로 종점으로 이동하여 온그라운드 작업이 끝난 컨테이너를 싣고 기점으로 복귀하는 경우 왕복운임의 100%를 적용한다.</div>\n<div class="ca-sub ca-sub1">다. 컨테이너를 내려놓은 후 다른 컨테이너를 싣고 기점으로 돌아오는 경우 왕복 운임의 100%를 적용한다.</div>\n<div class="ca-art"><span class="ca-num">14.</span><span class="ca-artbody">(공차 운행) 화주 또는 운수사업자의 요구로 10km 이상의 거리를 공차로 운행할 경우 요구주체는 공차 운행거리에 해당하는 왕복운임의 50%를 지급하여야 한다.</span></div>\n<div class="ca-art"><span class="ca-num">15.</span><span class="ca-artbody">(포지셔닝) 포지셔닝(내륙 컨테이너 기지와 항만 간 공컨테이너 공급 운송)이 발생하는 경우 해당구간 왕복운임의 50%를 적용한다.</span></div>\n<div class="ca-art"><span class="ca-num">16.</span><span class="ca-artbody">(셔틀 운송) 화주 또는 운수사업자의 요구에 의해 자가CY, 철도CY, 사내 야적장 간 셔틀 운송이 편도로 발생하는 경우에는 해당구간 왕복운임의 50%를 적용하며, 왕복으로 발생하는 경우에는 해당구간 왕복운임의 100%를 적용한다. 단, 공차운행 발생 시 부대조항 제14조에 따른 운임을 적용한다.</span></div>\n<div class="ca-art"><span class="ca-num">17.</span><span class="ca-artbody">(철도 CY 직송 운송) 철도 CY 물량을 화물자동차로 직송 운송하는 경우 운행거리에 따른 왕복운임의 50%를 적용한다.</span></div>\n<div class="ca-art"><span class="ca-num">18.</span><span class="ca-artbody">(컨테이너 세척 등) 컨테이너 세척 및 손상 컨테이너와 관련한 추가 운임은 다음 각 목을 따른다.</span></div>\n<div class="ca-sub ca-sub1">가. (컨테이너 세척 셔틀운임) 컨테이너 세척 발생으로 차주가 세척장까지 운행 또는 대기 등을 할 경우 선사는 화주 또는 운수사업자를 통해 건당 20,000원의 셔틀운임을 지급한다. 이 때 별지 제1호서식의 세척 확인서(전자문서 포함)를 증빙자료로 사용하며, 차주가 확인서 서명을 요구할 시 세척을 지시한 자는 서명해야 한다.</div>\n<div class="ca-sub ca-sub1">나. (손상 컨테이너 셔틀운임) 항내에서 손상된 컨테이너를 교체하기 위해 대기 및 상·하차, 운송 등이 발생하는 경우 선사는 건당 20,000원의 셔틀운임을 지급한다. 이 때 별지 제2호서식의 손상컨테이너 교체 확인서(전자문서 포함)를 증빙자료로 사용하며, 차주가 확인서 서명을 요구할 시 담당자는 서명해야 한다.</div>\n<div class="ca-sub ca-sub1">다. (손상 컨테이너 회차비) 화주 문전에 도착 후 컨테이너 손상이 발견되어 회차 및 컨테이너 교체가 이루어지는 경우에는 선사가 해당구간 왕복운임의 80%를 지급하여야 한다. 단, 화주가 선사에게 요청한 수준의 컨테이너가 운송된 경우에도 불구하고 화주가 회차를 요구한 경우에는 화주가 지급한다.</div>\n<div class="ca-sub ca-sub1">라. (전배 운송운임) 수출컨테이너의 터미널 간 전배 운송이 발생하는 경우 원인제공자(선사 또는 터미널 운영사)는 해당 요율표(별첨)에 따른 운임을 지급한다.</div>\n<div class="ca-art"><span class="ca-num">19.</span><span class="ca-artbody">(45FT 컨테이너) 45FT 컨테이너의 ‘안전위탁운임 및 안전운송운임’(이하 “운임”이라 한다)은 40FT 컨테이너 운임의 112.5%를 적용한다.</span></div>\n<div class="ca-art"><span class="ca-num">20.</span><span class="ca-artbody">(비규격 컨테이너) 본 고시에서 정하지 않은 기타 비규격 컨테이너(20FT, 40FT, 45FT를 제외한 컨테이너) 운임은 화주, 운수사업자, 차주 간 협의하여 결정한다.</span></div>'},
-{title:'제4장 할증의 적용 방법',desc:'제21조 ~ 제23조',html:'<div class="ca-chapter">제4장 할증의 적용 방법</div>\n<div class="ca-art"><span class="ca-num">21.</span><span class="ca-artbody">(할증 지급방식) 사전에 예측 가능한 할증 운임의 경우 운임에 포함하여 지급한다. 다만, 사전에 예측하지 못한 운임 할증(예: 배차 취소료 등)이 발생한 경우에는 운송완료 이후 입증자료를 제출하여 적용한다.</span></div>\n<div class="ca-art"><span class="ca-num">22.</span><span class="ca-artbody">(할증률 가산) 다수의 할증 조항이 동시에 적용되는 운송일 경우 다음과 같이 할증률을 합산하여 지급한다.</span></div>\n<div class="ca-sub ca-sub1">가. 가장 높은 할증률 1개를 우선 적용한 후 나머지 할증률은 50%씩만 적용한다.</div>\n<div class="ca-sub ca-sub1">나. 할증 항목이 3개를 초과하는 경우 할증률이 높은 순서대로 3개까지만 합산한다.</div>\n<div class="ca-art"><span class="ca-num">23.</span><span class="ca-artbody">(할증 적용방식) 각종 할증 운임은 다음 각 목을 따른다.</span></div>\n<div class="ca-sub ca-sub1">가. (중량물 할증) 컨테이너 내품 무게가 40FT 23톤, 20FT 20톤을 초과할 때부터 매 1톤마다 해당구간 운임의 10%씩을 할증하여 적용한다.(예시1 : 40FT 23톤 초과 24톤 이하 10%, 24톤 초과 25톤 이하 20% 할증 적용, 예시2 : 20FT 20톤 초과 21톤 이하 10%, 21톤 초과 22톤 이하 20% 할증 적용) 단, 테레프탈산(PTA, Purified Terephthalic Acid) 품목에 대해서는 20FT 21톤을 초과하는 경우 매 1톤을 초과할 때마다 10%씩을 할증하여 적용한다.</div>\n<div class="ca-sub ca-sub1">나. (활대품 할증) ｢도로법｣ 제77조 및 ｢도로법 시행령｣ 제79조에 따라 도로통행에 제한을 받아 허가가 필요한 활대품(폭, 높이, 길이 초과)은 법령으로 정한 제한 기준으로부터 매 10cm를 초과할 때마다 해당구간 운임의 10%씩을 할증하여 적용한다. 단, 운수사업자가 제공하는 서비스 비용은 별도로 협의하여 적용한다.</div>\n<div class="ca-sub ca-sub1">다. (탱크 컨테이너) ｢컨테이너식이동탱크저장소의 허가업무지침｣에서 정하는 ‘탱크 컨테이너’를 운송하는 경우 해당구간 운임의 30%를 할증하여 적용한다.</div>\n<div class="ca-sub ca-sub1">라. (플렉시백 컨테이너) 플렉시백 컨테이너를 운송하는 경우 액체 화물은 해당구간 운임의 20% 할증을 적용하고, 가루‧칩 형태의 분말화물은 해당구간 운임의 10% 할증을 적용한다.</div>\n<div class="ca-sub ca-sub1">마. (냉동‧냉장 컨테이너) 냉동·냉장장치가 부착된 컨테이너를 발전기가 부착된 차량으로 운송할 경우 장치의 가동여부와 상관없이 해당구간 운임의 30%를 할증하여 적용한다. 단, 냉동 발전기가 부착된 샤시를 운수사업자가 제공한 경우 할증의 50%는 운수사업자가 수취하며, 화주 또는 운수사업자의 냉동·냉장장치 가동 요구에도 불구하고 차주가 냉동·냉장장치를 가동하지 않은 경우에는 할증운임을 적용하지 아니한다.</div>\n<div class="ca-sub ca-sub1">바. (덤프 컨테이너) 덤프컨테이너의 경우 해당구간 운임의 25%를 할증 적용한다.</div>\n<div class="ca-sub ca-sub1">사. (통행제한지역) 주간에 화물자동차 운행이 제한되어 허가를 받아야 되는 지역으로 운행 시 해당구간 운임의 30% 이상을 할증하여 적용한다.</div>\n<div class="ca-sub ca-sub1">아. (험로 및 오지) 운송구간에 다음 1)에서 4)까지에 해당하는 험로 및 오지가 1개 이상 포함될 경우, 전체 운송구간 운임에 20%를 할증하여 적용하며, 그 이상의 할증률 적용은 화주․운수사업자․차주 간 협의하여 결정한다. 별지 제3호서식의 험로·오지 확인서(전자문서 포함)를 증빙자료로 사용하여, 차주가 확인서 서명을 요구할 시 화주는 실제 발생한 험로․오지에 따라 서명해야 한다.</div>\n<div class="ca-sub ca-sub2">1) 폭 2차로 미만 도로</div>\n<div class="ca-sub ca-sub2">2) 비포장·자갈길 등 불량도로</div>\n<div class="ca-sub ca-sub2">3) 급경사 구간</div>\n<div class="ca-sub ca-sub2">4) 당사자간 합의하는 경우</div>\n<div class="ca-sub ca-sub1">자. (공휴일) 화주의 요청 또는 화주의 요청을 받은 운수사업자의 요청에 따라 ｢관공서의 공휴일에 관한 규정｣ 제2조 또는 제3조에서 정하는 공휴일 또는 대체공휴일에 작업 또는 운행할 경우 해당구간 운임의 20%를 할증하여 적용한다.</div>\n<div class="ca-sub ca-sub1">차. (심야) 화주의 요청 또는 화주의 요청을 받은 운수사업자의 요청으로 심야(22:00-06:00)에 작업 또는 운행할 경우 해당구간 운임의 20%를 할증하여 적용한다. 단, 이 경우 운수사업자와 화주는 확인서를 발급하여야 한다.</div>\n<div class="ca-sub ca-sub1">카. (인천기점 할증) 인천 신항, 인천 구항, 인천국제여객부두 기점 운송의 경우 구간별 운임표 상 안전위탁운임은 20% 할증이 적용되어 있으며, 구간별 운임표에 기재되지 않은 구간은 거리별 운임표를 적용하되, 안전위탁운임의 20%를 별도로 할증하여야 한다. 창고, 공장 등 화주 문전에서 인천기점으로 운행한 경우도 동일하게 적용한다.</div>\n<div class="ca-sub ca-sub1">타. (평택기점 할증) 평택항 기점 운송의 경우 구간별 운임표상 안전위탁운임은 18% 할증이 적용되어 있으며, 구간별 운임표에 기재되지 않은 구간은 거리별 운임표를 적용하되, 안전위탁운임의 18%를 별도로 할증하여야 한다. 창고, 공장 등 화주문전에서 기점으로 운행한 경우도 동일하게 할증률을 적용한다.</div>\n<div class="ca-sub ca-sub1">파. (위험물 등) ｢물류정책기본법｣ 제29조제1항에서 정의하는 위험물, 유해화학물질 등을 운송하는 차량이 위험물, 유해화학물질 등이 적재된 컨테이너를 운송할 때는 위험물의 종류에 따라 해당구간 운임에 다음과 같이 가산 적용한다.</div>\n<div class="ca-sub ca-sub2">1) 위험물, 유독물, 유해화학물질: 30%</div>\n<div class="ca-sub ca-sub2">2) 화약류: 100%</div>\n<div class="ca-sub ca-sub2">3) 방사성물질: 200%(단, 운수사업자가 제공하는 서비스 비용은 별도로 협의하여 적용한다.)</div>\n<div class="ca-sub ca-sub2">4) 화주는 적재화물이 위험물(유독물, 유해화학물질)일 경우 스티커 부착 등에 대한 고지의무가 있으며, 이를 고지하지 않아 발생하는 문제에 대한 책임은 화주에게 있다.</div>\n<div class="ca-sub ca-sub2">5) 위험물이 공장 또는 부두에 직반입할 수 없어 별도의 위험물 장치장에 보관 후 다시 운송을 해야 하는 경우에는 다시 운송하는 거리의 기본운임과 할증 운임을 추가로 지급한다.</div>'},
-{title:'제5장 대기료 등 기타비용',desc:'제24조 ~ 제29조',html:'<div class="ca-chapter">제5장 대기료 등 기타비용</div>\n<div class="ca-art"><span class="ca-num">24.</span><span class="ca-artbody">(대기료) 트랙터의 상‧하차 대기가 발생할 경우 다음의 가목 또는 나목에 따라 대기료를 지급한다. 단, 대기료는 운수사업자가 차주에게 우선 지급한 뒤, 원인제공자에게 청구한다. 대기시간은 화주 또는 부두 운영사의 도착요청 시간부터 상·하차 및 송장 발급을 완료한 시간까지로 하고, 별지 제4호 서식의 대기시간 확인서(전자문서도 포함하고, 다목을 참조하여 작성한다) 또는 부두 운영사의 입‧출입 카드 내역서 등을 증빙자료로 활용한다.</span></div>\n<div class="ca-sub ca-sub1">가. 항만 부두에서 대기가 발생한 경우, 원인제공자는 40FT와 20FT 공통적으로 1시간을 초과할 시 30분당 20,000원씩 대기료를 지급한다.</div>\n<div class="ca-sub ca-sub1">나. 화주 문전에서 대기가 발생한 경우, 화주는 40FT 2시간 30분, 20FT 2시간을 초과할 시 30분당 20,000원씩 대기료를 지급한다.</div>\n<div class="ca-sub ca-sub1">다. 상‧하차지에서 차주가 별지 제4호 서식의 대기시간 확인서(전자문서 포함) 서명을 요구할 시, 화주는 해당차량의 입‧출입 시간에 따라 서명해야 한다.</div>\n<div class="ca-art"><span class="ca-num">25.</span><span class="ca-artbody">(검색기 검사운송) 차주가 검색대(X-ray)를 통과할 경우 운수사업자는 10만원을 지급한다.</span></div>\n<div class="ca-art"><span class="ca-num">26.</span><span class="ca-artbody">(배차 취소료) 배차 취소료는 다음 각 목을 따른다. 다만, 천재지변으로 배차가 취소되는 경우에는 적용하지 아니한다.</span></div>\n<div class="ca-sub ca-sub1">가. 배차를 받고 컨테이너 상차를 위한 현장에 도착 후 1시간 이상 경과하여 배차가 취소된 경우 배차된 해당구간 왕복운임의 50%를 지급한다.</div>\n<div class="ca-sub ca-sub1">나. 컨테이너 상차 후 상·하차지 및 작업지로 이동 중 배차가 취소되는 경우 배차된 해당구간 왕복운임의 70%를 지급한다.</div>\n<div class="ca-sub ca-sub1">다. 컨테이너 상차 후 상·하차지 및 작업지에 도착하여 대기 중 배차가 취소된 경우에는 배차된 해당구간 왕복 운임의 100%를 지급하며, 과도한 대기가 발생한 경우 대기료는 추가로 협의하여 적용한다.</div>\n<div class="ca-sub ca-sub1">라. 작업지에서 작업을 완료한 후 컨테이너를 싣고 이동 중 작업지로 회차하여 상‧하차 작업을 다시 하는 경우에는 아래와 같은 운임을 적용한다.</div>\n<div class="ca-sub ca-sub2">1) 배차된 구간거리의 50% 이하 운행 후 회차 시 : 왕복 운임의 150%</div>\n<div class="ca-sub ca-sub2">2) 배차된 구간거리의 50% 초과 운행 후 회차 시 : 왕복 운임의 200%</div>\n<div class="ca-art"><span class="ca-num">27.</span><span class="ca-artbody">(선박이용료 등) 도선에 따른 선박 왕복 이용료, 대형교량 왕복 통행료(예: 인천대교, 영종대교, 거가대교 등), 인천공항 주차료가 발생하는 구간은 운임에 실비를 추가하여 지급한다.</span></div>\n<div class="ca-art"><span class="ca-num">28.</span><span class="ca-artbody">(인프라 운영비) CY, 철송장, 보관소 등을 설치 및 운영하여 운송이 이루어질 경우 운영비, 상·하차비, 셔틀운임 등을 차주에게 청구할 수 없다.</span></div>\n<div class="ca-art"><span class="ca-num">29.</span><span class="ca-artbody">(제한차량 운행허가 수수료) ｢도로법｣ 제77조 및 ｢도로법 시행령｣ 제79조와 관련하여 도로통행 제한 높이 또는 길이의 초과로 발생되는 “제한차량 운행허가” 수수료 등은 화주가 실비 정산하여 지급한다.</span></div>'},
-{title:'제6장 차주의 업무범위 및 갈등 조정',desc:'제30조 ~ 제33조',html:'<div class="ca-chapter">제6장 차주의 업무범위 및 갈등 조정</div>\n<div class="ca-art"><span class="ca-num">30.</span><span class="ca-artbody">(차주의 업무범위) 차주에게 수행시킬 수 없는 업무는 다음 각 목과 같다.</span></div>\n<div class="ca-sub ca-sub1">가. FR(Flat Rack) 컨테이너의 양옆 벽면을 접거나 펴는 작업</div>\n<div class="ca-sub ca-sub1">나. 컨테이너 벽면 각종 스티커의 부착 및 제거 작업</div>\n<div class="ca-sub ca-sub1">다. 컨테이너 검사 및 청소작업</div>\n<div class="ca-sub ca-sub1">라. 오픈탑 컨테이너(O/T) 천막 개폐 및 설치 작업</div>\n<div class="ca-sub ca-sub1">마. 컨테이너 문 개폐 업무</div>\n<div class="ca-sub ca-sub1">바. 컨테이너 씰 체결 및 해체 작업</div>\n<div class="ca-sub ca-sub1">사. 그 외 법적으로 차주가 수행해서는 안되는 업무</div>\n<div class="ca-art"><span class="ca-num">31.</span><span class="ca-artbody">(과적 단속) 송장(보세운송허가서)에 기입된 중량과 실제 중량의 차이로 과적에 단속되거나, 화주의 적재 잘못으로 축중량 과적에 단속되어 회차할 경우 화주가 운수사를 통하여 기존 배차구간 운임의 100%를 차주에게 지급하며 과태료도 화주가 부담한다.</span></div>\n<div class="ca-art"><span class="ca-num">32.</span><span class="ca-artbody">(새로운 서비스 적용) 본 운임산정 시 누락된 항목 또는 새로운 서비스가 발생한 경우 항목 신설 여부와 금액을 안전운임위원회의 승인을 받아 적용한다.</span></div>\n<div class="ca-art"><span class="ca-num">33.</span><span class="ca-artbody">(갈등 조정) 부대조항과 관련하여 갈등 및 혼란이 초래될 경우 국토교통부 주관 하에 안전운임위원회에서의 협의를 통해 조정할 수 있다.</span></div>'},
-{title:'제7장 기타 사항',desc:'제34조 ~ 제35조',html:'<div class="ca-chapter">제7장 기타 사항</div>\n<div class="ca-art"><span class="ca-num">34.</span><span class="ca-artbody">(유가변동 고시) 안전운임에 적용되는 유가는 다음 각 목에 따른다.</span></div>\n<div class="ca-sub ca-sub1">가. 2026년 1월 1일∼2026년 3월 31일(3개월) 평균유가가 안전운임 산정시 적용된 2025년 10월 1일∼2025년 12월 31일(3개월) 평균유가에 비해 50원 이상 인상되거나 인하될 경우, 2026년 1월 1일∼2026년 3월 31일(3개월)의 평균유가를 2026년 5월∼7월에 적용한다.</div>\n<div class="ca-sub ca-sub1">나. 2026년 4월 1일∼2026년 6월 30일(3개월) 평균유가가 2026년 5월∼7월에 적용된 유가에 비해 50원 이상 인상되거나 인하될 경우 2026년 4월 1일∼2026년 6월 30일(3개월)의 평균유가를 2026년 7월∼9월에 적용한다.</div>\n<div class="ca-sub ca-sub1">다. 2026년 7월 1일∼2026년 9월 30일(3개월) 평균유가가 2026년 7월∼9월에 적용된 유가에 비해 50원 이상 인상되거나 인하될 경우 2026년 7월 1일∼2026년 9월 30일(3개월)의 평균유가를 2026년 10월∼12월에 적용한다.</div>\n<div class="ca-sub ca-sub1">라. 2026년 10월 1일∼2026년 12월 31일(3개월) 평균유가가 2026년 10월∼12월에 적용된 유가에 비해 50원 이상 인상되거나 인하될 경우 2026년 10월 1일∼2026년 12월 31일(3개월)의 평균유가를 2027년 1월∼3월에 적용한다.</div>\n<div class="ca-art"><span class="ca-num">35.</span><span class="ca-artbody">(항만별, 터미널 내 거리) 항만별 대표터미널 및 터미널 내 운송거리는 다음과 같다.</span></div>\n<div class="ca-sub ca-sub2">1) 부산북항(신선대터미널) : 3.3km</div>\n<div class="ca-sub ca-sub2">2) 부산신항(HMMPSA 신항만, HPNT) : 3.3km</div>\n<div class="ca-sub ca-sub2">3) 인천항(인천컨테이너터미널, ICT) : 1km</div>\n<div class="ca-sub ca-sub2">4) 인천신항(한진인천컨테이너터미널) : 2km</div>\n<div class="ca-sub ca-sub2">5) 인천항국제여객터미널 : 2km</div>\n<div class="ca-sub ca-sub2">6) 광양항(한국국제터미널, 허치슨) : 4km</div>\n<div class="ca-sub ca-sub2">7) 평택항(평택컨테이너터미널) : 2km</div>\n<div class="ca-sub ca-sub2">8) 울산구항 : 1km</div>\n<div class="ca-sub ca-sub2">9) 울산신항 : 2km</div>\n<div class="ca-sub ca-sub2">10) 포항항 : 1.5km</div>\n<div class="ca-sub ca-sub2">11) 군산항 : 2km</div>\n<div class="ca-sub ca-sub2">12) 마산항 : 1.2km</div>\n<div class="ca-sub ca-sub2">13) 대산항 : 1km</div>\n<div class="ca-sub ca-sub2">14) 의왕ICD(제1터미널) : 2km</div>'}
-]},
-{id:1,badge:'별표 2',title:'시멘트 품목<br>안전운임 부대조항',desc:'제2호 관련',icon:'🏗️',chapters:[
-{title:'제1장 정의',desc:'제1조 ~ 제3조',html:'<div class="ca-chapter">제1장 정의</div>\n<div class="ca-art"><span class="ca-num">1.</span><span class="ca-artbody">(안전운임의 정의) 화물자동차 안전운임이란 화물차주에 대한 적정한 운임의 보장을 통하여 과로, 과속, 과적 운행을 방지하는 등 교통안전을 확보하기 위하여 필요한 최소한의 운임으로 안전위탁운임과 안전운송운임으로 구분한다.</span></div>\n<div class="ca-sub ca-sub1">가. 안전운송운임: 화주가 운수사업자 또는 화물차주에게 지급하는 운임</div>\n<div class="ca-sub ca-sub1">나. 안전위탁운임: 운수사업자가 화물차주에게 지급하는 운임</div>\n<div class="ca-art"><span class="ca-num">2.</span><span class="ca-artbody">(안전운임의 적용 대상) 시멘트 품목 안전운임의 적용을 받는 주체는 다음 각 목과 같다.</span></div>\n<div class="ca-sub ca-sub1">가. &quot;화주(貨主)&quot;란 운수사업자 또는 화물차주에게 화물 운송을 위탁하는 자로서 「화물자동차 운수사업법」(이하 &quot;법&quot;이라 한다) 제3조제3항에 따른 운송사업자, 제24조제2항에 따른 운송주선사업자 및 운송가맹사업자의 지위를 이용하여 화물을 위탁하는 자를 제외한다.</div>\n<div class="ca-sub ca-sub1">나. &quot;운수사업자&quot;란 법 제3조제3항에 따른 운송사업자, 제24조제2항에 따른 운송주선사업자 및 운송가맹사업자를 말한다.</div>\n<div class="ca-sub ca-sub1">다. &quot;화물차주&quot;란 화물을 직접 운송하는 자로서 다음 1)에서 2)까지의 어느 하나에 해당하는 사람을 말한다.</div>\n<div class="ca-sub ca-sub2">1) 법 제3조제1항제2호에 따라 개인화물자동차 운송사업의 허가를 받은 사람</div>\n<div class="ca-sub ca-sub2">2) 법 제40조제1항에 따라 운송사업자로부터 경영의 일부를 위탁받은 사람</div>\n<div class="ca-art"><span class="ca-num">3.</span><span class="ca-artbody">(적용품목) 시멘트의 품목은 한국산업표준(KS) 분류상의 도자기질 타일 시멘트, 포틀랜드 시멘트, 백색 포틀랜드 시멘트, 내화물용 알루미나 시멘트, 고로 슬래그 시멘트, 플라이 애시 시멘트, 박리 팽창 질석을 사용한 단열 시멘트, 팽창 수경성 시멘트, 메이슨리 시멘트, 건조 시멘트 모르타르, 포졸란 시멘트 등이 포함되어 있는 시멘트로 한다.</span></div>'},
-{title:'제2장 운임적용 원칙',desc:'제4조 ~ 제9조',html:'<div class="ca-chapter">제2장 운임적용 원칙</div>\n<div class="ca-art"><span class="ca-num">4.</span><span class="ca-artbody">(안전운임과 기존 운임과의 관계) 화물자동차 안전운임이란 화물차주에 대한 적정한 운임의 보장을 통하여 과로, 과속, 과적 운행을 방지하는 등 교통안전을 확보하기 위하여 필요한 최소한의 운임으로서, 안전위탁운임을 이유로 안전운임 시행 이전 지급하고 있는 운임을 낮게 지급할 수 없다.</span></div>\n<div class="ca-art"><span class="ca-num">5.</span><span class="ca-artbody">(차주 대상 비용 공제 또는 청구) 운수사업자는 차주에게 안전위탁운임을 지급한 이후 안전운임 산정 시 차주 원가항목에 반영된 각 목 외의 비용을 공제하거나 청구할 수 없다. 단, 주선사업자가 중개‧대리하여 화주가 직접 차주에게 안전운송운임을 지불한 경우에는 차주가 해당 주선사업자에게 주선요금을 납부하여야 한다.</span></div>\n<div class="ca-sub ca-sub1">가. 지입료(｢화물자동차 운수사업법｣ 제40조에 따라 차량과 그 경영의 일부를 위탁하거나 차량을 현물출자한 사람에게 그 경영의 일부를 위탁한 경우에 한함)</div>\n<div class="ca-sub ca-sub1">나. 주차료(주차장을 제공하는 경우에 한함)</div>\n<div class="ca-sub ca-sub1">다. 산재보험료 및 고용보험료의 노무제공자(차주) 부담분</div>\n<div class="ca-art"><span class="ca-num">6.</span><span class="ca-artbody">(운임지급 원칙) 운임의 지급은 다음의 각 목을 따른다.</span></div>\n<div class="ca-sub ca-sub1">가. (왕복운임 적용 원칙) 시멘트 품목의 안전운임(안전위탁운임, 안전운송운임)은 왕복운임 적용을 원칙으로 한다.</div>\n<div class="ca-sub ca-sub1">나. (중량 및 거리 적용원칙) 안전운임의 경우 톤·km당 운임을 적용하며, 총중량 40톤을 초과하지 않는 것을 원칙으로 한다. 단, 화주나 수요자(레미콘 공장, 건설현장 등)의 요청에 따라 적재정량 미만을 운송하는 경우 1대분의 운임을 지급한다.</div>\n<div class="ca-sub ca-sub1">다. (운임 지급기한) 당월 운송분 안전위탁운임은 익월 말일 이내 현금으로 지급한다. 단, 부득이한 경우에도 당월 마감 후 45일을 초과할 수 없다</div>\n<div class="ca-art"><span class="ca-num">7.</span><span class="ca-artbody">(기본구간 운임) 운송거리 10km 이하 구간에 대해서는 10km에 해당하는 운임을 적용한다.</span></div>\n<div class="ca-art"><span class="ca-num">8.</span><span class="ca-artbody">(거리 측정방법) 시멘트 운송구간거리는 실제 운송거리를 기준으로 소수점 첫째자리에서 반올림하여 적용하며, km당 운임표 상의 운임을 적용한다. 단, 거리의 측정은 아틀란 지도 추천거리를 기본으로 하되, 당사자간 협의하여 네이버지도 추천거리(차종:5종, 4축 이상, 특수화물차 적용)를 적용할 수 있다.</span></div>\n<div class="ca-art"><span class="ca-num">9.</span><span class="ca-artbody">(부가가치세) 본 부대조항이 정한 모든 금액은 부가가치세가 포함되지 않은 금액이다.</span></div>'},
-{title:'제3장 할증의 적용 방법',desc:'제10조 ~ 제13조',html:'<div class="ca-chapter">제3장 할증의 적용 방법</div>\n<div class="ca-art"><span class="ca-num">10.</span><span class="ca-artbody">(할증 적용원칙) 본 부대조항에 의거 발생하는 할증은 운수사에도 동일하게 적용한다.</span></div>\n<div class="ca-art"><span class="ca-num">11.</span><span class="ca-artbody">(할증 지급방식) 사전에 예측 가능하지 않은 할증 운임의 경우(예: 대기 발생, 배차 취소 등)에는 입증 자료를 제출할 경우 추가 금액을 안전위탁운임에 할증한다. 사전에 예측 가능한 할증 운임의 경우 위탁운임에 포함하여 지급한다.</span></div>\n<div class="ca-art"><span class="ca-num">12.</span><span class="ca-artbody">(할증률 가산) 다수의 할증 조항이 동시에 적용되는 운송일 경우 모든 할증률을 합산하여 운임을 지급하되, 할증률 중 가장 높은 할증률을 적용한 후 나머지는 각각 해당 할증률의 50%씩만 적용한다. 합산 시에는 적용되는 가산률 중 가장 높은 가산률에 50%p를 더한 가산률을 상한으로 한다.</span></div>\n<div class="ca-art"><span class="ca-num">13.</span><span class="ca-artbody">(할증 적용방식) 각종 할증 운임은 다음 각 목을 따른다.</span></div>\n<div class="ca-sub ca-sub1">가. (총중량 초과) 6.나.(중량 및 거리 적용원칙)와 관련하여 화주 귀책사유로 총중량(40톤) 초과 시, 초과 중량 1톤당 해당구간 톤당 운임의 200%를 적용한다.</div>\n<div class="ca-sub ca-sub1">나. (험로 및 오지) 운송구간에 다음 1)에서 7)까지에 해당하는 험로 및 오지가 1개 이상 포함될 경우 전체 운송구간 운임에 15%를 할증하여 적용하며, 그 이상의 할증률 적용은 화주·운수사업자·차주 간 협의하여 결정한다. 별지 제5호서식의 험로·오지 확인서(전자문서 포함)를 증빙자료로 사용하며, 차주가 확인서 서명을 요구할 시 화주는 실제 발생한 험로·오지에 따라 서명해야 한다.</div>\n<div class="ca-sub ca-sub2">1) 폭 2차로 미만 도로</div>\n<div class="ca-sub ca-sub2">2) 비포장, 자갈길 등 불량도로</div>\n<div class="ca-sub ca-sub2">3) 급경사 구간</div>\n<div class="ca-sub ca-sub2">4) 이동식 사일로가 설치된 현장</div>\n<div class="ca-sub ca-sub2">5) 건설 현장(진입로가 비포장 도로인 경우)</div>\n<div class="ca-sub ca-sub2">6) 바지선 이용 현장</div>\n<div class="ca-sub ca-sub2">7) 당사자간 합의하는 경우</div>\n<div class="ca-sub ca-sub1">다. (공휴일) 화주의 요청에 따라 ｢관공서의 공휴일에 관한 규정｣ 제2조 또는 제3조에서 정하는 공휴일 또는 대체공휴일에 작업 또는 운행할 경우 해당구간 운임의 15%를 할증하여 적용한다.</div>\n<div class="ca-sub ca-sub1">라. (심야) 화주의 요청으로 심야(22:00-06:00) 에 상하차 또는 운행할 경우 해당구간 운임의 15%를 할증하여 적용한다. 다만, 차주의 요청으로 심야(22:00-06:00)에 상하차 또는 운행하는 경우에는 할증을 적용하지 아니한다.</div>\n<div class="ca-sub ca-sub1">마. (모르타르 제품) 모르타르 제품을 운송하는 경우 해당 구간 운임의 20%를 할증하여 적용한다.</div>\n<div class="ca-sub ca-sub1">바. (통행제한지역) 주간에 화물자동차 운행이 제한되어 허가를 받아야 하는 지역은 해당거리 운임의 25% 이상을 할증하여 적용한다.</div>\n<div class="ca-sub ca-sub1">사. (복화수송 등) 동일화주에 의한 동일구간 복화수송 및 재고이송의 경우 해당구간 왕복운임의 80%를 할증하여 적용한다.</div>'},
-{title:'제4장 대기료 등 기타 비용',desc:'제14조 ~ 제16조',html:'<div class="ca-chapter">제4장 대기료 등 기타 비용</div>\n<div class="ca-art"><span class="ca-num">14.</span><span class="ca-artbody">(대기료) 상하차 대기료는 상하차지 도착 후 상차가 60분을 초과할 경우 또는 하차가 60분을 초과할 경우에는 다음 각 목에 따라 30분당 10,000원씩 가산 지급한다.</span></div>\n<div class="ca-sub ca-sub1">가. 대기료 지급의 기준이 되는 시간 산정은 화주(시멘트회사, 레미콘회사 등)의 요청에 따라 상‧하차지에 도착한 시간부터 상‧하차 작업을 완료한 시간까지 적용한다.</div>\n<div class="ca-sub ca-sub1">나. 별지 제6호서식의 대기시간 확인서(전자문서 포함)를 증빙자료로 사용하며, 상‧하차지에서 차주가 확인서를 요구할 시, 화주는 해당차량의 입·출입 시간에 따라 서명해야 한다.</div>\n<div class="ca-art"><span class="ca-num">15.</span><span class="ca-artbody">(배차 취소료) 배차 취소료는 다음 각 목에 따라 원인제공자가 지급한다. 다만, 천재지변으로 배차가 취소되는 경우에는 적용하지 아니한다.</span></div>\n<div class="ca-sub ca-sub1">가. 배차를 받고 상차를 위하여 현장에 도착한 후 배차가 취소된 경우에 30분당 10,000원의 대기료를 지급한다.</div>\n<div class="ca-sub ca-sub1">나. 상차하여 운행 중에 배차가 취소되거나 제품을 교환하기 위해 상차지로 회차하는 경우 실 운송거리 안전위탁운임의 150%를 지급한다.</div>\n<div class="ca-sub ca-sub1">다. 화주 또는 운수 사업자의 귀책 사유로 시멘트를 적재한 상태에서 대기해야 하는 경우 30분당 10,000원의 대기료를 지급한다.</div>\n<div class="ca-sub ca-sub1">라. 운행 중 하차지가 변경되는 경우, 이동거리에 대한 왕복운임을 더하여 추가 운행 거리에 대한 왕복운임을 추가로 지급한다.</div>\n<div class="ca-art"><span class="ca-num">16.</span><span class="ca-artbody">(잔량 회수 운행) 공사 현장에서 하차한 후 잔량을 다시 싣고 돌아오는 경우 잔량분(톤)에 대하여 해당구간 왕복운임에 50%를 추가로 지급한다.</span></div>'},
-{title:'제5장 갈등 조정 및 기타 사항',desc:'제17조 ~ 제19조',html:'<div class="ca-chapter">제5장 갈등 조정 및 기타 사항</div>\n<div class="ca-art"><span class="ca-num">17.</span><span class="ca-artbody">(새로운 서비스 적용) 본 운임산정 시 누락된 항목 또는 새로운 서비스가 발생한 경우 안전운임위원회의 승인을 받아 적용한다.</span></div>\n<div class="ca-art"><span class="ca-num">18.</span><span class="ca-artbody">(유가변동 고시) 안전운임에 적용되는 유가는 다음 각 목에 따른다.</span></div>\n<div class="ca-sub ca-sub1">가. 2026년 1월 1일∼2026년 3월 31일(3개월) 평균유가가 안전운임 산정시 적용된 2025년 10월 1일∼2025년 12월 31일(3개월) 평균유가에 비해 50원 이상 인상되거나 인하될 경우, 2026년 1월 1일∼2026년 3월 31일(3개월)의 평균유가를 2026년 5월∼7월에 적용한다.</div>\n<div class="ca-sub ca-sub1">나. 2026년 4월 1일∼2026년 6월 30일(3개월) 평균유가가 2026년 5월∼7월에 적용된 유가에 비해 50원 이상 인상되거나 인하될 경우 2026년 4월 1일∼2026년 6월 30일(3개월)의 평균유가를 2026년 7월∼9월에 적용한다.</div>\n<div class="ca-sub ca-sub1">다. 2026년 7월 1일∼2026년 9월 30일(3개월) 평균유가가 2026년 7월∼9월에 적용된 유가에 비해 50원 이상 인상되거나 인하될 경우 2026년 7월 1일∼2026년 9월 30일(3개월)의 평균유가를 2026년 10월∼12월에 적용한다.</div>\n<div class="ca-sub ca-sub1">라. 2026년 10월 1일∼2026년 12월 31일(3개월) 평균유가가 2026년 10월∼12월에 적용된 유가에 비해 50원 이상 인상되거나 인하될 경우 2026년 10월 1일∼2026년 12월 31일(3개월)의 평균유가를 2027년 1월∼3월에 적용한다.</div>\n<div class="ca-art"><span class="ca-num">19.</span><span class="ca-artbody">(합의운임의 적용) 화물자동차 안전운임 및 본 부대조항에서 정한 할증 등이 특정 지역, 현장, 품목의 특성을 충분하게 반영하지 못한 경우, 해당 당사자(화주. 운수사업자. 화물차주) 간에 고시 수준보다 낮아지지 않는 조건으로 합의하여 시행할 수 있다. 단, 해당 합의는 고시 운임 및 부대조항에 우선하여 적용한다.</span></div>'}
-]}
-]};
+window._CL={
+chapters:[{"title": "제1장 정의", "arts": [0, 1]}, {"title": "제2장 운임적용 원칙", "arts": [2, 3, 4, 5, 6, 7]}, {"title": "제3장 운송 및 규격 형태에 따른 운임 적용", "arts": [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]}, {"title": "제4장 할증의 적용 방법", "arts": [20, 21, 22]}, {"title": "제5장 대기료 등 기타비용", "arts": [23, 24, 25, 26, 27, 28]}, {"title": "제6장 차주의 업무범위 및 갈등 조정", "arts": [29, 30, 31, 32]}, {"title": "제7장 기타 사항", "arts": [33, 34]}],
+articles:[{"num":1,"title":"안전운임의 정의","ch":0,"html":"<p class=\"art-lead\">화물자동차 안전운임이란 화물차주에 대한 적정한 운임의 보장을 통하여 과로, 과속, 과적 운행을 방지하는 등 교통안전을 확보하기 위하여 필요한 최소한의 운임으로 다음 각 목으로 구분한다.</p>\n<div class=\"art-sub art-sub1\">가. 안전운송운임: 화주가 운수사업자 또는 화물차주에게 지급하는 운임</div>\n<div class=\"art-sub art-sub1\">나. 안전위탁운임: 운수사업자가 화물차주에게 지급하는 운임</div>\n<div class=\"art-sub art-sub1\">다. 운수사업자 간 운임: 운수사업자가 「화물자동차 운수사업법」(이하 “법”이라 한다) 제2조제4호, 제11조의2제2항에 따라 다른 운송사업자(「고용보험 및 산업재해보상보험의 보험료징수 등에 관한 법률」에 따라 고용보험 및 산재보험을 납입하고, 화물차주에게 직접 배차하는 경우에 한한다)에게 운송을 주선 또는 위탁하는 경우 법 제5조의12에 따른 안전위탁운임 이상의 운임을 지급하기 위해 필요한 최소한의 운임</div>","plain":"1. (안전운임의 정의) 화물자동차 안전운임이란 화물차주에 대한 적정한 운임의 보장을 통하여 과로, 과속, 과적 운행을 방지하는 등 교통안전을 확보하기 위하여 필요한 최소한의 운임으로 다음 각 목으로 구분한다. 가. 안전운송운임: 화주가 운수사업자 또는 화물차주에게 지급하는 운임 나. 안전위탁운임: 운수사업자가 화물차주에게 지급하는 운임 다. 운수사업자 간 운임: 운수사업자가 「화물자동차 운수사업법」(이하 “법”이라 한다) 제2조제4호, 제11조의2제2항에 따라 다른 운송사업자(「고용보험 및 산업재해보상보험의 보험료징수 등에 관한 법률」에 따라 고용보험 및 산재보험을 납입하고, 화물차주에게 직접 배차하는 경우에 한한다)에게 운송을 주선 또는 위탁하는 경우 법 제5조의12에 따른 안전위탁운임 이상의 운임을 지급하기 위해 필요한 최소한의 운임"},
+{"num":2,"title":"안전운임의 적용 대상","ch":0,"html":"<p class=\"art-lead\">컨테이너 품목 안전운임의 적용을 받는 주체는 다음 각 목과 같다.</p>\n<div class=\"art-sub art-sub1\">가. &quot;화주(貨主)&quot;란 운수사업자 또는 화물차주에게 화물 운송을 위탁하는 자로서 다음 1)에서 3)까지의 어느 하나에 해당하는 자를 말한다.</div>\n<div class=\"art-sub art-sub2\">1) 화주: 자기 명의의 화물을 수출입 컨테이너로 운송하기 위하여 운수사업자 또는 화물차주와 계약을 체결하여 운송을 위탁하는 자로서 이 경우 「물류정책기본법」 제2조제1항제11호에 따른 국제물류주선업에 종사하는 자를 포함한다.</div>\n<div class=\"art-sub art-sub2\">2) 선사: 「해운법」 제2조제3호에 따른 해상화물운송사업을 경영하는 자로서, 수출입 컨테이너의 세척 등 관리를 위해 운수사업자 또는 화물차주에게 운송을 위탁하는 자에 한정한다.</div>\n<div class=\"art-sub art-sub2\">3) 터미널 운영사: 「항만운송사업법」 제2조제6항에 따른 자로서, 터미널 간 수출입 컨테이너의 운송을 위해 운수사업자 또는 화물차주에게 운송을 위탁하는 자에 한정한다.</div>\n<div class=\"art-sub art-sub1\">나. &quot;운수사업자&quot;란 법 제3조제3항에 따른 운송사업자, 제24조제2항에 따른 운송주선사업자 및 운송가맹사업자를 말한다.</div>\n<div class=\"art-sub art-sub1\">다. &quot;화물차주&quot;란 화물을 직접 운송하는 자로서 다음 1)에서 2)까지의 어느 하나에 해당하는 사람을 말한다.</div>\n<div class=\"art-sub art-sub2\">1) 법 제3조제1항제2호에 따라 개인화물자동차 운송사업의 허가를 받은 사람</div>\n<div class=\"art-sub art-sub2\">2) 법 제40조제1항에 따라 운송사업자로부터 경영의 일부를 위탁받은 사람</div>","plain":"2. (안전운임의 적용 대상) 컨테이너 품목 안전운임의 적용을 받는 주체는 다음 각 목과 같다. 가. \"화주(貨主)\"란 운수사업자 또는 화물차주에게 화물 운송을 위탁하는 자로서 다음 1)에서 3)까지의 어느 하나에 해당하는 자를 말한다. 1) 화주: 자기 명의의 화물을 수출입 컨테이너로 운송하기 위하여 운수사업자 또는 화물차주와 계약을 체결하여 운송을 위탁하는 자로서 이 경우 「물류정책기본법」 제2조제1항제11호에 따른 국제물류주선업에 종사하는 자를 포함한다. 2) 선사: 「해운법」 제2조제3호에 따른 해상화물운송사업을 경영하는 자로서, 수출입 컨테이너의 세척 등 관리를 위해 운수사업자 또는 화물차주에게 운송을 위탁하는 자에 한정한다. 3) 터미널 운영사: 「항만운송사업법」 제2조제6항에 따른 자로서, 터미널 간 수출입 컨테이너의 운송을 위해 운수사업자 또는 화물차주에게 운송을 위탁하는 자에 한정한다. 나. \"운수사업자\"란 법 제3조제3항에 따른 운송사업자, 제24조제2항에 따른 운송주선사업자 및 운송가맹사업자를 말한다. 다. \"화물차주\"란 화물을 직접 운송하는 자로서 다음 1)에서 2)까지의 어느 하나에 해당하는 사람을 말한다. 1) 법 제3조제1항제2호에 따라 개인화물자동차 운송사업의 허가를 받은 사람 2) 법 제40조제1항에 따라 운송사업자로부터 경영의 일부를 위탁받은 사람"},
+{"num":3,"title":"안전운임과 기존 운임과의 관계","ch":1,"html":"<p class=\"art-lead\">화물자동차 안전운임이란 화물차주에 대한 적정한 운임의 보장을 통하여 과로, 과속, 과적 운행을 방지하는 등 교통안전을 확보하기 위하여 필요한 최소한의 운임으로서, 안전위탁운임을 이유로 현재 지급하고 있는 운임을 낮게 지급할 수 없다.</p>","plain":"3. (안전운임과 기존 운임과의 관계) 화물자동차 안전운임이란 화물차주에 대한 적정한 운임의 보장을 통하여 과로, 과속, 과적 운행을 방지하는 등 교통안전을 확보하기 위하여 필요한 최소한의 운임으로서, 안전위탁운임을 이유로 현재 지급하고 있는 운임을 낮게 지급할 수 없다."},
+{"num":4,"title":"차주 대상 비용 공제 또는 청구","ch":1,"html":"<p class=\"art-lead\">운수사업자는 차주에게 안전위탁운임을 지급한 이후 안전운임 산정 시 차주 원가항목에 반영된 다음 각 목 외의 비용을 공제하거나 청구할 수 없다. 단, 주선사업자가 중개‧대리하여 화주가 직접 차주에게 안전운송운임을 지불한 경우에는 차주가 해당 주선사업자에게 주선요금을 납부하여야 한다.</p>\n<div class=\"art-sub art-sub1\">가. 지입료(법 제40조에 따라 차량과 그 경영의 일부를 위탁하거나 차량을 현물출자한 사람에게 그 경영의 일부를 위탁한 경우에 한함)</div>\n<div class=\"art-sub art-sub1\">나. 주차료(주차장을 이용하는 경우에 한함)</div>\n<div class=\"art-sub art-sub1\">다. 산재보험료 및 고용보험료의 노무제공자(차주) 부담분</div>","plain":"4. (차주 대상 비용 공제 또는 청구) 운수사업자는 차주에게 안전위탁운임을 지급한 이후 안전운임 산정 시 차주 원가항목에 반영된 다음 각 목 외의 비용을 공제하거나 청구할 수 없다. 단, 주선사업자가 중개‧대리하여 화주가 직접 차주에게 안전운송운임을 지불한 경우에는 차주가 해당 주선사업자에게 주선요금을 납부하여야 한다. 가. 지입료(법 제40조에 따라 차량과 그 경영의 일부를 위탁하거나 차량을 현물출자한 사람에게 그 경영의 일부를 위탁한 경우에 한함) 나. 주차료(주차장을 이용하는 경우에 한함) 다. 산재보험료 및 고용보험료의 노무제공자(차주) 부담분"},
+{"num":5,"title":"운임 지급원칙","ch":1,"html":"<p class=\"art-lead\">당월 운송분 안전위탁운임은 익월 말일 이내 현금으로 지급한다. 단, 부득이한 경우에도 당월 마감일 후 45일을 초과할 수 없다.</p>","plain":"5. (운임 지급원칙) 당월 운송분 안전위탁운임은 익월 말일 이내 현금으로 지급한다. 단, 부득이한 경우에도 당월 마감일 후 45일을 초과할 수 없다."},
+{"num":6,"title":"거리 측정방식","ch":1,"html":"<p class=\"art-lead\">구간별 거리표의 거리 측정방식은 다음 각 목과 같다.</p>\n<div class=\"art-sub art-sub1\">가. 기‧종점 간 구간거리에 터미널 내 운송거리를 더하여 측정한다.</div>\n<div class=\"art-sub art-sub1\">나. 기‧종점 간 구간거리는 대표 터미널에서 종점이 위치한 읍‧면‧동 주민센터까지의 거리로, 거리 측정은 네이버 지도(거리우선, 차종 5종, 4축 이상, 특수화물차 적용)를 이용하여 오전 06시에 측정하는 것을 기준으로 한다.</div>\n<div class=\"art-sub art-sub1\">다. 본 운임에 기‧종점이 고시되지 않은 구간의 거리는 가목과 나목을 기준으로 하여 당사자간 협의 하에 적용한다.</div>","plain":"6. (거리 측정방식) 구간별 거리표의 거리 측정방식은 다음 각 목과 같다. 가. 기‧종점 간 구간거리에 터미널 내 운송거리를 더하여 측정한다. 나. 기‧종점 간 구간거리는 대표 터미널에서 종점이 위치한 읍‧면‧동 주민센터까지의 거리로, 거리 측정은 네이버 지도(거리우선, 차종 5종, 4축 이상, 특수화물차 적용)를 이용하여 오전 06시에 측정하는 것을 기준으로 한다. 다. 본 운임에 기‧종점이 고시되지 않은 구간의 거리는 가목과 나목을 기준으로 하여 당사자간 협의 하에 적용한다."},
+{"num":7,"title":"운임 및 운송거리 적용방법","ch":1,"html":"<p class=\"art-lead\">본 부대조항에서 적용되는 모든 운임 및 요금은 십 원 단위에서 반올림하여 적용(단, 부가가치세는 제외)하며, 거리(km)는 소수점 첫째자리에서 반올림하여 적용한다.</p>","plain":"7. (운임 및 운송거리 적용방법) 본 부대조항에서 적용되는 모든 운임 및 요금은 십 원 단위에서 반올림하여 적용(단, 부가가치세는 제외)하며, 거리(km)는 소수점 첫째자리에서 반올림하여 적용한다."},
+{"num":8,"title":"부가가치세","ch":1,"html":"<p class=\"art-lead\">본 부대조항이 정한 모든 금액은 부가가치세가 포함되지 않은 금액이다.</p>","plain":"8. (부가가치세) 본 부대조항이 정한 모든 금액은 부가가치세가 포함되지 않은 금액이다."},
+{"num":9,"title":"왕복·편도 운송운임","ch":2,"html":"<p class=\"art-lead\">컨테이너 품목 안전운임은 다음 각 목을 따른다.</p>\n<div class=\"art-sub art-sub1\">가. 모든 운임은 왕복운임을 적용한다. 단, 수도권 화주공장(서울‧인천‧경기 및 강원 춘천‧강원 홍천 지역)에서 작업하며 공(空)컨테이너의 반납 또는 수령 장소가 의왕ICD인 경우에는 편도운임을 적용한다. 단, 공컨테이너의 반납장소가 인천터미널일 경우 의왕ICD 편도운임 적용 후 4만원을 추가로 지급한다.</div>\n<div class=\"art-sub art-sub1\">나. 할증품목 등 특수컨테이너(냉동‧냉장컨테이너, 오픈탑(O/T) 컨테이너, FR컨테이너 등)는 가목 단서에 해당하는 경우라도 왕복운임을 적용한다.</div>","plain":"9. (왕복·편도 운송운임) 컨테이너 품목 안전운임은 다음 각 목을 따른다. 가. 모든 운임은 왕복운임을 적용한다. 단, 수도권 화주공장(서울‧인천‧경기 및 강원 춘천‧강원 홍천 지역)에서 작업하며 공(空)컨테이너의 반납 또는 수령 장소가 의왕ICD인 경우에는 편도운임을 적용한다. 단, 공컨테이너의 반납장소가 인천터미널일 경우 의왕ICD 편도운임 적용 후 4만원을 추가로 지급한다. 나. 할증품목 등 특수컨테이너(냉동‧냉장컨테이너, 오픈탑(O/T) 컨테이너, FR컨테이너 등)는 가목 단서에 해당하는 경우라도 왕복운임을 적용한다."},
+{"num":10,"title":"복화운송운임","ch":2,"html":"<p class=\"art-lead\">복화 운송의 경우 왕복운임의 100%를 추가 적용하며, 복화 사용료 및 추가 발생 비용 등은 아래 각 목에 따라 적용한다.</p>\n<div class=\"art-sub art-sub1\">가. 동일컨테이너를 사용한 복화의 경우, 해당구간 왕복운임의 100%를 추가 지급하되 선사에게 지급하는 복화 사용료는 차주가 실비로 부담한다.</div>\n<div class=\"art-sub art-sub1\">나. 컨테이너가 교체되는 복화의 경우, 해당구간 왕복운임의 100%를 추가로 지급하되 복화 사용료 및 추가발생 비용은 차주와 운수사업자 간 합의하여야 하며, 추가발생 운임에서만 공제해야 한다.</div>","plain":"10. (복화운송운임) 복화 운송의 경우 왕복운임의 100%를 추가 적용하며, 복화 사용료 및 추가 발생 비용 등은 아래 각 목에 따라 적용한다. 가. 동일컨테이너를 사용한 복화의 경우, 해당구간 왕복운임의 100%를 추가 지급하되 선사에게 지급하는 복화 사용료는 차주가 실비로 부담한다. 나. 컨테이너가 교체되는 복화의 경우, 해당구간 왕복운임의 100%를 추가로 지급하되 복화 사용료 및 추가발생 비용은 차주와 운수사업자 간 합의하여야 하며, 추가발생 운임에서만 공제해야 한다."},
+{"num":11,"title":"COMBINE 운송","ch":2,"html":"<p class=\"art-lead\">20FT 컨테이너를 2개 운송하는 COMBINE 운송운임은 다음 각 목을 따른다.</p>\n<div class=\"art-sub art-sub1\">가. COMBINE 운송 시에는 각각의 컨테이너에 20FT 운임의 100%를 적용한다.</div>\n<div class=\"art-sub art-sub1\">나. 다음 1)에서 4)까지 요건을 모두 충족한 COMBINE 운송 시에는 20FT 컨테이너 운임의 180%를 적용한다.(수입‧수출 컨테이너에 동일 적용, 배후단지‧환적화물은 제외)</div>\n<div class=\"art-sub art-sub2\">1) 컨테이너 2개의 화주가 동일할 것</div>\n<div class=\"art-sub art-sub2\">2) 냉동·냉장, 위험물, 탱크 등 할증 대상 컨테이너가 아닐 것</div>\n<div class=\"art-sub art-sub2\">3) 컨테이너 2개의 중량 합계가 20톤 미만일 것</div>\n<div class=\"art-sub art-sub2\">4) 동일 장소에서 상차하고, 동일 장소에서 하차할 것</div>\n<div class=\"art-sub art-sub1\">다. COMBINE 운송 중 상행과 하행 시 운송하는 컨테이너가 20FT 2개, 20FT 1개로 각각 다른 경우에는 다음과 같이 20FT 컨테이너 운임의 140%를 적용한다.</div>\n<div class=\"art-sub art-sub2\">1) 20FT 컨테이너 2개 운송 시 : 20FT 컨테이너 각각 왕복운임의 40%</div>\n<div class=\"art-sub art-sub2\">2) 20FT 컨테이너 1개 운송 시 : 20FT 컨테이너 왕복운임의 60%</div>\n<div class=\"art-sub art-sub1\">라. COMBINE 운송 중 상행과 하행 시 운송하는 컨테이너가 20FT 컨테이너 2개, 40FT 컨테이너 1개로 각각 다른 경우에는 다음과 같이 운임을 적용한다.</div>\n<div class=\"art-sub art-sub2\">1) 20FT 컨테이너 2개 운송 시 : 20FT 컨테이너 각각 왕복운임의 40%</div>\n<div class=\"art-sub art-sub2\">2) 40FT 컨테이너 1개 운송 시 : 40FT 컨테이너 왕복운임의 60%</div>","plain":"11. (COMBINE 운송) 20FT 컨테이너를 2개 운송하는 COMBINE 운송운임은 다음 각 목을 따른다. 가. COMBINE 운송 시에는 각각의 컨테이너에 20FT 운임의 100%를 적용한다. 나. 다음 1)에서 4)까지 요건을 모두 충족한 COMBINE 운송 시에는 20FT 컨테이너 운임의 180%를 적용한다.(수입‧수출 컨테이너에 동일 적용, 배후단지‧환적화물은 제외) 1) 컨테이너 2개의 화주가 동일할 것 2) 냉동·냉장, 위험물, 탱크 등 할증 대상 컨테이너가 아닐 것 3) 컨테이너 2개의 중량 합계가 20톤 미만일 것 4) 동일 장소에서 상차하고, 동일 장소에서 하차할 것 다. COMBINE 운송 중 상행과 하행 시 운송하는 컨테이너가 20FT 2개, 20FT 1개로 각각 다른 경우에는 다음과 같이 20FT 컨테이너 운임의 140%를 적용한다. 1) 20FT 컨테이너 2개 운송 시 : 20FT 컨테이너 각각 왕복운임의 40% 2) 20FT 컨테이너 1개 운송 시 : 20FT 컨테이너 왕복운임의 60% 라. COMBINE 운송 중 상행과 하행 시 운송하는 컨테이너가 20FT 컨테이너 2개, 40FT 컨테이너 1개로 각각 다른 경우에는 다음과 같이 운임을 적용한다. 1) 20FT 컨테이너 2개 운송 시 : 20FT 컨테이너 각각 왕복운임의 40% 2) 40FT 컨테이너 1개 운송 시 : 40FT 컨테이너 왕복운임의 60%"},
+{"num":12,"title":"밥테일 운송","ch":2,"html":"<p class=\"art-lead\">화주의 요청 또는 화주의 요청을 받은 운수사업자의 요청으로 화주 문전에 샤시를 장치하고 트랙터만으로 다시 기점으로 돌아오는 밥테일 운송의 경우, 다음 각 목에 따라 운임을 적용한다.</p>\n<div class=\"art-sub art-sub1\">가. 1회 왕복 시 해당 구간 왕복 운임의 100%를 적용한다.</div>\n<div class=\"art-sub art-sub1\">나. 2회 왕복 시 해당 구간 왕복 운임의 200%를 적용한다.</div>","plain":"12. (밥테일 운송) 화주의 요청 또는 화주의 요청을 받은 운수사업자의 요청으로 화주 문전에 샤시를 장치하고 트랙터만으로 다시 기점으로 돌아오는 밥테일 운송의 경우, 다음 각 목에 따라 운임을 적용한다. 가. 1회 왕복 시 해당 구간 왕복 운임의 100%를 적용한다. 나. 2회 왕복 시 해당 구간 왕복 운임의 200%를 적용한다."},
+{"num":13,"title":"온그라운드 운송","ch":2,"html":"<p class=\"art-lead\">화주 공장 또는 창고 등 화주 문전에 컨테이너를 샤시에서 내려놓은 상태에서 화물을 적입 또는 적출하는 온그라운드 작업이 발생하는 운송의 경우에는 다음 각 목에 따라 운임을 적용하며, 화물차주에게 별도의 상·하차비, 셔틀비 등을 청구할 수 없다.</p>\n<div class=\"art-sub art-sub1\">가. 컨테이너를 내려놓은 후 샤시만 기점으로 돌아오는 경우 해당 구간 왕복 운임의 100%를 적용한다.</div>\n<div class=\"art-sub art-sub1\">나. 공차로 종점으로 이동하여 온그라운드 작업이 끝난 컨테이너를 싣고 기점으로 복귀하는 경우 왕복운임의 100%를 적용한다.</div>\n<div class=\"art-sub art-sub1\">다. 컨테이너를 내려놓은 후 다른 컨테이너를 싣고 기점으로 돌아오는 경우 왕복 운임의 100%를 적용한다.</div>","plain":"13. (온그라운드 운송) 화주 공장 또는 창고 등 화주 문전에 컨테이너를 샤시에서 내려놓은 상태에서 화물을 적입 또는 적출하는 온그라운드 작업이 발생하는 운송의 경우에는 다음 각 목에 따라 운임을 적용하며, 화물차주에게 별도의 상·하차비, 셔틀비 등을 청구할 수 없다. 가. 컨테이너를 내려놓은 후 샤시만 기점으로 돌아오는 경우 해당 구간 왕복 운임의 100%를 적용한다. 나. 공차로 종점으로 이동하여 온그라운드 작업이 끝난 컨테이너를 싣고 기점으로 복귀하는 경우 왕복운임의 100%를 적용한다. 다. 컨테이너를 내려놓은 후 다른 컨테이너를 싣고 기점으로 돌아오는 경우 왕복 운임의 100%를 적용한다."},
+{"num":14,"title":"공차 운행","ch":2,"html":"<p class=\"art-lead\">화주 또는 운수사업자의 요구로 10km 이상의 거리를 공차로 운행할 경우 요구주체는 공차 운행거리에 해당하는 왕복운임의 50%를 지급하여야 한다.</p>","plain":"14. (공차 운행) 화주 또는 운수사업자의 요구로 10km 이상의 거리를 공차로 운행할 경우 요구주체는 공차 운행거리에 해당하는 왕복운임의 50%를 지급하여야 한다."},
+{"num":15,"title":"포지셔닝","ch":2,"html":"<p class=\"art-lead\">포지셔닝(내륙 컨테이너 기지와 항만 간 공컨테이너 공급 운송)이 발생하는 경우 해당구간 왕복운임의 50%를 적용한다.</p>","plain":"15. (포지셔닝) 포지셔닝(내륙 컨테이너 기지와 항만 간 공컨테이너 공급 운송)이 발생하는 경우 해당구간 왕복운임의 50%를 적용한다."},
+{"num":16,"title":"셔틀 운송","ch":2,"html":"<p class=\"art-lead\">화주 또는 운수사업자의 요구에 의해 자가CY, 철도CY, 사내 야적장 간 셔틀 운송이 편도로 발생하는 경우에는 해당구간 왕복운임의 50%를 적용하며, 왕복으로 발생하는 경우에는 해당구간 왕복운임의 100%를 적용한다. 단, 공차운행 발생 시 부대조항 제14조에 따른 운임을 적용한다.</p>","plain":"16. (셔틀 운송) 화주 또는 운수사업자의 요구에 의해 자가CY, 철도CY, 사내 야적장 간 셔틀 운송이 편도로 발생하는 경우에는 해당구간 왕복운임의 50%를 적용하며, 왕복으로 발생하는 경우에는 해당구간 왕복운임의 100%를 적용한다. 단, 공차운행 발생 시 부대조항 제14조에 따른 운임을 적용한다."},
+{"num":17,"title":"철도 CY 직송 운송","ch":2,"html":"<p class=\"art-lead\">철도 CY 물량을 화물자동차로 직송 운송하는 경우 운행거리에 따른 왕복운임의 50%를 적용한다.</p>","plain":"17. (철도 CY 직송 운송) 철도 CY 물량을 화물자동차로 직송 운송하는 경우 운행거리에 따른 왕복운임의 50%를 적용한다."},
+{"num":18,"title":"컨테이너 세척 등","ch":2,"html":"<p class=\"art-lead\">컨테이너 세척 및 손상 컨테이너와 관련한 추가 운임은 다음 각 목을 따른다.</p>\n<div class=\"art-sub art-sub1\">가. (컨테이너 세척 셔틀운임) 컨테이너 세척 발생으로 차주가 세척장까지 운행 또는 대기 등을 할 경우 선사는 화주 또는 운수사업자를 통해 건당 20,000원의 셔틀운임을 지급한다. 이 때 별지 제1호서식의 세척 확인서(전자문서 포함)를 증빙자료로 사용하며, 차주가 확인서 서명을 요구할 시 세척을 지시한 자는 서명해야 한다.</div>\n<div class=\"art-sub art-sub1\">나. (손상 컨테이너 셔틀운임) 항내에서 손상된 컨테이너를 교체하기 위해 대기 및 상·하차, 운송 등이 발생하는 경우 선사는 건당 20,000원의 셔틀운임을 지급한다. 이 때 별지 제2호서식의 손상컨테이너 교체 확인서(전자문서 포함)를 증빙자료로 사용하며, 차주가 확인서 서명을 요구할 시 담당자는 서명해야 한다.</div>\n<div class=\"art-sub art-sub1\">다. (손상 컨테이너 회차비) 화주 문전에 도착 후 컨테이너 손상이 발견되어 회차 및 컨테이너 교체가 이루어지는 경우에는 선사가 해당구간 왕복운임의 80%를 지급하여야 한다. 단, 화주가 선사에게 요청한 수준의 컨테이너가 운송된 경우에도 불구하고 화주가 회차를 요구한 경우에는 화주가 지급한다.</div>\n<div class=\"art-sub art-sub1\">라. (전배 운송운임) 수출컨테이너의 터미널 간 전배 운송이 발생하는 경우 원인제공자(선사 또는 터미널 운영사)는 해당 요율표(별첨)에 따른 운임을 지급한다.</div>","plain":"18. (컨테이너 세척 등) 컨테이너 세척 및 손상 컨테이너와 관련한 추가 운임은 다음 각 목을 따른다. 가. (컨테이너 세척 셔틀운임) 컨테이너 세척 발생으로 차주가 세척장까지 운행 또는 대기 등을 할 경우 선사는 화주 또는 운수사업자를 통해 건당 20,000원의 셔틀운임을 지급한다. 이 때 별지 제1호서식의 세척 확인서(전자문서 포함)를 증빙자료로 사용하며, 차주가 확인서 서명을 요구할 시 세척을 지시한 자는 서명해야 한다. 나. (손상 컨테이너 셔틀운임) 항내에서 손상된 컨테이너를 교체하기 위해 대기 및 상·하차, 운송 등이 발생하는 경우 선사는 건당 20,000원의 셔틀운임을 지급한다. 이 때 별지 제2호서식의 손상컨테이너 교체 확인서(전자문서 포함)를 증빙자료로 사용하며, 차주가 확인서 서명을 요구할 시 담당자는 서명해야 한다. 다. (손상 컨테이너 회차비) 화주 문전에 도착 후 컨테이너 손상이 발견되어 회차 및 컨테이너 교체가 이루어지는 경우에는 선사가 해당구간 왕복운임의 80%를 지급하여야 한다. 단, 화주가 선사에게 요청한 수준의 컨테이너가 운송된 경우에도 불구하고 화주가 회차를 요구한 경우에는 화주가 지급한다. 라. (전배 운송운임) 수출컨테이너의 터미널 간 전배 운송이 발생하는 경우 원인제공자(선사 또는 터미널 운영사)는 해당 요율표(별첨)에 따른 운임을 지급한다."},
+{"num":19,"title":"45FT 컨테이너","ch":2,"html":"<p class=\"art-lead\">45FT 컨테이너의 ‘안전위탁운임 및 안전운송운임’(이하 “운임”이라 한다)은 40FT 컨테이너 운임의 112.5%를 적용한다.</p>","plain":"19. (45FT 컨테이너) 45FT 컨테이너의 ‘안전위탁운임 및 안전운송운임’(이하 “운임”이라 한다)은 40FT 컨테이너 운임의 112.5%를 적용한다."},
+{"num":20,"title":"비규격 컨테이너","ch":2,"html":"<p class=\"art-lead\">본 고시에서 정하지 않은 기타 비규격 컨테이너(20FT, 40FT, 45FT를 제외한 컨테이너) 운임은 화주, 운수사업자, 차주 간 협의하여 결정한다.</p>","plain":"20. (비규격 컨테이너) 본 고시에서 정하지 않은 기타 비규격 컨테이너(20FT, 40FT, 45FT를 제외한 컨테이너) 운임은 화주, 운수사업자, 차주 간 협의하여 결정한다."},
+{"num":21,"title":"할증 지급방식","ch":3,"html":"<p class=\"art-lead\">사전에 예측 가능한 할증 운임의 경우 운임에 포함하여 지급한다. 다만, 사전에 예측하지 못한 운임 할증(예: 배차 취소료 등)이 발생한 경우에는 운송완료 이후 입증자료를 제출하여 적용한다.</p>","plain":"21. (할증 지급방식) 사전에 예측 가능한 할증 운임의 경우 운임에 포함하여 지급한다. 다만, 사전에 예측하지 못한 운임 할증(예: 배차 취소료 등)이 발생한 경우에는 운송완료 이후 입증자료를 제출하여 적용한다."},
+{"num":22,"title":"할증률 가산","ch":3,"html":"<p class=\"art-lead\">다수의 할증 조항이 동시에 적용되는 운송일 경우 다음과 같이 할증률을 합산하여 지급한다.</p>\n<div class=\"art-sub art-sub1\">가. 가장 높은 할증률 1개를 우선 적용한 후 나머지 할증률은 50%씩만 적용한다.</div>\n<div class=\"art-sub art-sub1\">나. 할증 항목이 3개를 초과하는 경우 할증률이 높은 순서대로 3개까지만 합산한다.</div>","plain":"22. (할증률 가산) 다수의 할증 조항이 동시에 적용되는 운송일 경우 다음과 같이 할증률을 합산하여 지급한다. 가. 가장 높은 할증률 1개를 우선 적용한 후 나머지 할증률은 50%씩만 적용한다. 나. 할증 항목이 3개를 초과하는 경우 할증률이 높은 순서대로 3개까지만 합산한다."},
+{"num":23,"title":"할증 적용방식","ch":3,"html":"<p class=\"art-lead\">각종 할증 운임은 다음 각 목을 따른다.</p>\n<div class=\"art-sub art-sub1\">가. (중량물 할증) 컨테이너 내품 무게가 40FT 23톤, 20FT 20톤을 초과할 때부터 매 1톤마다 해당구간 운임의 10%씩을 할증하여 적용한다.(예시1 : 40FT 23톤 초과 24톤 이하 10%, 24톤 초과 25톤 이하 20% 할증 적용, 예시2 : 20FT 20톤 초과 21톤 이하 10%, 21톤 초과 22톤 이하 20% 할증 적용) 단, 테레프탈산(PTA, Purified Terephthalic Acid) 품목에 대해서는 20FT 21톤을 초과하는 경우 매 1톤을 초과할 때마다 10%씩을 할증하여 적용한다.</div>\n<div class=\"art-sub art-sub1\">나. (활대품 할증) ｢도로법｣ 제77조 및 ｢도로법 시행령｣ 제79조에 따라 도로통행에 제한을 받아 허가가 필요한 활대품(폭, 높이, 길이 초과)은 법령으로 정한 제한 기준으로부터 매 10cm를 초과할 때마다 해당구간 운임의 10%씩을 할증하여 적용한다. 단, 운수사업자가 제공하는 서비스 비용은 별도로 협의하여 적용한다.</div>\n<div class=\"art-sub art-sub1\">다. (탱크 컨테이너) ｢컨테이너식이동탱크저장소의 허가업무지침｣에서 정하는 ‘탱크 컨테이너’를 운송하는 경우 해당구간 운임의 30%를 할증하여 적용한다.</div>\n<div class=\"art-sub art-sub1\">라. (플렉시백 컨테이너) 플렉시백 컨테이너를 운송하는 경우 액체 화물은 해당구간 운임의 20% 할증을 적용하고, 가루‧칩 형태의 분말화물은 해당구간 운임의 10% 할증을 적용한다.</div>\n<div class=\"art-sub art-sub1\">마. (냉동‧냉장 컨테이너) 냉동·냉장장치가 부착된 컨테이너를 발전기가 부착된 차량으로 운송할 경우 장치의 가동여부와 상관없이 해당구간 운임의 30%를 할증하여 적용한다. 단, 냉동 발전기가 부착된 샤시를 운수사업자가 제공한 경우 할증의 50%는 운수사업자가 수취하며, 화주 또는 운수사업자의 냉동·냉장장치 가동 요구에도 불구하고 차주가 냉동·냉장장치를 가동하지 않은 경우에는 할증운임을 적용하지 아니한다.</div>\n<div class=\"art-sub art-sub1\">바. (덤프 컨테이너) 덤프컨테이너의 경우 해당구간 운임의 25%를 할증 적용한다.</div>\n<div class=\"art-sub art-sub1\">사. (통행제한지역) 주간에 화물자동차 운행이 제한되어 허가를 받아야 되는 지역으로 운행 시 해당구간 운임의 30% 이상을 할증하여 적용한다.</div>\n<div class=\"art-sub art-sub1\">아. (험로 및 오지) 운송구간에 다음 1)에서 4)까지에 해당하는 험로 및 오지가 1개 이상 포함될 경우, 전체 운송구간 운임에 20%를 할증하여 적용하며, 그 이상의 할증률 적용은 화주․운수사업자․차주 간 협의하여 결정한다. 별지 제3호서식의 험로·오지 확인서(전자문서 포함)를 증빙자료로 사용하여, 차주가 확인서 서명을 요구할 시 화주는 실제 발생한 험로․오지에 따라 서명해야 한다.</div>\n<div class=\"art-sub art-sub2\">1) 폭 2차로 미만 도로</div>\n<div class=\"art-sub art-sub2\">2) 비포장·자갈길 등 불량도로</div>\n<div class=\"art-sub art-sub2\">3) 급경사 구간</div>\n<div class=\"art-sub art-sub2\">4) 당사자간 합의하는 경우</div>\n<div class=\"art-sub art-sub1\">자. (공휴일) 화주의 요청 또는 화주의 요청을 받은 운수사업자의 요청에 따라 ｢관공서의 공휴일에 관한 규정｣ 제2조 또는 제3조에서 정하는 공휴일 또는 대체공휴일에 작업 또는 운행할 경우 해당구간 운임의 20%를 할증하여 적용한다.</div>\n<div class=\"art-sub art-sub1\">차. (심야) 화주의 요청 또는 화주의 요청을 받은 운수사업자의 요청으로 심야(22:00-06:00)에 작업 또는 운행할 경우 해당구간 운임의 20%를 할증하여 적용한다. 단, 이 경우 운수사업자와 화주는 확인서를 발급하여야 한다.</div>\n<div class=\"art-sub art-sub1\">카. (인천기점 할증) 인천 신항, 인천 구항, 인천국제여객부두 기점 운송의 경우 구간별 운임표 상 안전위탁운임은 20% 할증이 적용되어 있으며, 구간별 운임표에 기재되지 않은 구간은 거리별 운임표를 적용하되, 안전위탁운임의 20%를 별도로 할증하여야 한다. 창고, 공장 등 화주 문전에서 인천기점으로 운행한 경우도 동일하게 적용한다.</div>\n<div class=\"art-sub art-sub1\">타. (평택기점 할증) 평택항 기점 운송의 경우 구간별 운임표상 안전위탁운임은 18% 할증이 적용되어 있으며, 구간별 운임표에 기재되지 않은 구간은 거리별 운임표를 적용하되, 안전위탁운임의 18%를 별도로 할증하여야 한다. 창고, 공장 등 화주문전에서 기점으로 운행한 경우도 동일하게 할증률을 적용한다.</div>\n<div class=\"art-sub art-sub1\">파. (위험물 등) ｢물류정책기본법｣ 제29조제1항에서 정의하는 위험물, 유해화학물질 등을 운송하는 차량이 위험물, 유해화학물질 등이 적재된 컨테이너를 운송할 때는 위험물의 종류에 따라 해당구간 운임에 다음과 같이 가산 적용한다.</div>\n<div class=\"art-sub art-sub2\">1) 위험물, 유독물, 유해화학물질: 30%</div>\n<div class=\"art-sub art-sub2\">2) 화약류: 100%</div>\n<div class=\"art-sub art-sub2\">3) 방사성물질: 200%(단, 운수사업자가 제공하는 서비스 비용은 별도로 협의하여 적용한다.)</div>\n<div class=\"art-sub art-sub2\">4) 화주는 적재화물이 위험물(유독물, 유해화학물질)일 경우 스티커 부착 등에 대한 고지의무가 있으며, 이를 고지하지 않아 발생하는 문제에 대한 책임은 화주에게 있다.</div>\n<div class=\"art-sub art-sub2\">5) 위험물이 공장 또는 부두에 직반입할 수 없어 별도의 위험물 장치장에 보관 후 다시 운송을 해야 하는 경우에는 다시 운송하는 거리의 기본운임과 할증 운임을 추가로 지급한다.</div>","plain":"23. (할증 적용방식) 각종 할증 운임은 다음 각 목을 따른다. 가. (중량물 할증) 컨테이너 내품 무게가 40FT 23톤, 20FT 20톤을 초과할 때부터 매 1톤마다 해당구간 운임의 10%씩을 할증하여 적용한다.(예시1 : 40FT 23톤 초과 24톤 이하 10%, 24톤 초과 25톤 이하 20% 할증 적용, 예시2 : 20FT 20톤 초과 21톤 이하 10%, 21톤 초과 22톤 이하 20% 할증 적용) 단, 테레프탈산(PTA, Purified Terephthalic Acid) 품목에 대해서는 20FT 21톤을 초과하는 경우 매 1톤을 초과할 때마다 10%씩을 할증하여 적용한다. 나. (활대품 할증) ｢도로법｣ 제77조 및 ｢도로법 시행령｣ 제79조에 따라 도로통행에 제한을 받아 허가가 필요한 활대품(폭, 높이, 길이 초과)은 법령으로 정한 제한 기준으로부터 매 10cm를 초과할 때마다 해당구간 운임의 10%씩을 할증하여 적용한다. 단, 운수사업자가 제공하는 서비스 비용은 별도로 협의하여 적용한다. 다. (탱크 컨테이너) ｢컨테이너식이동탱크저장소의 허가업무지침｣에서 정하는 ‘탱크 컨테이너’를 운송하는 경우 해당구간 운임의 30%를 할증하여 적용한다. 라. (플렉시백 컨테이너) 플렉시백 컨테이너를 운송하는 경우 액체 화물은 해당구간 운임의 20% 할증을 적용하고, 가루‧칩 형태의 분말화물은 해당구간 운임의 10% 할증을 적용한다. 마. (냉동‧냉장 컨테이너) 냉동·냉장장치가 부착된 컨테이너를 발전기가 부착된 차량으로 운송할 경우 장치의 가동여부와 상관없이 해당구간 운임의 30%를 할증하여 적용한다. 단, 냉동 발전기가 부착된 샤시를 운수사업자가 제공한 경우 할증의 50%는 운수사업자가 수취하며, 화주 또는 운수사업자의 냉동·냉장장치 가동 요구에도 불구하고 차주가 냉동·냉장장치를 가동하지 않은 경우에는 할증운임을 적용하지 아니한다. 바. (덤프 컨테이너) 덤프컨테이너의 경우 해당구간 운임의 25%를 할증 적용한다. 사. (통행제한지역) 주간에 화물자동차 운행이 제한되어 허가를 받아야 되는 지역으로 운행 시 해당구간 운임의 30% 이상을 할증하여 적용한다. 아. (험로 및 오지) 운송구간에 다음 1)에서 4)까지에 해당하는 험로 및 오지가 1개 이상 포함될 경우, 전체 운송구간 운임에 20%를 할증하여 적용하며, 그 이상의 할증률 적용은 화주․운수사업자․차주 간 협의하여 결정한다. 별지 제3호서식의 험로·오지 확인서(전자문서 포함)를 증빙자료로 사용하여, 차주가 확인서 서명을 요구할 시 화주는 실제 발생한 험로․오지에 따라 서명해야 한다. 1) 폭 2차로 미만 도로 2) 비포장·자갈길 등 불량도로 3) 급경사 구간 4) 당사자간 합의하는 경우 자. (공휴일) 화주의 요청 또는 화주의 요청을 받은 운수사업자의 요청에 따라 ｢관공서의 공휴일에 관한 규정｣ 제2조 또는 제3조에서 정하는 공휴일 또는 대체공휴일에 작업 또는 운행할 경우 해당구간 운임의 20%를 할증하여 적용한다. 차. (심야) 화주의 요청 또는 화주의 요청을 받은 운수사업자의 요청으로 심야(22:00-06:00)에 작업 또는 운행할 경우 해당구간 운임의 20%를 할증하여 적용한다. 단, 이 경우 운수사업자와 화주는 확인서를 발급하여야 한다. 카. (인천기점 할증) 인천 신항, 인천 구항, 인천국제여객부두 기점 운송의 경우 구간별 운임표 상 안전위탁운임은 20% 할증이 적용되어 있으며, 구간별 운임표에 기재되지 않은 구간은 거리별 운임표를 적용하되, 안전위탁운임의 20%를 별도로 할증하여야 한다. 창고, 공장 등 화주 문전에서 인천기점으로 운행한 경우도 동일하게 적용한다. 타. (평택기점 할증) 평택항 기점 운송의 경우 구간별 운임표상 안전위탁운임은 18% 할증이 적용되어 있으며, 구간별 운임표에 기재되지 않은 구간은 거리별 운임표를 적용하되, 안전위탁운임의 18%를 별도로 할증하여야 한다. 창고, 공장 등 화주문전에서 기점으로 운행한 경우도 동일하게 할증률을 적용한다. 파. (위험물 등) ｢물류정책기본법｣ 제29조제1항에서 정의하는 위험물, 유해화학물질 등을 운송하는 차량이 위험물, 유해화학물질 등이 적재된 컨테이너를 운송할 때는 위험물의 종류에 따라 해당구간 운임에 다음과 같이 가산 적용한다. 1) 위험물, 유독물, 유해화학물질: 30% 2) 화약류: 100% 3) 방사성물질: 200%(단, 운수사업자가 제공하는 서비스 비용은 별도로 협의하여 적용한다.) 4) 화주는 적재화물이 위험물(유독물, 유해화학물질)일 경우 스티커 부착 등에 대한 고지의무가 있으며, 이를 고지하지 않아 발생하는 문제에 대한 책임은 화주에게 있다. 5) 위험물이 공장 또는 부두에 직반입할 수 없어 별도의 위험물 장치장에 보관 후 다시 운송을 해야 하는 경우에는 다시 운송하는 거리의 기본운임과 할증 운임을 추가로 지급한다."},
+{"num":24,"title":"대기료","ch":4,"html":"<p class=\"art-lead\">트랙터의 상‧하차 대기가 발생할 경우 다음의 가목 또는 나목에 따라 대기료를 지급한다. 단, 대기료는 운수사업자가 차주에게 우선 지급한 뒤, 원인제공자에게 청구한다. 대기시간은 화주 또는 부두 운영사의 도착요청 시간부터 상·하차 및 송장 발급을 완료한 시간까지로 하고, 별지 제4호 서식의 대기시간 확인서(전자문서도 포함하고, 다목을 참조하여 작성한다) 또는 부두 운영사의 입‧출입 카드 내역서 등을 증빙자료로 활용한다.</p>\n<div class=\"art-sub art-sub1\">가. 항만 부두에서 대기가 발생한 경우, 원인제공자는 40FT와 20FT 공통적으로 1시간을 초과할 시 30분당 20,000원씩 대기료를 지급한다.</div>\n<div class=\"art-sub art-sub1\">나. 화주 문전에서 대기가 발생한 경우, 화주는 40FT 2시간 30분, 20FT 2시간을 초과할 시 30분당 20,000원씩 대기료를 지급한다.</div>\n<div class=\"art-sub art-sub1\">다. 상‧하차지에서 차주가 별지 제4호 서식의 대기시간 확인서(전자문서 포함) 서명을 요구할 시, 화주는 해당차량의 입‧출입 시간에 따라 서명해야 한다.</div>","plain":"24. (대기료) 트랙터의 상‧하차 대기가 발생할 경우 다음의 가목 또는 나목에 따라 대기료를 지급한다. 단, 대기료는 운수사업자가 차주에게 우선 지급한 뒤, 원인제공자에게 청구한다. 대기시간은 화주 또는 부두 운영사의 도착요청 시간부터 상·하차 및 송장 발급을 완료한 시간까지로 하고, 별지 제4호 서식의 대기시간 확인서(전자문서도 포함하고, 다목을 참조하여 작성한다) 또는 부두 운영사의 입‧출입 카드 내역서 등을 증빙자료로 활용한다. 가. 항만 부두에서 대기가 발생한 경우, 원인제공자는 40FT와 20FT 공통적으로 1시간을 초과할 시 30분당 20,000원씩 대기료를 지급한다. 나. 화주 문전에서 대기가 발생한 경우, 화주는 40FT 2시간 30분, 20FT 2시간을 초과할 시 30분당 20,000원씩 대기료를 지급한다. 다. 상‧하차지에서 차주가 별지 제4호 서식의 대기시간 확인서(전자문서 포함) 서명을 요구할 시, 화주는 해당차량의 입‧출입 시간에 따라 서명해야 한다."},
+{"num":25,"title":"검색기 검사운송","ch":4,"html":"<p class=\"art-lead\">차주가 검색대(X-ray)를 통과할 경우 운수사업자는 10만원을 지급한다.</p>","plain":"25. (검색기 검사운송) 차주가 검색대(X-ray)를 통과할 경우 운수사업자는 10만원을 지급한다."},
+{"num":26,"title":"배차 취소료","ch":4,"html":"<p class=\"art-lead\">배차 취소료는 다음 각 목을 따른다. 다만, 천재지변으로 배차가 취소되는 경우에는 적용하지 아니한다.</p>\n<div class=\"art-sub art-sub1\">가. 배차를 받고 컨테이너 상차를 위한 현장에 도착 후 1시간 이상 경과하여 배차가 취소된 경우 배차된 해당구간 왕복운임의 50%를 지급한다.</div>\n<div class=\"art-sub art-sub1\">나. 컨테이너 상차 후 상·하차지 및 작업지로 이동 중 배차가 취소되는 경우 배차된 해당구간 왕복운임의 70%를 지급한다.</div>\n<div class=\"art-sub art-sub1\">다. 컨테이너 상차 후 상·하차지 및 작업지에 도착하여 대기 중 배차가 취소된 경우에는 배차된 해당구간 왕복 운임의 100%를 지급하며, 과도한 대기가 발생한 경우 대기료는 추가로 협의하여 적용한다.</div>\n<div class=\"art-sub art-sub1\">라. 작업지에서 작업을 완료한 후 컨테이너를 싣고 이동 중 작업지로 회차하여 상‧하차 작업을 다시 하는 경우에는 아래와 같은 운임을 적용한다.</div>\n<div class=\"art-sub art-sub2\">1) 배차된 구간거리의 50% 이하 운행 후 회차 시 : 왕복 운임의 150%</div>\n<div class=\"art-sub art-sub2\">2) 배차된 구간거리의 50% 초과 운행 후 회차 시 : 왕복 운임의 200%</div>","plain":"26. (배차 취소료) 배차 취소료는 다음 각 목을 따른다. 다만, 천재지변으로 배차가 취소되는 경우에는 적용하지 아니한다. 가. 배차를 받고 컨테이너 상차를 위한 현장에 도착 후 1시간 이상 경과하여 배차가 취소된 경우 배차된 해당구간 왕복운임의 50%를 지급한다. 나. 컨테이너 상차 후 상·하차지 및 작업지로 이동 중 배차가 취소되는 경우 배차된 해당구간 왕복운임의 70%를 지급한다. 다. 컨테이너 상차 후 상·하차지 및 작업지에 도착하여 대기 중 배차가 취소된 경우에는 배차된 해당구간 왕복 운임의 100%를 지급하며, 과도한 대기가 발생한 경우 대기료는 추가로 협의하여 적용한다. 라. 작업지에서 작업을 완료한 후 컨테이너를 싣고 이동 중 작업지로 회차하여 상‧하차 작업을 다시 하는 경우에는 아래와 같은 운임을 적용한다. 1) 배차된 구간거리의 50% 이하 운행 후 회차 시 : 왕복 운임의 150% 2) 배차된 구간거리의 50% 초과 운행 후 회차 시 : 왕복 운임의 200%"},
+{"num":27,"title":"선박이용료 등","ch":4,"html":"<p class=\"art-lead\">도선에 따른 선박 왕복 이용료, 대형교량 왕복 통행료(예: 인천대교, 영종대교, 거가대교 등), 인천공항 주차료가 발생하는 구간은 운임에 실비를 추가하여 지급한다.</p>","plain":"27. (선박이용료 등) 도선에 따른 선박 왕복 이용료, 대형교량 왕복 통행료(예: 인천대교, 영종대교, 거가대교 등), 인천공항 주차료가 발생하는 구간은 운임에 실비를 추가하여 지급한다."},
+{"num":28,"title":"인프라 운영비","ch":4,"html":"<p class=\"art-lead\">CY, 철송장, 보관소 등을 설치 및 운영하여 운송이 이루어질 경우 운영비, 상·하차비, 셔틀운임 등을 차주에게 청구할 수 없다.</p>","plain":"28. (인프라 운영비) CY, 철송장, 보관소 등을 설치 및 운영하여 운송이 이루어질 경우 운영비, 상·하차비, 셔틀운임 등을 차주에게 청구할 수 없다."},
+{"num":29,"title":"제한차량 운행허가 수수료","ch":4,"html":"<p class=\"art-lead\">｢도로법｣ 제77조 및 ｢도로법 시행령｣ 제79조와 관련하여 도로통행 제한 높이 또는 길이의 초과로 발생되는 “제한차량 운행허가” 수수료 등은 화주가 실비 정산하여 지급한다.</p>","plain":"29. (제한차량 운행허가 수수료) ｢도로법｣ 제77조 및 ｢도로법 시행령｣ 제79조와 관련하여 도로통행 제한 높이 또는 길이의 초과로 발생되는 “제한차량 운행허가” 수수료 등은 화주가 실비 정산하여 지급한다."},
+{"num":30,"title":"차주의 업무범위","ch":5,"html":"<p class=\"art-lead\">차주에게 수행시킬 수 없는 업무는 다음 각 목과 같다.</p>\n<div class=\"art-sub art-sub1\">가. FR(Flat Rack) 컨테이너의 양옆 벽면을 접거나 펴는 작업</div>\n<div class=\"art-sub art-sub1\">나. 컨테이너 벽면 각종 스티커의 부착 및 제거 작업</div>\n<div class=\"art-sub art-sub1\">다. 컨테이너 검사 및 청소작업</div>\n<div class=\"art-sub art-sub1\">라. 오픈탑 컨테이너(O/T) 천막 개폐 및 설치 작업</div>\n<div class=\"art-sub art-sub1\">마. 컨테이너 문 개폐 업무</div>\n<div class=\"art-sub art-sub1\">바. 컨테이너 씰 체결 및 해체 작업</div>\n<div class=\"art-sub art-sub1\">사. 그 외 법적으로 차주가 수행해서는 안되는 업무</div>","plain":"30. (차주의 업무범위) 차주에게 수행시킬 수 없는 업무는 다음 각 목과 같다. 가. FR(Flat Rack) 컨테이너의 양옆 벽면을 접거나 펴는 작업 나. 컨테이너 벽면 각종 스티커의 부착 및 제거 작업 다. 컨테이너 검사 및 청소작업 라. 오픈탑 컨테이너(O/T) 천막 개폐 및 설치 작업 마. 컨테이너 문 개폐 업무 바. 컨테이너 씰 체결 및 해체 작업 사. 그 외 법적으로 차주가 수행해서는 안되는 업무"},
+{"num":31,"title":"과적 단속","ch":5,"html":"<p class=\"art-lead\">송장(보세운송허가서)에 기입된 중량과 실제 중량의 차이로 과적에 단속되거나, 화주의 적재 잘못으로 축중량 과적에 단속되어 회차할 경우 화주가 운수사를 통하여 기존 배차구간 운임의 100%를 차주에게 지급하며 과태료도 화주가 부담한다.</p>","plain":"31. (과적 단속) 송장(보세운송허가서)에 기입된 중량과 실제 중량의 차이로 과적에 단속되거나, 화주의 적재 잘못으로 축중량 과적에 단속되어 회차할 경우 화주가 운수사를 통하여 기존 배차구간 운임의 100%를 차주에게 지급하며 과태료도 화주가 부담한다."},
+{"num":32,"title":"새로운 서비스 적용","ch":5,"html":"<p class=\"art-lead\">본 운임산정 시 누락된 항목 또는 새로운 서비스가 발생한 경우 항목 신설 여부와 금액을 안전운임위원회의 승인을 받아 적용한다.</p>","plain":"32. (새로운 서비스 적용) 본 운임산정 시 누락된 항목 또는 새로운 서비스가 발생한 경우 항목 신설 여부와 금액을 안전운임위원회의 승인을 받아 적용한다."},
+{"num":33,"title":"갈등 조정","ch":5,"html":"<p class=\"art-lead\">부대조항과 관련하여 갈등 및 혼란이 초래될 경우 국토교통부 주관 하에 안전운임위원회에서의 협의를 통해 조정할 수 있다.</p>","plain":"33. (갈등 조정) 부대조항과 관련하여 갈등 및 혼란이 초래될 경우 국토교통부 주관 하에 안전운임위원회에서의 협의를 통해 조정할 수 있다."},
+{"num":34,"title":"유가변동 고시","ch":6,"html":"<p class=\"art-lead\">안전운임에 적용되는 유가는 다음 각 목에 따른다.</p>\n<div class=\"art-sub art-sub1\">가. 2026년 1월 1일∼2026년 3월 31일(3개월) 평균유가가 안전운임 산정시 적용된 2025년 10월 1일∼2025년 12월 31일(3개월) 평균유가에 비해 50원 이상 인상되거나 인하될 경우, 2026년 1월 1일∼2026년 3월 31일(3개월)의 평균유가를 2026년 5월∼7월에 적용한다.</div>\n<div class=\"art-sub art-sub1\">나. 2026년 4월 1일∼2026년 6월 30일(3개월) 평균유가가 2026년 5월∼7월에 적용된 유가에 비해 50원 이상 인상되거나 인하될 경우 2026년 4월 1일∼2026년 6월 30일(3개월)의 평균유가를 2026년 7월∼9월에 적용한다.</div>\n<div class=\"art-sub art-sub1\">다. 2026년 7월 1일∼2026년 9월 30일(3개월) 평균유가가 2026년 7월∼9월에 적용된 유가에 비해 50원 이상 인상되거나 인하될 경우 2026년 7월 1일∼2026년 9월 30일(3개월)의 평균유가를 2026년 10월∼12월에 적용한다.</div>\n<div class=\"art-sub art-sub1\">라. 2026년 10월 1일∼2026년 12월 31일(3개월) 평균유가가 2026년 10월∼12월에 적용된 유가에 비해 50원 이상 인상되거나 인하될 경우 2026년 10월 1일∼2026년 12월 31일(3개월)의 평균유가를 2027년 1월∼3월에 적용한다.</div>","plain":"34. (유가변동 고시) 안전운임에 적용되는 유가는 다음 각 목에 따른다. 가. 2026년 1월 1일∼2026년 3월 31일(3개월) 평균유가가 안전운임 산정시 적용된 2025년 10월 1일∼2025년 12월 31일(3개월) 평균유가에 비해 50원 이상 인상되거나 인하될 경우, 2026년 1월 1일∼2026년 3월 31일(3개월)의 평균유가를 2026년 5월∼7월에 적용한다. 나. 2026년 4월 1일∼2026년 6월 30일(3개월) 평균유가가 2026년 5월∼7월에 적용된 유가에 비해 50원 이상 인상되거나 인하될 경우 2026년 4월 1일∼2026년 6월 30일(3개월)의 평균유가를 2026년 7월∼9월에 적용한다. 다. 2026년 7월 1일∼2026년 9월 30일(3개월) 평균유가가 2026년 7월∼9월에 적용된 유가에 비해 50원 이상 인상되거나 인하될 경우 2026년 7월 1일∼2026년 9월 30일(3개월)의 평균유가를 2026년 10월∼12월에 적용한다. 라. 2026년 10월 1일∼2026년 12월 31일(3개월) 평균유가가 2026년 10월∼12월에 적용된 유가에 비해 50원 이상 인상되거나 인하될 경우 2026년 10월 1일∼2026년 12월 31일(3개월)의 평균유가를 2027년 1월∼3월에 적용한다."},
+{"num":35,"title":"항만별, 터미널 내 거리","ch":6,"html":"<p class=\"art-lead\">항만별 대표터미널 및 터미널 내 운송거리는 다음과 같다.</p>\n<div class=\"art-sub art-sub2\">1) 부산북항(신선대터미널) : 3.3km</div>\n<div class=\"art-sub art-sub2\">2) 부산신항(HMMPSA 신항만, HPNT) : 3.3km</div>\n<div class=\"art-sub art-sub2\">3) 인천항(인천컨테이너터미널, ICT) : 1km</div>\n<div class=\"art-sub art-sub2\">4) 인천신항(한진인천컨테이너터미널) : 2km</div>\n<div class=\"art-sub art-sub2\">5) 인천항국제여객터미널 : 2km</div>\n<div class=\"art-sub art-sub2\">6) 광양항(한국국제터미널, 허치슨) : 4km</div>\n<div class=\"art-sub art-sub2\">7) 평택항(평택컨테이너터미널) : 2km</div>\n<div class=\"art-sub art-sub2\">8) 울산구항 : 1km</div>\n<div class=\"art-sub art-sub2\">9) 울산신항 : 2km</div>\n<div class=\"art-sub art-sub2\">10) 포항항 : 1.5km</div>\n<div class=\"art-sub art-sub2\">11) 군산항 : 2km</div>\n<div class=\"art-sub art-sub2\">12) 마산항 : 1.2km</div>\n<div class=\"art-sub art-sub2\">13) 대산항 : 1km</div>\n<div class=\"art-sub art-sub2\">14) 의왕ICD(제1터미널) : 2km</div>","plain":"35. (항만별, 터미널 내 거리) 항만별 대표터미널 및 터미널 내 운송거리는 다음과 같다. 1) 부산북항(신선대터미널) : 3.3km 2) 부산신항(HMMPSA 신항만, HPNT) : 3.3km 3) 인천항(인천컨테이너터미널, ICT) : 1km 4) 인천신항(한진인천컨테이너터미널) : 2km 5) 인천항국제여객터미널 : 2km 6) 광양항(한국국제터미널, 허치슨) : 4km 7) 평택항(평택컨테이너터미널) : 2km 8) 울산구항 : 1km 9) 울산신항 : 2km 10) 포항항 : 1.5km 11) 군산항 : 2km 12) 마산항 : 1.2km 13) 대산항 : 1km 14) 의왕ICD(제1터미널) : 2km"}]
+};
 </script>
 <script src="flat.js?v=20260517"></script>
 <script src="keymap.js?v=20260520"></script>
@@ -1773,102 +1823,146 @@ document.getElementById('rate-table-btn').addEventListener('touchend', function 
 });
 document.getElementById('modal-close-btn').addEventListener('click', closeRateModal);
 
-// 부대조항 모달 (3단계 네비게이션)
+// 부대조항 모달 - 검색·펼침/접기·분할뷰
 (function () {
-var CLAUSE_DATA_RAW = null;
-function getClauseData() {
-  if (CLAUSE_DATA_RAW) return CLAUSE_DATA_RAW;
-  CLAUSE_DATA_RAW = window._CLAUSE_DATA || null;
-  return CLAUSE_DATA_RAW;
-}
-
-var modal = document.getElementById('clause-modal');
-var body  = document.getElementById('clause-body');
-var backBtn = document.getElementById('clause-back-btn');
+var D = window._CL;
+if (!D) return;
+var modal   = document.getElementById('clause-modal');
+var tocTree = document.getElementById('cl-toc-tree');
+var srch    = document.getElementById('cl-search');
+var tocEl   = document.getElementById('cl-toc');
+var detEl   = document.getElementById('cl-detail');
+var detPh   = document.getElementById('cl-detail-ph');
+var detView = document.getElementById('cl-detail-view');
+var dvHead  = document.getElementById('cl-dv-head');
+var dvBody  = document.getElementById('cl-dv-body');
+var mobBack = document.getElementById('cl-mob-back');
 var titleEl = document.getElementById('clause-modal-title');
-var crumb   = document.getElementById('clause-crumb');
-var st = { level: 0, sec: 0, ch: 0 };
 
-function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+var expanded = {};
+var selArt   = null;
 
-function renderLevel0() {
-  var d = getClauseData();
-  titleEl.textContent = '안전운임 부대조항';
-  backBtn.style.display = 'none';
-  crumb.classList.remove('show');
-  crumb.innerHTML = '';
-  body.innerHTML = '<div style="font-size:0.65rem;color:var(--text3);margin-bottom:10px;padding:0 2px">조회할 부대조항을 선택하세요</div>'
-    + d.sections.map(function(s) {
-      return '<div class="cnav-card" data-sec="'+s.id+'">'
-        + '<div class="cnav-badge">'+esc(s.badge)+'</div>'
-        + '<div class="cnav-card-content">'
-        + '<div class="cnav-card-title">'+s.title+'</div>'
-        + '<div class="cnav-card-sub">'+esc(s.desc)+' · '+s.chapters.length+'개 장(章)</div>'
-        + '</div>'
-        + '<span class="cnav-card-arrow">›</span>'
-        + '</div>';
-    }).join('');
+D.chapters.forEach(function(_, i) { expanded[i] = true; });
+
+function hl(text, q) {
+  if (!q) return text;
+  var idx = text.toLowerCase().indexOf(q);
+  if (idx < 0) return text;
+  return text.slice(0,idx)+'<mark>'+text.slice(idx,idx+q.length)+'</mark>'+text.slice(idx+q.length);
 }
 
-function renderLevel1() {
-  var d = getClauseData();
-  var sec = d.sections[st.sec];
-  titleEl.textContent = sec.badge+' 부대조항';
-  backBtn.style.display = 'block';
-  crumb.classList.add('show');
-  crumb.innerHTML = '<span class="crumb-item">'+esc(sec.badge)+'</span>';
-  body.innerHTML = sec.chapters.map(function(c,i) {
-    return '<div class="cnav-item" data-ch="'+i+'">'
-      + '<div class="cnav-dot"></div>'
-      + '<div class="cnav-item-content">'
-      + '<div class="cnav-item-title">'+esc(c.title)+'</div>'
-      + (c.desc ? '<div class="cnav-item-desc">'+esc(c.desc)+'</div>' : '')
-      + '</div>'
-      + '<span class="cnav-item-arrow">›</span>'
-      + '</div>';
-  }).join('');
+function renderTOC() {
+  var q = srch.value.trim().toLowerCase();
+  var html = '';
+  D.chapters.forEach(function(ch, ci) {
+    var arts = ch.arts.map(function(ai) { return D.articles[ai]; });
+    if (q) arts = arts.filter(function(a) {
+      return a.title.toLowerCase().includes(q) || a.plain.toLowerCase().includes(q) || String(a.num).includes(q);
+    });
+    if (q && !arts.length) return;
+    var open = q ? true : !!expanded[ci];
+    html += '<div class="cl-ch">'
+      +'<div class="cl-ch-head" data-ci="'+ci+'">'
+      +'<span class="cl-ch-toggle">'+(open?'▾':'▸')+'</span>'
+      +'<span class="cl-ch-title">'+ch.title+'</span>'
+      +'</div>'
+      +'<div class="cl-ch-body'+(open?'':' collapsed')+'">';
+    arts.forEach(function(a) {
+      html += '<div class="cl-art'+(selArt&&selArt.num===a.num?' active':'')+'" data-an="'+a.num+'">'
+        +'<span class="cl-art-num">'+a.num+'.</span>'
+        +'<span class="cl-art-title">'+hl(a.title,q)+'</span>'
+        +'</div>';
+    });
+    html += '</div></div>';
+  });
+  tocTree.innerHTML = html || '<div class="cl-no-result">검색 결과가 없습니다.</div>';
 }
 
-function renderLevel2() {
-  var d = getClauseData();
-  var sec = d.sections[st.sec];
-  var ch  = sec.chapters[st.ch];
-  titleEl.textContent = ch.title;
-  backBtn.style.display = 'block';
-  crumb.classList.add('show');
-  crumb.innerHTML = '<span class="crumb-item crumb-link" data-go="1">'+esc(sec.badge)+'</span>'
-    + '<span class="crumb-sep"> › </span>'
-    + '<span class="crumb-item">'+esc(ch.title)+'</span>';
-  body.innerHTML = ch.html
-    + '<div class="ca-govnote">※ 출처: 국토교통부 고시 제2026-55호 「2026년 적용 화물자동차 안전운임 고시」</div>';
+function selectArt(num) {
+  var art = D.articles.find(function(a) { return a.num===num; });
+  if (!art) return;
+  selArt = art;
+  detPh.style.display = 'none';
+  detView.style.display = 'flex';
+  dvHead.innerHTML = '<span class="dv-ch">'+D.chapters[art.ch].title+'</span>'
+    +'<div class="dv-num-title"><strong>'+art.num+'.</strong> ('+art.title+')</div>';
+  dvBody.innerHTML = art.html
+    +'<div class="art-govnote">※ 출처: 국토교통부 고시 제2026-55호 「2026년 적용 화물자동차 안전운임 고시」</div>';
+  dvBody.scrollTop = 0;
+  if (window.innerWidth < 640) {
+    tocEl.style.display = 'none';
+    detEl.style.display = 'flex';
+    mobBack.style.display = 'block';
+    titleEl.textContent = art.num+'. '+art.title;
+  }
+  renderTOC();
 }
 
-function render() {
-  body.scrollTop = 0;
-  if (st.level === 0) renderLevel0();
-  else if (st.level === 1) renderLevel1();
-  else renderLevel2();
-}
-
-body.addEventListener('click', function(e) {
-  var card = e.target.closest('[data-sec]');
-  if (card) { st.sec = parseInt(card.getAttribute('data-sec')); st.level = 1; render(); return; }
-  var item = e.target.closest('[data-ch]');
-  if (item) { st.ch = parseInt(item.getAttribute('data-ch')); st.level = 2; render(); return; }
+tocTree.addEventListener('click', function(e) {
+  var artEl = e.target.closest('[data-an]');
+  if (artEl) { selectArt(parseInt(artEl.getAttribute('data-an'))); return; }
+  var chEl = e.target.closest('[data-ci]');
+  if (chEl) {
+    var ci = parseInt(chEl.getAttribute('data-ci'));
+    expanded[ci] = !expanded[ci];
+    renderTOC();
+  }
 });
-crumb.addEventListener('click', function(e) {
-  var el = e.target.closest('[data-go]');
-  if (el) { st.level = parseInt(el.getAttribute('data-go')); render(); }
-});
-backBtn.addEventListener('click', function() { st.level = Math.max(0, st.level - 1); render(); });
 
-function openModal() { st.level = 0; render(); modal.classList.add('open'); document.body.style.overflow = 'hidden'; }
-function closeModal() { modal.classList.remove('open'); document.body.style.overflow = ''; }
+srch.addEventListener('input', function() { renderTOC(); });
+
+document.getElementById('cl-expand-all').addEventListener('click', function() {
+  D.chapters.forEach(function(_,i){ expanded[i]=true; }); renderTOC();
+});
+document.getElementById('cl-collapse-all').addEventListener('click', function() {
+  D.chapters.forEach(function(_,i){ expanded[i]=false; }); renderTOC();
+});
+
+mobBack.addEventListener('click', function() {
+  tocEl.style.display = '';
+  detEl.style.display = '';
+  mobBack.style.display = 'none';
+  titleEl.textContent = '부대조항 목차';
+});
+
+function doCopy(text, btn) {
+  function flash() { var o=btn.innerHTML; btn.innerHTML='✅ 복사됨!'; setTimeout(function(){btn.innerHTML=o;},2000); }
+  if (navigator.clipboard) { navigator.clipboard.writeText(text).then(flash).catch(function(){ fallback(); }); }
+  else { fallback(); }
+  function fallback() {
+    var ta=document.createElement('textarea'); ta.value=text; ta.style.cssText='position:fixed;opacity:0';
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); flash();
+  }
+}
+
+document.getElementById('cl-copy-link').addEventListener('click', function() {
+  if (!selArt) return;
+  var url = window.location.href.split('#')[0]+'#부대조항-'+selArt.num;
+  doCopy('[안전운임 부대조항 '+selArt.num+'. ('+selArt.title+')] '+url, this);
+});
+document.getElementById('cl-copy-text').addEventListener('click', function() {
+  if (!selArt) return;
+  doCopy(selArt.num+'. ('+selArt.title+') '+selArt.plain, this);
+});
+
+function openModal() {
+  selArt=null; D.chapters.forEach(function(_,i){expanded[i]=true;}); srch.value='';
+  tocEl.style.display=''; detEl.style.display=''; mobBack.style.display='none';
+  titleEl.textContent='부대조항 목차';
+  detPh.style.display=''; detView.style.display='none';
+  renderTOC(); modal.classList.add('open'); document.body.style.overflow='hidden';
+}
+function closeModal() { modal.classList.remove('open'); document.body.style.overflow=''; }
+
+// stub to suppress error for old references no longer in DOM
+function renderLevel1() {}
+function renderLevel2() {}
+function render() {}
 
 document.getElementById('clause-btn').addEventListener('click', openModal);
-document.getElementById('clause-btn').addEventListener('touchend', function(e) { e.preventDefault(); openModal(); });
+document.getElementById('clause-btn').addEventListener('touchend', function(e){e.preventDefault();openModal();});
 document.getElementById('clause-close-btn').addEventListener('click', closeModal);
-modal.addEventListener('click', function(e) { if (e.target === modal) closeModal(); });
+modal.addEventListener('click', function(e){if(e.target===modal)closeModal();});
 }());
 document.getElementById('rate-modal').addEventListener('click', function (e) {
   if (e.target === document.getElementById('rate-modal')) closeRateModal();
