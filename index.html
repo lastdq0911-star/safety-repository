@@ -123,8 +123,10 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
 .fare-type-desc { font-size:0.72rem; color:var(--text2); margin-top:10px; padding:10px 12px; background:var(--bg3); border-radius:8px; border:1px solid var(--border2); border-left:3px solid var(--gray); line-height:1.6; }
 
 /* ── 할증 ── */
-.sur-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
-.sur-item { appearance:none; -webkit-appearance:none; font-family:inherit; text-align:left; width:100%; background:var(--bg3); border:1.5px solid var(--border); border-radius:var(--radius-sm); padding:13px; cursor:pointer; transition:all 0.15s; min-height:84px; display:flex; flex-direction:column; justify-content:center; }
+.sur-grid { display:grid; grid-template-columns:1fr 1fr; gap:0; }
+.sur-item { appearance:none; -webkit-appearance:none; font-family:inherit; text-align:left; width:100%; background:var(--bg3); border:1.5px solid var(--border); padding:13px; cursor:pointer; transition:all 0.15s; min-height:84px; display:flex; flex-direction:column; justify-content:center; }
+.sur-item:nth-child(odd) { border-right:0; }
+.sur-item:nth-child(n+3) { border-top:0; }
 .sur-item.checked { background:var(--mint-dim); border-color:var(--mint); }
 .sur-item.checked-warn { background:var(--mint-dim); border-color:var(--mint); }
 .sur-top { display:flex; align-items:center; gap:7px; }
@@ -433,8 +435,8 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
   .sur-check { width:16px; height:16px; font-size:9px; }
   .sur-top { gap:6px; }
 
-  /* PC 할증 그리드: 남은 공간 균등 배분 */
-  .sur-grid { flex:1; align-content:space-evenly; }
+  /* PC 할증 그리드: 남은 공간 채움 */
+  .sur-grid { flex:1; align-content:start; }
 
   /* ── 13. 중량 입력 ── */
   .weight-input-wrap { padding:7px 9px; margin-top:7px; }
