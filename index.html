@@ -1926,7 +1926,7 @@ function doCopy(text, btn) {
 document.getElementById('cl-copy-link').addEventListener('click', function() {
   if (!selArt) return;
   var url = window.location.href.split('#')[0]+'#clause-'+selArt.num;
-  doCopy('[안전운임 부대조항 '+selArt.num+'. ('+selArt.title+')] '+url, this);
+  doCopy(url, this);
 });
 document.getElementById('cl-copy-text').addEventListener('click', function() {
   if (!selArt) return;
@@ -1951,7 +1951,6 @@ function render() {}
 document.getElementById('clause-btn').addEventListener('click', openModal);
 document.getElementById('clause-btn').addEventListener('touchend', function(e){e.preventDefault();openModal();});
 document.getElementById('clause-close-btn').addEventListener('click', closeModal);
-modal.addEventListener('click', function(e){if(e.target===modal)closeModal();});
 
 function handleClauseHash() {
   var m = window.location.hash.match(/^#clause-(\d+)$/);
@@ -1968,9 +1967,6 @@ if (document.readyState === 'complete') {
 }
 window.addEventListener('hashchange', handleClauseHash);
 }());
-document.getElementById('rate-modal').addEventListener('click', function (e) {
-  if (e.target === document.getElementById('rate-modal')) closeRateModal();
-});
 document.addEventListener('keydown', function (e) {
   if (e.key === 'Escape' && document.getElementById('rate-modal').classList.contains('open')) closeRateModal();
 });
