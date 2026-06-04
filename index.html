@@ -378,11 +378,11 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
   /* VAT 노트: 결과 카드 맨 아래 고정 */
   .note { flex-shrink:0; margin:0; padding:6px 11px; font-size:0.6rem; line-height:1.45; }
 
-  /* PC fare-area 세로 채움: 카드·행이 남은 공간을 나눠 가짐 */
+  /* PC fare-area 세로 채움: 카드 높이 채우고 행 간격 균등 배분 */
   .fare-cards { flex:1; }
   .fare-card { display:flex; flex-direction:column; }
-  .fare-rows { flex:1; display:flex; flex-direction:column; padding:0 10px; }
-  .fare-row { flex:1; padding:0; display:flex; align-items:center; }
+  .fare-rows { flex:1; display:flex; flex-direction:column; justify-content:space-evenly; padding:4px 10px; }
+  .fare-row { padding:6px 0; }
   .fare-row.selected-type { margin:0; }
 
   /* ── 11. 우측: STEP 4(할증) 자연 높이 ── */
@@ -405,7 +405,7 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
   .sur-top { gap:6px; }
 
   /* PC 할증 그리드: 남은 공간 균등 배분 */
-  .sur-grid { flex:1; align-content:stretch; }
+  .sur-grid { flex:1; align-content:space-evenly; }
 
   /* ── 13. 중량 입력 ── */
   .weight-input-wrap { padding:7px 9px; margin-top:7px; }
