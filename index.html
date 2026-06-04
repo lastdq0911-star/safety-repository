@@ -44,7 +44,7 @@
   --page-max:1600px; --page-pad:4%;
 }
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-html { font-size:17px; }
+html { font-size:18px; }
 body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; padding-bottom:20px; }
 
 /* ── 헤더 ── */
@@ -65,15 +65,15 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
 .banner-gov { margin-left:auto; font-size:0.68rem; color:var(--text2); white-space:nowrap; font-weight:600; }
 
 /* ── STEP 카드 ── */
-.step { margin:14px 14px 0; background:var(--bg2); border:1px solid var(--border); border-left:4px solid var(--mint); border-radius:var(--radius); overflow:visible; box-shadow:var(--shadow); position:relative; }
-.step-head { padding:10px 16px; display:flex; align-items:center; gap:10px; border-bottom:1px solid var(--border2); background:var(--bg3); border-radius:calc(var(--radius) - 1px) calc(var(--radius) - 1px) 0 0; }
+.step { margin:16px 14px 0; background:var(--bg2); border:1px solid var(--border); border-left:4px solid var(--mint); border-radius:var(--radius); overflow:visible; box-shadow:var(--shadow); position:relative; }
+.step-head { padding:12px 16px; display:flex; align-items:center; gap:10px; border-bottom:1px solid var(--border2); background:var(--bg3); border-radius:calc(var(--radius) - 1px) calc(var(--radius) - 1px) 0 0; }
 .step-num { width:26px; height:26px; border-radius:50%; flex-shrink:0; background:#e8e8e8; border:1.5px solid #c0c0c0; color:var(--text2); font-size:0.75rem; font-weight:700; display:flex; align-items:center; justify-content:center; transition:all 0.2s; }
 .step-num.done { cursor:pointer; background:var(--mint); color:#fff; border-color:var(--mint); }
 .step-num.done:active { transform:scale(0.9); }
 .step-title { font-size:0.85rem; font-weight:700; color:var(--text); }
 .step-tag { font-size:0.65rem; color:var(--text3); font-weight:400; margin-left:4px; }
 .step-val { font-size:0.75rem; color:var(--mint); font-weight:700; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-.step-body { padding:10px 16px; }
+.step-body { padding:12px 16px; }
 
 /* ── 검색창 ── */
 .search-wrap { position:relative; z-index:200; }
@@ -124,7 +124,7 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
 
 /* ── 할증 ── */
 .sur-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
-.sur-item { appearance:none; -webkit-appearance:none; font-family:inherit; text-align:left; width:100%; background:var(--bg3); border:1.5px solid var(--border); border-radius:var(--radius-sm); padding:12px; cursor:pointer; transition:all 0.15s; min-height:64px; display:flex; flex-direction:column; justify-content:center; }
+.sur-item { appearance:none; -webkit-appearance:none; font-family:inherit; text-align:left; width:100%; background:var(--bg3); border:1.5px solid var(--border); border-radius:var(--radius-sm); padding:13px; cursor:pointer; transition:all 0.15s; min-height:68px; display:flex; flex-direction:column; justify-content:center; }
 .sur-item.checked { background:var(--mint-dim); border-color:var(--mint); }
 .sur-item.checked-warn { background:var(--mint-dim); border-color:var(--mint); }
 .sur-top { display:flex; align-items:center; gap:7px; }
@@ -172,13 +172,13 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
 .fare-area { padding:0 14px 14px; background:#fff; }
 .fare-cards { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
 .fare-card { border-radius:var(--radius-sm); overflow:hidden; border:1.5px solid var(--border); }
-.fare-card-head { padding:10px 12px; display:flex; align-items:center; gap:6px; border-bottom:1px solid var(--border2); background:var(--bg3); }
+.fare-card-head { padding:12px 12px; display:flex; align-items:center; gap:6px; border-bottom:1px solid var(--border2); background:var(--bg3); }
 .ft-label { font-size:0.7rem; font-weight:700; padding:3px 8px; border-radius:4px; }
 .ft40 .ft-label { background:#e8e8e8; color:#3d3d3d; }
 .ft20 .ft-label { background:var(--mint-dim); color:var(--mint); }
 .dist-km { margin-left:auto; font-family:'JetBrains Mono',monospace; font-size:0.7rem; color:var(--gold); font-weight:700; }
-.fare-rows { padding:10px 12px; background:#fff; }
-.fare-row { display:flex; justify-content:space-between; align-items:center; padding:7px 0; border-bottom:1px solid var(--border2); transition:all 0.2s; }
+.fare-rows { padding:12px 12px; background:#fff; }
+.fare-row { display:flex; justify-content:space-between; align-items:center; padding:9px 0; border-bottom:1px solid var(--border2); transition:all 0.2s; }
 .fare-row:last-child { border-bottom:none; }
 .fl { font-size:0.67rem; color:var(--text2); }
 .fv { font-family:'JetBrains Mono',monospace; font-size:0.8rem; font-weight:600; color:var(--text); }
@@ -264,7 +264,7 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
   }
 
   /* ── 2. 헤더 ── */
-  .header { flex-shrink:0; position:static; height:54px; max-width:var(--page-max); margin:0 auto; width:100%; padding:0 var(--page-pad); }
+  .header { flex-shrink:0; position:static; height:58px; max-width:var(--page-max); margin:0 auto; width:100%; padding:0 var(--page-pad); }
   .header-inner { height:100%; padding:0 16px; gap:12px; box-shadow:0 1px 8px rgba(0,0,0,0.09); border-bottom:3px solid var(--mint); }
   .sebang-logo { height:30px; width:auto; }
   .header-divider { height:28px; }
@@ -274,7 +274,7 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
 
   /* ── 3. 배너 ── */
   .banner { flex-shrink:0; max-width:var(--page-max); margin:0 auto; width:100%; padding:0 var(--page-pad); }
-  .banner-inner { padding:5px 16px; gap:12px; min-height:30px; }
+  .banner-inner { padding:7px 16px; gap:12px; min-height:32px; }
   .banner-label { font-size:0.65rem; }
   .banner-select { font-size:0.68rem; }
   .banner-gov { font-size:0.62rem; }
@@ -284,8 +284,8 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
     flex:1; min-height:0;
     display:grid;
     grid-template-columns:minmax(0,1fr) 420px;
-    gap:16px;
-    padding:10px var(--page-pad);
+    gap:20px;
+    padding:12px var(--page-pad);
     overflow:hidden;
     max-width:var(--page-max);
     margin-left:auto;
@@ -302,8 +302,8 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
 
   /* ── 6. STEP 카드 공통 압축 ── */
   .step { margin:0; flex-shrink:0; }
-  .step-head { padding:8px 14px; }
-  .step-body { padding:10px 14px; }
+  .step-head { padding:10px 14px; }
+  .step-body { padding:12px 14px; }
   .step-num { width:22px; height:22px; font-size:0.67rem; }
   .step-title { font-size:0.84rem; }
   .step-tag { font-size:0.62rem; }
@@ -341,16 +341,16 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
   }
   .result-sub { font-size:0.59rem; margin-top:2px; }
   /* 기점 탭: 좌우 스크롤 대신 여러 행으로 자동 줄바꿈 */
-  .port-scroll { flex-shrink:0; padding:8px 12px 2px; overflow-x:visible; }
+  .port-scroll { flex-shrink:0; padding:10px 12px 4px; overflow-x:visible; }
   .port-tabs { flex-wrap:wrap; width:auto; gap:5px; padding-bottom:8px; }
   .ptab { padding:5px 10px; font-size:0.68rem; min-height:28px; }
   /* fare-area가 남은 세로 공간을 채우며 내부 스크롤 */
   .fare-area { flex:1; overflow-y:auto; padding:0 12px 9px; }
   .fare-cards { gap:8px; }
-  .fare-card-head { padding:6px 10px; }
+  .fare-card-head { padding:8px 10px; }
   .ft-label { font-size:0.64rem; padding:2px 5px; }
   .dist-km { font-size:0.66rem; }
-  .fare-rows { padding:5px 10px; }
+  .fare-rows { padding:7px 10px; }
   .fare-row { padding:3px 0; }
   .fl { font-size:0.65rem; }
   .fv { font-size:0.8rem; }
