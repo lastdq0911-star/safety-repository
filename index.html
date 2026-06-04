@@ -199,6 +199,25 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
 .sur-multi-note { margin-top:8px; font-size:0.64rem; color:var(--text3); line-height:1.6; }
 .note { margin:10px 14px 0; padding:11px 13px; background:#f0fffe; border:1px solid rgba(0,184,169,0.20); border-left:3px solid var(--mint); border-radius:var(--radius-sm); font-size:0.67rem; color:#006b62; line-height:1.7; }
 
+/* ── 부대조항 모달 ── */
+#clause-modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:600; align-items:flex-end; justify-content:center; }
+#clause-modal.open { display:flex; }
+.clause-box { background:#fff; width:100%; max-width:680px; border-radius:18px 18px 0 0; overflow:hidden; max-height:90vh; display:flex; flex-direction:column; box-shadow:0 -4px 30px rgba(0,0,0,0.25); }
+.clause-head { background:var(--gray-dark); padding:14px 18px; display:flex; align-items:center; gap:10px; border-bottom:3px solid var(--mint); flex-shrink:0; }
+.clause-head-title { font-size:0.95rem; font-weight:800; color:#fff; flex:1; }
+.clause-close { background:none; border:none; color:rgba(255,255,255,0.65); font-size:1.35rem; cursor:pointer; line-height:1; padding:4px; transition:color 0.1s; font-family:inherit; }
+.clause-close:hover { color:#fff; }
+.clause-body { padding:16px 18px 28px; overflow-y:auto; flex:1; }
+.clause-article { margin-bottom:20px; }
+.clause-article:last-child { margin-bottom:0; }
+.clause-art-title { font-size:0.84rem; font-weight:800; color:var(--gray-dark); margin-bottom:8px; padding:6px 10px; background:var(--bg3); border-radius:6px; border-left:3px solid var(--mint); }
+.clause-art-num { color:var(--mint); margin-right:5px; }
+.clause-content { font-size:0.76rem; color:var(--text); line-height:1.75; padding:0 4px; }
+.clause-content ol { padding-left:18px; margin:6px 0; }
+.clause-content li { margin-bottom:3px; }
+.clause-content p { margin:4px 0; }
+.clause-note { font-size:0.66rem; color:var(--text3); margin-top:14px; padding:8px 12px; background:#fffbe6; border-radius:6px; border-left:3px solid var(--gold); line-height:1.6; }
+
 /* ── 인라인 에러 ── */
 #inline-error { display:none; margin:10px 14px 0; padding:11px 13px; background:#fff0f0; border:1px solid rgba(200,0,0,0.20); border-left:3px solid #c00; border-radius:var(--radius-sm); font-size:0.72rem; color:#c00; line-height:1.7; }
 
@@ -209,6 +228,8 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
 /* ── 거리별 운임표 모달 ── */
 #rate-table-btn { appearance:none; font-family:inherit; margin-left:auto; padding:4px 11px; border-radius:6px; border:1.5px solid var(--border); background:#fff; color:var(--gray-dark); font-size:0.68rem; font-weight:700; cursor:pointer; white-space:nowrap; transition:all 0.15s; touch-action:manipulation; }
 #rate-table-btn:hover { background:var(--gray-dark); color:#fff; border-color:var(--gray-dark); }
+#clause-btn { appearance:none; -webkit-appearance:none; font-family:inherit; padding:4px 11px; border-radius:6px; border:1.5px solid rgba(0,184,169,0.5); background:rgba(0,184,169,0.08); color:var(--mint); font-size:0.68rem; font-weight:700; cursor:pointer; white-space:nowrap; transition:all 0.15s; touch-action:manipulation; }
+#clause-btn:hover { background:var(--mint); color:#fff; border-color:var(--mint); }
 .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.55); z-index:500; align-items:center; justify-content:center; padding:16px; }
 .modal-overlay.open { display:flex; }
 .modal-box { background:#fff; border-radius:16px; width:100%; max-width:560px; max-height:88vh; display:flex; flex-direction:column; box-shadow:0 8px 40px rgba(0,0,0,0.3); overflow:hidden; }
@@ -297,7 +318,7 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
   .pc-left,
   .pc-right {
     display:flex; flex-direction:column;
-    gap:8px; min-height:0; overflow-y:auto; overflow-x:hidden;
+    gap:8px; min-height:0; overflow:hidden;
   }
 
   /* ── 6. STEP 카드 공통 압축 ── */
@@ -326,11 +347,11 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
 
   /* ── 10. 결과 카드: 자연 높이 (컬럼 개별 스크롤) ── */
   #result {
-    flex:none;
+    flex:1; min-height:0;
   }
   .result-wrap {
-    margin:0; flex:none;
-    display:flex; flex-direction:column; overflow:visible;
+    margin:0; flex:1; min-height:0;
+    display:flex; flex-direction:column; overflow:hidden;
   }
   .result-top { flex-shrink:0; padding:9px 13px; }
   .result-loc { font-size:0.88rem; }
@@ -343,7 +364,7 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
   .port-scroll { flex-shrink:0; padding:10px 12px 4px; overflow-x:visible; }
   .port-tabs { flex-wrap:wrap; width:auto; gap:5px; padding-bottom:8px; }
   .ptab { padding:5px 10px; font-size:0.68rem; min-height:28px; }
-  .fare-area { flex:none; overflow-y:visible; padding:0 12px 9px; }
+  .fare-area { flex:1; overflow-y:auto; padding:0 12px 9px; display:flex; flex-direction:column; }
   .fare-cards { gap:8px; }
   .fare-card-head { padding:8px 10px; }
   .ft-label { font-size:0.64rem; padding:2px 5px; }
@@ -357,15 +378,22 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
   /* VAT 노트: 결과 카드 맨 아래 고정 */
   .note { flex-shrink:0; margin:0; padding:6px 11px; font-size:0.6rem; line-height:1.45; }
 
+  /* PC fare-area 세로 채움: 카드·행이 남은 공간을 나눠 가짐 */
+  .fare-cards { flex:1; }
+  .fare-card { display:flex; flex-direction:column; }
+  .fare-rows { flex:1; display:flex; flex-direction:column; padding:0 10px; }
+  .fare-row { flex:1; padding:0; display:flex; align-items:center; }
+  .fare-row.selected-type { margin:0; }
+
   /* ── 11. 우측: STEP 4(할증) 자연 높이 ── */
   .pc-right > .step {
-    flex:none;
+    flex:1; min-height:0;
     display:flex; flex-direction:column;
   }
   .pc-right > .step > .step-head { flex-shrink:0; }
   .pc-right > .step > .step-body {
-    overflow-y:visible;
-    padding:12px 14px;
+    flex:1; overflow-y:auto;
+    padding:12px 14px; display:flex; flex-direction:column;
   }
 
   /* ── 12. 할증 그리드 ── */
@@ -375,6 +403,9 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
   .sur-rate { font-size:0.62rem; margin-top:2px; }
   .sur-check { width:16px; height:16px; font-size:9px; }
   .sur-top { gap:6px; }
+
+  /* PC 할증 그리드: 남은 공간 균등 배분 */
+  .sur-grid { flex:1; align-content:stretch; }
 
   /* ── 13. 중량 입력 ── */
   .weight-input-wrap { padding:7px 9px; margin-top:7px; }
@@ -387,6 +418,10 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
   .sur-result.show { margin-top:8px; margin-bottom:0; }
   .sur-detail { font-size:0.62rem; line-height:1.65; }
   .sur-multi-note { margin-top:5px; font-size:0.6rem; }
+
+  /* ── 부대조항 모달 PC ── */
+  #clause-modal { align-items:center; }
+  .clause-box { border-radius:18px; max-height:86vh; }
 }
 
 /* ── 세방(주) 문의 FAB ── */
@@ -443,6 +478,7 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
     <select class="banner-select" id="notice-select" aria-label="고시 선택"></select>
     <span class="banner-gov" id="banner-gov"></span>
     <button id="rate-table-btn">📊 거리별 운임표</button>
+    <button id="clause-btn">📋 부대조항</button>
   </div>
 </div>
 
@@ -609,6 +645,121 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
   <span class="fab-icon">✉️</span>
   <span>세방(주) 문의하기</span>
 </button>
+
+<!-- 부대조항 모달 -->
+<div id="clause-modal" role="dialog" aria-modal="true" aria-labelledby="clause-modal-title">
+  <div class="clause-box">
+    <div class="clause-head">
+      <span>📋</span>
+      <span id="clause-modal-title" class="clause-head-title">안전위탁운임 부대조항</span>
+      <button class="clause-close" id="clause-close-btn" aria-label="닫기">✕</button>
+    </div>
+    <div class="clause-body">
+
+      <div class="clause-article">
+        <div class="clause-art-title"><span class="clause-art-num">제1조</span>운임 적용 기준 (왕복 / 편도)</div>
+        <div class="clause-content">
+          <p>모든 운임은 <strong>왕복운임</strong>을 기준으로 적용합니다.</p>
+          <p>단, 아래 조건을 모두 충족하는 경우 <strong>편도운임</strong>을 적용합니다.</p>
+          <ol>
+            <li>수도권 화주공장(서울·인천·경기 및 강원 춘천·홍천 지역)에서 작업</li>
+            <li>공(空)컨테이너의 반납 또는 수령 장소가 <strong>의왕ICD</strong>인 경우</li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="clause-article">
+        <div class="clause-art-title"><span class="clause-art-num">제2조</span>포지셔닝</div>
+        <div class="clause-content">
+          <p>포지셔닝(빈 컨테이너를 운송하기 위해 차량이 이동하는 경우)이 발생하는 경우 해당 구간 <strong>왕복운임의 50%</strong>를 적용합니다.</p>
+        </div>
+      </div>
+
+      <div class="clause-article">
+        <div class="clause-art-title"><span class="clause-art-num">제3조</span>할증 운임</div>
+        <div class="clause-content">
+          <ol>
+            <li>냉동·냉장 컨테이너: 해당 구간 운임의 <strong>30% 할증</strong></li>
+            <li>탱크 컨테이너: 해당 구간 운임의 <strong>30% 할증</strong></li>
+            <li>위험물·유독물 컨테이너: 해당 구간 운임의 <strong>30% 할증</strong></li>
+            <li>덤프 컨테이너: 해당 구간 운임의 <strong>25% 할증</strong></li>
+            <li>공휴일 운행: 해당 구간 운임의 <strong>20% 할증</strong></li>
+            <li>심야(22:00~06:00) 운행: 해당 구간 운임의 <strong>20% 할증</strong></li>
+            <li>험로·오지 지역 운행: 해당 구간 운임의 <strong>20% 할증</strong></li>
+            <li>플렉시백(액체) 컨테이너: 해당 구간 운임의 <strong>20% 할증</strong></li>
+            <li>플렉시백(분말) 컨테이너: 해당 구간 운임의 <strong>10% 할증</strong></li>
+            <li>통행제한지역 운행: 해당 구간 운임의 <strong>30% 이상 할증</strong></li>
+            <li>화약류 운반: 해당 구간 운임의 <strong>100% 할증</strong></li>
+            <li>방사성물질 운반: 해당 구간 운임의 <strong>200% 할증</strong></li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="clause-article">
+        <div class="clause-art-title"><span class="clause-art-num">제4조</span>45FT 컨테이너</div>
+        <div class="clause-content">
+          <p>45FT 컨테이너의 안전위탁운임은 해당 구간 40FT 컨테이너 안전위탁운임의 <strong>112.5%</strong>를 적용합니다.</p>
+        </div>
+      </div>
+
+      <div class="clause-article">
+        <div class="clause-art-title"><span class="clause-art-num">제5조</span>중량 초과 할증</div>
+        <div class="clause-content">
+          <p>컨테이너 내품 무게 초과 시 매 1톤당 해당 구간 운임의 <strong>10% 가산</strong>합니다.</p>
+          <ol>
+            <li>40FT 컨테이너: 내품 무게 <strong>22톤</strong> 초과 시</li>
+            <li>20FT 컨테이너: 내품 무게 <strong>19톤</strong> 초과 시</li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="clause-article">
+        <div class="clause-art-title"><span class="clause-art-num">제6조</span>고정 금액 가산</div>
+        <div class="clause-content">
+          <ol>
+            <li>검색대(X-RAY) 통과 시: <strong>96,000원</strong> 가산</li>
+            <li>인천터미널 공(空)컨테이너 반납비: <strong>40,000원</strong> 가산</li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="clause-article">
+        <div class="clause-art-title"><span class="clause-art-num">제7조</span>다중 할증 적용 방법</div>
+        <div class="clause-content">
+          <p>2개 이상의 할증 사유가 동시에 발생하는 경우 아래 방식으로 합산합니다.</p>
+          <ol>
+            <li>가장 높은 할증률 항목: <strong>100% 적용</strong></li>
+            <li>나머지 각 항목: <strong>50%씩 적용</strong></li>
+            <li>최대 <strong>3개</strong> 항목까지 합산 가능</li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="clause-article">
+        <div class="clause-art-title"><span class="clause-art-num">제8조</span>안전위탁운임 지급 기한</div>
+        <div class="clause-content">
+          <ol>
+            <li>당월 운송분에 대한 안전위탁운임은 <strong>익월 말일 이내</strong> 현금으로 지급해야 합니다.</li>
+            <li>부득이한 경우에도 당월 마감일 이후 <strong>45일 초과 지급 불가</strong>합니다.</li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="clause-article">
+        <div class="clause-art-title"><span class="clause-art-num">제9조</span>비용 공제 제한</div>
+        <div class="clause-content">
+          <p>운수사업자는 차주에게 안전위탁운임 지급 이후, 지정 항목 이외의 비용을 공제하거나 청구할 수 없습니다.</p>
+          <p><strong>공제 가능 항목:</strong> 지입료, 주차료, 산재보험료 및 고용보험료의 종사자 부담분</p>
+        </div>
+      </div>
+
+      <div class="clause-note">
+        ※ 이 부대조항은 국토교통부 고시 「화물자동차 안전운임」을 기준으로 작성되었습니다. 세부 내용은 최신 고시를 반드시 확인하시기 바랍니다.
+      </div>
+
+    </div>
+  </div>
+</div>
 
 <!-- 세방(주) 문의하기 모달 -->
 <div id="contact-modal" role="dialog" aria-modal="true" aria-labelledby="contact-modal-title">
@@ -1677,6 +1828,17 @@ document.getElementById('rate-table-btn').addEventListener('touchend', function 
   openRateModal();
 });
 document.getElementById('modal-close-btn').addEventListener('click', closeRateModal);
+
+// 부대조항 모달
+(function () {
+  var modal = document.getElementById('clause-modal');
+  function open() { modal.classList.add('open'); document.body.style.overflow = 'hidden'; }
+  function close() { modal.classList.remove('open'); document.body.style.overflow = ''; }
+  document.getElementById('clause-btn').addEventListener('click', open);
+  document.getElementById('clause-btn').addEventListener('touchend', function (e) { e.preventDefault(); open(); });
+  document.getElementById('clause-close-btn').addEventListener('click', close);
+  modal.addEventListener('click', function (e) { if (e.target === modal) close(); });
+}());
 document.getElementById('rate-modal').addEventListener('click', function (e) {
   if (e.target === document.getElementById('rate-modal')) closeRateModal();
 });
