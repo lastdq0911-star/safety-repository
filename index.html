@@ -1876,6 +1876,7 @@ function selectArt(num) {
   var art = D.articles.find(function(a) { return a.num===num; });
   if (!art) return;
   selArt = art;
+  expanded[art.ch] = true;
   detPh.style.display = 'none';
   detView.style.display = 'flex';
   dvHead.innerHTML = '<span class="dv-ch">'+D.chapters[art.ch].title+'</span>'
@@ -1884,6 +1885,9 @@ function selectArt(num) {
     +'<div class="art-govnote">※ 출처: 국토교통부 고시 제2026-55호 「2026년 적용 화물자동차 안전운임 고시」</div>';
   dvBody.scrollTop = 0;
   renderTOC();
+  // TOC에서 선택된 조항으로 스크롤
+  var activeEl = tocTree.querySelector('.cl-art.active');
+  if (activeEl) activeEl.scrollIntoView({ block: 'nearest' });
 }
 
 tocTree.addEventListener('click', function(e) {
@@ -1949,10 +1953,15 @@ function handleClauseHash() {
   var m = window.location.hash.match(/^#clause-(\d+)$/);
   if (!m) return;
   var num = parseInt(m[1]);
-  openModal();
+  if (!modal.classList.contains('open')) openModal();
   selectArt(num);
 }
-setTimeout(handleClauseHash, 600);
+// 페이지 로드 후 충분한 시간을 두고 실행 (SW 활성화 대기 포함)
+if (document.readyState === 'complete') {
+  setTimeout(handleClauseHash, 300);
+} else {
+  window.addEventListener('load', function() { setTimeout(handleClauseHash, 300); });
+}
 window.addEventListener('hashchange', handleClauseHash);
 }());
 document.getElementById('rate-modal').addEventListener('click', function (e) {
