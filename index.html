@@ -205,8 +205,6 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
 .clause-box { background:#fff; width:100%; max-width:900px; border-radius:18px 18px 0 0; overflow:hidden; max-height:92vh; display:flex; flex-direction:column; box-shadow:0 -4px 30px rgba(0,0,0,0.25); }
 .clause-head { background:var(--gray-dark); padding:11px 14px; display:flex; align-items:center; gap:7px; border-bottom:3px solid var(--mint); flex-shrink:0; position:relative; }
 .clause-head-title { font-size:0.88rem; font-weight:800; color:#fff; position:absolute; left:50%; transform:translateX(-50%); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:60%; pointer-events:none; }
-.cl-mob-back { appearance:none; background:none; border:none; color:rgba(255,255,255,0.75); font-size:1.4rem; cursor:pointer; line-height:1; padding:0 2px 0 0; display:none; font-family:inherit; transition:color 0.1s; }
-.cl-mob-back:hover { color:#fff; }
 .clause-close { background:none; border:none; color:rgba(255,255,255,0.65); font-size:1.3rem; cursor:pointer; line-height:1; padding:4px; transition:color 0.1s; font-family:inherit; }
 .clause-close:hover { color:#fff; }
 .clause-layout { display:flex; flex:1; min-height:0; overflow:hidden; }
@@ -234,20 +232,20 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
 .cl-ph-icon { font-size:2.2rem; }
 .cl-ph-text { font-size:0.72rem; text-align:center; padding:0 20px; line-height:1.5; }
 .cl-detail-view { display:none; flex-direction:column; flex:1; min-height:0; }
-.cl-dv-head { padding:9px 16px 8px; border-bottom:1px solid var(--border2); flex-shrink:0; }
-.dv-ch { font-size:0.6rem; color:var(--mint); font-weight:700; display:block; margin-bottom:2px; }
-.dv-num-title { font-size:0.81rem; font-weight:800; color:var(--gray-dark); line-height:1.4; }
-.cl-dv-body { flex:1; overflow-y:auto; padding:10px 16px 8px; -webkit-overflow-scrolling:touch; }
+.cl-dv-head { padding:12px 20px 11px; border-bottom:2px solid var(--border2); flex-shrink:0; }
+.dv-ch { font-size:0.66rem; color:var(--mint); font-weight:700; display:block; margin-bottom:4px; letter-spacing:0.02em; }
+.dv-num-title { font-size:0.9rem; font-weight:800; color:var(--gray-dark); line-height:1.45; }
+.cl-dv-body { flex:1; overflow-y:auto; padding:16px 22px 14px; -webkit-overflow-scrolling:touch; }
 .cl-dv-foot { padding:8px 14px; border-top:1px solid var(--border2); display:flex; gap:8px; flex-shrink:0; background:#fafafa; }
 .cl-copy-btn { appearance:none; font-family:inherit; font-size:0.7rem; font-weight:700; padding:6px 13px; border-radius:7px; border:1.5px solid var(--border); background:#fff; color:var(--gray-dark); cursor:pointer; transition:all 0.15s; }
 .cl-copy-btn:hover { background:var(--gray-dark); color:#fff; border-color:var(--gray-dark); }
-.art-lead { font-size:0.75rem; color:var(--text); line-height:1.65; margin:0 0 5px; }
-.art-sub { font-size:0.72rem; color:var(--text); line-height:1.65; }
-.art-sub1 { padding-left:14px; }
-.art-sub2 { padding-left:28px; color:var(--text2); }
-.art-p { font-size:0.72rem; color:var(--text); line-height:1.65; margin:2px 0; }
-.art-govnote { font-size:0.6rem; color:var(--text3); background:#fffbe6; border-left:3px solid var(--gold); padding:6px 10px; border-radius:0 6px 6px 0; margin-top:12px; line-height:1.6; }
-@media (max-width:639px) { .cl-toc { width:100%; border-right:none; } .cl-detail { display:none; } }
+.art-lead { font-size:0.84rem; color:var(--text); line-height:1.8; margin:0 0 10px; }
+.art-sub { font-size:0.82rem; color:var(--text); line-height:1.78; margin:3px 0; }
+.art-sub1 { padding-left:16px; }
+.art-sub2 { padding-left:34px; color:var(--text2); }
+.art-p { font-size:0.82rem; color:var(--text); line-height:1.78; margin:4px 0; }
+.art-govnote { font-size:0.68rem; color:var(--text3); background:#fffbe6; border-left:3px solid var(--gold); padding:8px 12px; border-radius:0 6px 6px 0; margin-top:16px; line-height:1.65; }
+@media (max-width:899px) { #clause-btn { display:none; } }
 
 /* ── 인라인 에러 ── */
 #inline-error { display:none; margin:10px 14px 0; padding:11px 13px; background:#fff0f0; border:1px solid rgba(200,0,0,0.20); border-left:3px solid #c00; border-radius:var(--radius-sm); font-size:0.72rem; color:#c00; line-height:1.7; }
@@ -452,7 +450,7 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
 
   /* ── 부대조항 모달 PC ── */
   #clause-modal { align-items:center; }
-  .clause-box { border-radius:18px; max-height:87vh; }
+  .clause-box { border-radius:18px; height:87vh; max-height:87vh; }
 }
 
 /* ── 세방(주) 문의 FAB ── */
@@ -681,7 +679,6 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
 <div id="clause-modal" role="dialog" aria-modal="true" aria-labelledby="clause-modal-title">
   <div class="clause-box">
     <div class="clause-head">
-      <button class="cl-mob-back" id="cl-mob-back" aria-label="목차로">‹</button>
       <span>📋</span>
       <span id="clause-modal-title" class="clause-head-title">수출입 컨테이너 품목 안전운임 부대조항</span>
       <button class="clause-close" id="clause-close-btn" aria-label="닫기">✕</button>
@@ -1830,13 +1827,10 @@ if (!D) return;
 var modal   = document.getElementById('clause-modal');
 var tocTree = document.getElementById('cl-toc-tree');
 var srch    = document.getElementById('cl-search');
-var tocEl   = document.getElementById('cl-toc');
-var detEl   = document.getElementById('cl-detail');
 var detPh   = document.getElementById('cl-detail-ph');
 var detView = document.getElementById('cl-detail-view');
 var dvHead  = document.getElementById('cl-dv-head');
 var dvBody  = document.getElementById('cl-dv-body');
-var mobBack = document.getElementById('cl-mob-back');
 var titleEl = document.getElementById('clause-modal-title');
 
 var expanded = {};
@@ -1889,12 +1883,6 @@ function selectArt(num) {
   dvBody.innerHTML = art.html
     +'<div class="art-govnote">※ 출처: 국토교통부 고시 제2026-55호 「2026년 적용 화물자동차 안전운임 고시」</div>';
   dvBody.scrollTop = 0;
-  if (window.innerWidth < 640) {
-    tocEl.style.display = 'none';
-    detEl.style.display = 'flex';
-    mobBack.style.display = 'block';
-    titleEl.textContent = art.num+'. '+art.title;
-  }
   renderTOC();
 }
 
@@ -1918,12 +1906,6 @@ document.getElementById('cl-collapse-all').addEventListener('click', function() 
   D.chapters.forEach(function(_,i){ expanded[i]=false; }); renderTOC();
 });
 
-mobBack.addEventListener('click', function() {
-  tocEl.style.display = '';
-  detEl.style.display = '';
-  mobBack.style.display = 'none';
-  titleEl.textContent = '수출입 컨테이너 품목 안전운임 부대조항';
-});
 
 function doCopy(text, btn) {
   function flash() { var o=btn.innerHTML; btn.innerHTML='✅ 복사됨!'; setTimeout(function(){btn.innerHTML=o;},2000); }
@@ -1947,7 +1929,6 @@ document.getElementById('cl-copy-text').addEventListener('click', function() {
 
 function openModal() {
   selArt=null; D.chapters.forEach(function(_,i){expanded[i]=true;}); srch.value='';
-  tocEl.style.display=''; detEl.style.display=''; mobBack.style.display='none';
   titleEl.textContent='수출입 컨테이너 품목 안전운임 부대조항';
   detPh.style.display=''; detView.style.display='none';
   renderTOC(); modal.classList.add('open'); document.body.style.overflow='hidden';
