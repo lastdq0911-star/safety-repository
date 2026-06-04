@@ -1427,11 +1427,11 @@ function calcSur() {
   document.getElementById('f40-' + ftKey).innerHTML =
     '<s class="fv-orig">' + fmt(state.portData.f40[idx]) + '</s>' +
     '<span class="fv-sur">' + fmt(final40) + '</span>' +
-    '<span class="fv-diff">+' + fmt(diff40) + '</span>';
+    '<span class="fv-diff">차액 +' + fmt(diff40) + '</span>';
   document.getElementById('f20-' + ftKey).innerHTML =
     '<s class="fv-orig">' + fmt(state.portData.f20[idx]) + '</s>' +
     '<span class="fv-sur">' + fmt(final20) + '</span>' +
-    '<span class="fv-diff">+' + fmt(diff20) + '</span>';
+    '<span class="fv-diff">차액 +' + fmt(diff20) + '</span>';
 
   document.getElementById('sr-label-40').textContent = '40FT ' + lbl + ' (최종)';
   document.getElementById('sr-label-20').textContent = '20FT ' + lbl + ' (최종)';
