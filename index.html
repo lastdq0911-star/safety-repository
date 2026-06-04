@@ -203,10 +203,10 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
 #clause-modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:600; align-items:flex-end; justify-content:center; }
 #clause-modal.open { display:flex; }
 .clause-box { background:#fff; width:100%; max-width:900px; border-radius:18px 18px 0 0; overflow:hidden; max-height:92vh; display:flex; flex-direction:column; box-shadow:0 -4px 30px rgba(0,0,0,0.25); }
-.clause-head { background:var(--gray-dark); padding:11px 14px; display:flex; align-items:center; gap:7px; border-bottom:3px solid var(--mint); flex-shrink:0; }
+.clause-head { background:var(--gray-dark); padding:11px 14px; display:flex; align-items:center; gap:7px; border-bottom:3px solid var(--mint); flex-shrink:0; position:relative; }
+.clause-head-title { font-size:0.88rem; font-weight:800; color:#fff; position:absolute; left:50%; transform:translateX(-50%); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:60%; pointer-events:none; }
 .cl-mob-back { appearance:none; background:none; border:none; color:rgba(255,255,255,0.75); font-size:1.4rem; cursor:pointer; line-height:1; padding:0 2px 0 0; display:none; font-family:inherit; transition:color 0.1s; }
 .cl-mob-back:hover { color:#fff; }
-.clause-head-title { font-size:0.91rem; font-weight:800; color:#fff; flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 .clause-close { background:none; border:none; color:rgba(255,255,255,0.65); font-size:1.3rem; cursor:pointer; line-height:1; padding:4px; transition:color 0.1s; font-family:inherit; }
 .clause-close:hover { color:#fff; }
 .clause-layout { display:flex; flex:1; min-height:0; overflow:hidden; }
@@ -683,7 +683,7 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
     <div class="clause-head">
       <button class="cl-mob-back" id="cl-mob-back" aria-label="목차로">‹</button>
       <span>📋</span>
-      <span id="clause-modal-title" class="clause-head-title">부대조항 목차</span>
+      <span id="clause-modal-title" class="clause-head-title">수출입 컨테이너 품목 안전운임 부대조항</span>
       <button class="clause-close" id="clause-close-btn" aria-label="닫기">✕</button>
     </div>
     <div class="clause-layout">
@@ -1922,7 +1922,7 @@ mobBack.addEventListener('click', function() {
   tocEl.style.display = '';
   detEl.style.display = '';
   mobBack.style.display = 'none';
-  titleEl.textContent = '부대조항 목차';
+  titleEl.textContent = '수출입 컨테이너 품목 안전운임 부대조항';
 });
 
 function doCopy(text, btn) {
@@ -1948,7 +1948,7 @@ document.getElementById('cl-copy-text').addEventListener('click', function() {
 function openModal() {
   selArt=null; D.chapters.forEach(function(_,i){expanded[i]=true;}); srch.value='';
   tocEl.style.display=''; detEl.style.display=''; mobBack.style.display='none';
-  titleEl.textContent='부대조항 목차';
+  titleEl.textContent='수출입 컨테이너 품목 안전운임 부대조항';
   detPh.style.display=''; detView.style.display='none';
   renderTOC(); modal.classList.add('open'); document.body.style.overflow='hidden';
 }
