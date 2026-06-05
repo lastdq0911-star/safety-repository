@@ -625,7 +625,7 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
     <div class="step-num" id="sn4">4</div>
     <span class="step-title" id="step4-title">할증 <span class="step-tag">(선택사항)</span></span>
     <span class="step-val" id="sv4" style="margin-left:auto;"></span>
-    <button class="sur-reset-btn" id="sur-reset-btn" onclick="clearSurcharges()">🔄</button>
+    <button class="sur-reset-btn" id="sur-reset-btn">🔄</button>
   </div>
   <div class="step-body">
     <div class="sur-grid">
@@ -1663,6 +1663,7 @@ FARE_TYPES.forEach(function (k) {
 document.querySelectorAll('.sur-item').forEach(function (el) {
   el.addEventListener('click', function () { toggleSur(el); });
 });
+document.getElementById('sur-reset-btn').addEventListener('click', clearSurcharges);
 
 document.getElementById('w40').addEventListener('input', calcSur);
 document.getElementById('w20').addEventListener('input', calcSur);
