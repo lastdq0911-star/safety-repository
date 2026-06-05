@@ -625,7 +625,7 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
     <div class="step-num" id="sn4">4</div>
     <span class="step-title" id="step4-title">할증 <span class="step-tag">(선택사항)</span></span>
     <span class="step-val" id="sv4" style="margin-left:auto;"></span>
-    <button class="sur-reset-btn" id="sur-reset-btn" style="display:none;" onclick="clearSurcharges()">🔄</button>
+    <button class="sur-reset-btn" id="sur-reset-btn" onclick="clearSurcharges()">🔄</button>
   </div>
   <div class="step-body">
     <div class="sur-grid">
@@ -1059,7 +1059,7 @@ function clearSurcharges() {
   }
   clearDone('sn4', 'sv4', '4');
   document.getElementById('sur-result').classList.remove('show');
-  var _s4=document.getElementById('step4-card'); if(_s4){_s4.classList.remove('sur-active'); var _rb=document.getElementById('sur-reset-btn'); if(_rb)_rb.style.display='none'; var _t4=document.getElementById('step4-title'); if(_t4)_t4.innerHTML='할증 <span class="step-tag">(선택사항)</span>';}
+  var _s4=document.getElementById('step4-card'); if(_s4){_s4.classList.remove('sur-active'); var _t4=document.getElementById('step4-title'); if(_t4)_t4.innerHTML='할증 <span class="step-tag">(선택사항)</span>';}
 }
 
 // 고시 전환 시 전체 상태 초기화
@@ -1549,7 +1549,7 @@ function calcSur() {
 
   if (!state.portData || !allRates.length || !state.fareType) {
     surEl.classList.remove('show');
-    var _s4=document.getElementById('step4-card'); if(_s4){_s4.classList.remove('sur-active'); var _rb=document.getElementById('sur-reset-btn'); if(_rb)_rb.style.display='none'; var _t4=document.getElementById('step4-title'); if(_t4)_t4.innerHTML='할증 <span class="step-tag">(선택사항)</span>';}
+    var _s4=document.getElementById('step4-card'); if(_s4){_s4.classList.remove('sur-active'); var _t4=document.getElementById('step4-title'); if(_t4)_t4.innerHTML='할증 <span class="step-tag">(선택사항)</span>';}
     return;
   }
 
@@ -1593,7 +1593,6 @@ function calcSur() {
   var _s4c=document.getElementById('step4-card');
   if(_s4c){
     _s4c.classList.add('sur-active');
-    var _rb=document.getElementById('sur-reset-btn'); if(_rb)_rb.style.display='flex';
     var _t4=document.getElementById('step4-title');
     if(_t4)_t4.innerHTML='✅ 할증 적용 <span style="color:var(--mint);font-weight:800;">' + Math.max(rate40,rate20).toFixed(2) + '%</span>';
   }
