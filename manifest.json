@@ -4,8 +4,8 @@
   "description": "세방(주) 수출입 컨테이너 안전운임 조회 시스템",
   "start_url": "./",
   "display": "standalone",
-  "background_color": "#3d3d3d",
-  "theme_color": "#3d3d3d",
+  "background_color": "#eaf7f5",
+  "theme_color": "#00b8a9",
   "orientation": "portrait",
   "icons": [
     {
