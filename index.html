@@ -262,16 +262,11 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
 #clause-btn { appearance:none; -webkit-appearance:none; font-family:inherit; padding:4px 11px; border-radius:6px; border:1.5px solid var(--border); background:#fff; color:var(--gray-dark); font-size:0.68rem; font-weight:700; cursor:pointer; white-space:nowrap; transition:all 0.15s; touch-action:manipulation; }
 #clause-btn:hover { background:var(--gray-dark); color:#fff; border-color:var(--gray-dark); }
 
-/* ── 바로가기 드롭다운 ── */
-.shortcut-wrap { position:relative; }
-#shortcut-btn { appearance:none; -webkit-appearance:none; font-family:inherit; padding:4px 11px; border-radius:6px; border:1.5px solid var(--border); background:#fff; color:var(--gray-dark); font-size:0.68rem; font-weight:700; cursor:pointer; white-space:nowrap; transition:all 0.15s; touch-action:manipulation; }
-#shortcut-btn:hover, #shortcut-btn.open { background:var(--gray-dark); color:#fff; border-color:var(--gray-dark); }
-.shortcut-dd { display:none; position:absolute; top:calc(100% + 6px); right:0; background:#fff; border:1px solid var(--border2); border-radius:10px; box-shadow:var(--shadow); min-width:230px; z-index:350; overflow:hidden; }
-.shortcut-dd.open { display:block; }
-.shortcut-dd a { display:flex; flex-direction:column; gap:2px; padding:10px 14px; font-size:0.74rem; font-weight:700; color:var(--gray-dark); text-decoration:none; border-bottom:1px solid var(--border2); transition:background 0.15s; }
-.shortcut-dd a:last-child { border-bottom:none; }
-.shortcut-dd a:hover { background:var(--bg); }
-.shortcut-dd a span { font-size:0.62rem; font-weight:500; color:var(--text2); }
+/* ── 외부 사이트 바로가기 (PC 전용) ── */
+.ext-links { display:none; }
+.ext-links-label { font-size:0.66rem; font-weight:700; color:var(--text2); white-space:nowrap; }
+.ext-link { font-size:0.7rem; font-weight:700; color:var(--mint); text-decoration:none; padding:3px 9px; border:1.5px solid rgba(0,184,169,0.35); border-radius:6px; background:rgba(0,184,169,0.06); white-space:nowrap; transition:all 0.15s; }
+.ext-link:hover { background:var(--mint); color:#fff; border-color:var(--mint); }
 .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.55); z-index:500; align-items:center; justify-content:center; padding:16px; }
 .modal-overlay.open { display:flex; }
 .modal-box { background:#fff; border-radius:16px; width:100%; max-width:560px; max-height:88vh; display:flex; flex-direction:column; box-shadow:0 8px 40px rgba(0,0,0,0.3); overflow:hidden; }
@@ -449,6 +444,9 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
   /* PC 할증 그리드: 남은 공간 채움 */
   .sur-grid { flex:1; align-content:start; }
 
+  /* ── 외부 사이트 바로가기 (PC 전용 노출, 할증 그리드 마지막 줄) ── */
+  .ext-links { display:flex; grid-column:1 / -1; flex-wrap:wrap; align-items:center; gap:7px; margin-top:6px; padding-top:9px; border-top:1px dashed var(--border2); }
+
   /* ── 13. 중량 입력 ── */
   .weight-input-wrap { padding:7px 9px; margin-top:7px; }
   .weight-row { margin-bottom:6px; }
@@ -521,14 +519,6 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
     <span class="banner-gov" id="banner-gov"></span>
     <button id="rate-table-btn">📊 거리별 운임표</button>
     <button id="clause-btn">📋 부대조항</button>
-    <div class="shortcut-wrap">
-      <button id="shortcut-btn" aria-haspopup="true" aria-expanded="false">🔗 바로가기</button>
-      <div class="shortcut-dd" id="shortcut-dd" role="menu">
-        <a href="https://sebiz.sebang.com/ebiz/cy/ebcy000056/EBCY000056.xhtml" target="_blank" rel="noopener noreferrer" role="menuitem">컨테이너-차량 조회<span>세비즈 e-Biz</span></a>
-        <a href="https://sebiz.sebang.com/ebiz/cy/ebcy000207/EBCY000207.xhtml" target="_blank" rel="noopener noreferrer" role="menuitem">부킹-컨번호 차량 조회<span>세비즈 e-Biz</span></a>
-        <a href="https://unipass.customs.go.kr/csp/index.do#4" target="_blank" rel="noopener noreferrer" role="menuitem">관세청 (유니패스)<span>UNI-PASS</span></a>
-      </div>
-    </div>
   </div>
 </div>
 
@@ -664,6 +654,12 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
       <button class="sur-item" data-key="중량" data-rate="0" data-warn="0"><div class="sur-top"><div class="sur-check">✓</div><div class="sur-name">⚖️ 중량물 초과</div></div><div class="sur-rate">초과톤당 +10%</div></button>
       <button class="sur-item" data-key="xray" data-rate="100000" data-type="fixed" data-warn="0"><div class="sur-top"><div class="sur-check">✓</div><div class="sur-name">🔍 검색대(X-RAY)</div></div><div class="sur-rate">+100,000원</div></button>
       <button class="sur-item" data-key="공컨반납" data-rate="40000" data-type="fixed" data-warn="0"><div class="sur-top"><div class="sur-check">✓</div><div class="sur-name">🔁 인천터미널 공컨 반납비</div></div><div class="sur-rate">+40,000원</div></button>
+      <div class="ext-links">
+        <span class="ext-links-label">🔗 바로가기</span>
+        <a class="ext-link" href="https://sebiz.sebang.com/ebiz/cy/ebcy000056/EBCY000056.xhtml" target="_blank" rel="noopener noreferrer">컨테이너-차량 조회</a>
+        <a class="ext-link" href="https://sebiz.sebang.com/ebiz/cy/ebcy000207/EBCY000207.xhtml" target="_blank" rel="noopener noreferrer">부킹-컨번호 차량 조회</a>
+        <a class="ext-link" href="https://unipass.customs.go.kr/csp/index.do#4" target="_blank" rel="noopener noreferrer">관세청 (유니패스)</a>
+      </div>
     </div>
     <div class="weight-input-wrap" id="weight-wrap">
       <div class="weight-row"><span class="weight-label">40FT 초과 중량</span><input class="weight-input" id="w40" type="number" min="0" max="15" placeholder="0"><span style="font-size:0.72rem;color:var(--text2);">톤</span></div>
@@ -1842,30 +1838,6 @@ document.getElementById('rate-table-btn').addEventListener('touchend', function 
   openRateModal();
 });
 document.getElementById('modal-close-btn').addEventListener('click', closeRateModal);
-
-// 바로가기 드롭다운
-(function () {
-  var btn = document.getElementById('shortcut-btn');
-  var dd  = document.getElementById('shortcut-dd');
-  function close() {
-    dd.classList.remove('open');
-    btn.classList.remove('open');
-    btn.setAttribute('aria-expanded', 'false');
-  }
-  btn.addEventListener('click', function (e) {
-    e.stopPropagation();
-    var willOpen = !dd.classList.contains('open');
-    dd.classList.toggle('open', willOpen);
-    btn.classList.toggle('open', willOpen);
-    btn.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
-  });
-  document.addEventListener('click', function (e) {
-    if (!dd.contains(e.target) && e.target !== btn) close();
-  });
-  document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape') close();
-  });
-})();
 
 // 부대조항 모달 - 검색·펼침/접기·분할뷰
 (function () {
