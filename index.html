@@ -1270,44 +1270,50 @@ inp.addEventListener('input', function () {
   }
   clearTimeout(_debounceTimer);
   _debounceTimer = setTimeout(function () {
-    const q = inp.value.trim();
-    if (!q) { hideAC(); return; }
-    const tokens = q.split(/\s+/).filter(Boolean);
-    const flat = window.FLAT || [];
-    var matched = flat.filter(function (item) {
-      return tokens.every(function (t) { return tokenMatchesLabel(item.l, t); });
-    });
-    // 고시 데이터가 로드된 경우 현재 TARIFF에 운임 데이터가 있는 지역만 표시
-    // 운송 유형(왕복/편도)이 선택된 경우 해당 유형의 기점이 있는 지역만 표시
-    if (tariffLoaded && matched.length) {
-      var withData = matched.filter(function (item) {
-        var tk = TARIFF[item.k] ? item.k : (TARIFF[normalizeKeyForOldNotice(item.k)] ? normalizeKeyForOldNotice(item.k) : null);
-        if (!tk) return false;
-        if (!state.type) return true;
-        return Object.keys(TARIFF[tk]).some(function (p) {
-          return state.type === '왕복' ? p.indexOf('편도') < 0 : p.indexOf('편도') >= 0;
-        });
-      });
-      // 운송 유형 선택 시 결과가 0건이어도 필터 적용 (빈 목록 표시)
-      // 유형 미선택 시에는 TARIFF 데이터가 있는 항목이 없을 경우 전체 목록 유지
-      if (withData.length || state.type) matched = withData;
-    }
-    acResults = matched.slice(0, 30);
-    if (!acResults.length) { hideAC(); return; }
-    acInfo.textContent = '검색 결과 ' + acResults.length + '건';
-    acList.innerHTML = acResults.map(function (item, i) {
-      let label = escapeHtml(item.l);
-      tokens.forEach(function (t) {
-        const st = escapeHtml(t);
-        label = label.split(st).join('<span class="ac-match">' + st + '</span>');
-      });
-      return '<div class="ac-item" role="option" aria-selected="false" data-i="' + i + '"><span class="ac-icon" aria-hidden="true">📍</span><span>' + label + '</span></div>';
-    }).join('');
-    showAC();
-    acList.scrollTop = 0;
-    kbIndex = -1;
+    _debounceTimer = null;
+    runDongSearch();
   }, 150);
 });
+
+// 행정동 검색 실행 (디바운스 콜백과, Enter 즉시입력 시 강제 실행에서 공용으로 사용)
+function runDongSearch() {
+  const q = inp.value.trim();
+  if (!q) { hideAC(); return; }
+  const tokens = q.split(/\s+/).filter(Boolean);
+  const flat = window.FLAT || [];
+  var matched = flat.filter(function (item) {
+    return tokens.every(function (t) { return tokenMatchesLabel(item.l, t); });
+  });
+  // 고시 데이터가 로드된 경우 현재 TARIFF에 운임 데이터가 있는 지역만 표시
+  // 운송 유형(왕복/편도)이 선택된 경우 해당 유형의 기점이 있는 지역만 표시
+  if (tariffLoaded && matched.length) {
+    var withData = matched.filter(function (item) {
+      var tk = TARIFF[item.k] ? item.k : (TARIFF[normalizeKeyForOldNotice(item.k)] ? normalizeKeyForOldNotice(item.k) : null);
+      if (!tk) return false;
+      if (!state.type) return true;
+      return Object.keys(TARIFF[tk]).some(function (p) {
+        return state.type === '왕복' ? p.indexOf('편도') < 0 : p.indexOf('편도') >= 0;
+      });
+    });
+    // 운송 유형 선택 시 결과가 0건이어도 필터 적용 (빈 목록 표시)
+    // 유형 미선택 시에는 TARIFF 데이터가 있는 항목이 없을 경우 전체 목록 유지
+    if (withData.length || state.type) matched = withData;
+  }
+  acResults = matched.slice(0, 30);
+  if (!acResults.length) { hideAC(); return; }
+  acInfo.textContent = '검색 결과 ' + acResults.length + '건';
+  acList.innerHTML = acResults.map(function (item, i) {
+    let label = escapeHtml(item.l);
+    tokens.forEach(function (t) {
+      const st = escapeHtml(t);
+      label = label.split(st).join('<span class="ac-match">' + st + '</span>');
+    });
+    return '<div class="ac-item" role="option" aria-selected="false" data-i="' + i + '"><span class="ac-icon" aria-hidden="true">📍</span><span>' + label + '</span></div>';
+  }).join('');
+  showAC();
+  acList.scrollTop = 0;
+  kbIndex = -1;
+}
 
 let _sy = 0, _sm = false;
 acList.addEventListener('touchstart', function (e) { _sy = e.touches[0].clientY; _sm = false; }, { passive: true });
@@ -1365,7 +1371,15 @@ inp.addEventListener('keydown', function (e) {
     setKbFocus(kbIndex <= 0 ? 0 : kbIndex - 1);
   } else if (e.key === 'Enter') {
     e.preventDefault();
-    var focusedItem = kbIndex >= 0 ? acList.querySelectorAll('.ac-item')[kbIndex] : null;
+    // 입력 직후 디바운스(150ms)가 끝나기 전에 바로 Enter를 누르면 검색 결과가
+    // 아직 없어 선택이 무시되던 문제 → 대기 중인 검색을 즉시 실행한 뒤 선택 진행
+    if (searchMode === 'dong' && _debounceTimer !== null) {
+      clearTimeout(_debounceTimer);
+      _debounceTimer = null;
+      runDongSearch();
+    }
+    var curItems = acList.querySelectorAll('.ac-item');
+    var focusedItem = kbIndex >= 0 ? curItems[kbIndex] : null;
     var roadI = focusedItem ? focusedItem.getAttribute('data-road-i') : null;
     if (roadI !== null) {
       resolveRoadToTariff(_roadResults[parseInt(roadI, 10)]);
