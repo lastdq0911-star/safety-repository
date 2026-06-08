@@ -119,7 +119,7 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
 /* ── 토글 버튼 ── */
 .toggle-row { display:grid; gap:8px; }
 .tog-btn { padding:13px 8px; border-radius:var(--radius-sm); border:1.5px solid var(--border); background:var(--bg3); color:var(--text2); font-size:0.85rem; font-weight:600; font-family:inherit; cursor:pointer; text-align:center; transition:all 0.15s; min-height:50px; }
-.tog-btn.active { background:var(--gray); border-color:var(--gray); color:#fff; font-weight:700; }
+.tog-btn.active { background:var(--gray-dark); border-color:var(--gray-dark); color:#fff; font-weight:700; }
 .fare-type-desc { font-size:0.72rem; color:var(--text2); margin-top:10px; padding:10px 12px; background:var(--bg3); border-radius:8px; border:1px solid var(--border2); border-left:3px solid var(--gray); line-height:1.6; }
 
 /* ── 할증 ── */
@@ -265,8 +265,8 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
 /* ── 외부 사이트 바로가기 (PC 전용) ── */
 .ext-links { display:none; }
 .ext-links-label { font-size:0.66rem; font-weight:700; color:var(--text2); white-space:nowrap; }
-.ext-link { font-size:0.7rem; font-weight:700; color:var(--mint); text-decoration:none; padding:3px 9px; border:1.5px solid rgba(0,184,169,0.35); border-radius:6px; background:rgba(0,184,169,0.06); white-space:nowrap; transition:all 0.15s; }
-.ext-link:hover { background:var(--mint); color:#fff; border-color:var(--mint); }
+.ext-link { font-size:0.7rem; font-weight:700; color:var(--gray-dark); text-decoration:none; padding:3px 9px; border:1.5px solid var(--gray-dark); border-radius:6px; background:transparent; white-space:nowrap; transition:all 0.15s; }
+.ext-link:hover { background:var(--gray-dark); color:#fff; border-color:var(--gray-dark); }
 .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.55); z-index:500; align-items:center; justify-content:center; padding:16px; }
 .modal-overlay.open { display:flex; }
 .modal-box { background:#fff; border-radius:16px; width:100%; max-width:560px; max-height:88vh; display:flex; flex-direction:column; box-shadow:0 8px 40px rgba(0,0,0,0.3); overflow:hidden; }
