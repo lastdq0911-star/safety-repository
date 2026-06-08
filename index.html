@@ -73,6 +73,8 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
 .step-title { font-size:0.85rem; font-weight:700; color:var(--text); }
 .step-tag { font-size:0.65rem; color:var(--text3); font-weight:400; margin-left:4px; }
 .step-val { font-size:0.75rem; color:var(--mint); font-weight:700; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.loc-code-badge { display:none; align-items:center; gap:4px; font-size:0.66rem; font-weight:700; font-family:inherit; color:var(--gray-dark); background:#fff; border:1.5px solid var(--border); border-radius:6px; padding:3px 8px; cursor:pointer; transition:all 0.15s; white-space:nowrap; flex-shrink:0; }
+.loc-code-badge:hover { background:var(--gray-dark); color:#fff; border-color:var(--gray-dark); }
 .step-body { padding:12px 16px; }
 
 /* ── 검색창 ── */
@@ -265,8 +267,8 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
 /* ── 외부 사이트 바로가기 (PC 전용) ── */
 .ext-links { display:none; }
 .ext-links-label { font-size:0.66rem; font-weight:700; color:var(--text2); white-space:nowrap; }
-.ext-link { font-size:0.7rem; font-weight:700; color:var(--gray-dark); text-decoration:none; padding:3px 9px; border:1.5px solid var(--gray-dark); border-radius:6px; background:transparent; white-space:nowrap; transition:all 0.15s; }
-.ext-link:hover { background:var(--gray-dark); color:#fff; border-color:var(--gray-dark); }
+.ext-link { font-size:0.7rem; font-weight:700; color:var(--mint); text-decoration:none; padding:3px 9px; border:1.5px solid rgba(0,184,169,0.35); border-radius:6px; background:rgba(0,184,169,0.06); white-space:nowrap; transition:all 0.15s; }
+.ext-link:hover { background:var(--mint); color:#fff; border-color:var(--mint); }
 .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.55); z-index:500; align-items:center; justify-content:center; padding:16px; }
 .modal-overlay.open { display:flex; }
 .modal-box { background:#fff; border-radius:16px; width:100%; max-width:560px; max-height:88vh; display:flex; flex-direction:column; box-shadow:0 8px 40px rgba(0,0,0,0.3); overflow:hidden; }
@@ -532,6 +534,7 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
     <div class="step-num" id="sn1">1</div>
     <span class="step-title">목적지 검색</span>
     <span class="step-val" id="sv1" style="margin-left:auto;"></span>
+    <button type="button" class="loc-code-badge" id="loc-code-badge" title="클릭하여 지역코드 복사"></button>
   </div>
   <div class="step-body">
     <div class="smt-tabs">
@@ -1047,6 +1050,41 @@ function clearDone(numId, valId, numTxt) {
   document.getElementById(valId).textContent = '';
 }
 
+// 선택된 행정동의 지역코드 배지 (클릭 시 복사)
+function copyLocCode(text, badge) {
+  function flash() {
+    var orig = badge.textContent;
+    badge.textContent = '✅ 복사됨!';
+    setTimeout(function () { badge.textContent = orig; }, 1600);
+  }
+  function fallback() {
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.cssText = 'position:fixed;opacity:0';
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    flash();
+  }
+  if (navigator.clipboard) { navigator.clipboard.writeText(text).then(flash).catch(fallback); }
+  else { fallback(); }
+}
+
+function showLocCode(item) {
+  const badge = document.getElementById('loc-code-badge');
+  if (!item || !item.c) { hideLocCode(); return; }
+  badge.textContent = '🏷 ' + item.c;
+  badge.style.display = 'inline-flex';
+  badge.onclick = function () { copyLocCode(item.c, badge); };
+}
+
+function hideLocCode() {
+  const badge = document.getElementById('loc-code-badge');
+  badge.style.display = 'none';
+  badge.onclick = null;
+}
+
 function showInlineError(msg) {
   const el = document.getElementById('inline-error');
   el.textContent = msg;
@@ -1098,6 +1136,7 @@ function resetAll() {
   hideAC();
 
   clearDone('sn1', 'sv1', '1');
+  hideLocCode();
   clearDone('sn2', 'sv2', '2');
   clearDone('sn3', 'sv3', '3');
 
@@ -1145,6 +1184,7 @@ function clearDestinationState() {
   state.key = null; state.label = '';
   state.entry = null; state.portData = null;
   clearDone('sn1', 'sv1', '1');
+  hideLocCode();
   document.getElementById('result').style.display = 'none';
   document.getElementById('sur-result').classList.remove('show');
   // 모달이 열려 있으면 즉시 하이라이트 제거
@@ -1305,6 +1345,7 @@ function selectItem(i) {
   hideAC();
   inp.blur();
   setDone('sn1', 'sv1', item.l.split(' ').slice(-2).join(' '));
+  showLocCode(item);
   tryShowResult();
 }
 
@@ -2432,16 +2473,14 @@ document.getElementById('smt-road').addEventListener('click', function () {
   }
 });
 
-// 검색창에 마우스를 올리거나 클릭하면 현재 모드 버튼을 활성 표시로 동기화
-// (초기화 화면은 기본 활성 표시 없이 대기하다가, 사용자가 검색창에
-//  마우스 클릭하는 순간 비로소 '행정동 검색'이 활성화되도록 함.
-//  단, 로딩 완료 후 자동 포커스(.focus())는 'focus' 이벤트만 발생시키고
-//  'click'은 발생시키지 않으므로 초기 화면에서는 활성 표시가 뜨지 않음)
+// 검색창을 마우스로 클릭하는 순간에만 현재 모드 버튼을 활성 표시로 동기화
+// (초기화 화면은 활성 표시 없이 대기하다가, 사용자가 검색창을 직접
+//  마우스로 클릭해야만 비로소 '행정동 검색'이 활성화되도록 함 — 마우스
+//  호버(mouseenter)나 자동 포커스만으로는 활성 표시가 뜨지 않음)
 function syncSmtActive() {
   document.getElementById('smt-dong').classList.toggle('active', searchMode === 'dong');
   document.getElementById('smt-road').classList.toggle('active', searchMode === 'road');
 }
-inp.addEventListener('mouseenter', syncSmtActive);
 inp.addEventListener('click', syncSmtActive);
 
 // ── SW 업데이트 시 자동 새로고침 (controllerchange = 가장 신뢰성 높음) ──
