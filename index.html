@@ -563,7 +563,7 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
       </div>
     </div>
     <div class="loc-code-multi" id="loc-code-multi" style="display:none;">
-      <span class="loc-code-multi-label">🏷 세부 위치별 지역코드 (사내 전용)</span>
+      <span class="loc-code-multi-label">🏷 세부 위치별 지역코드 (사내 코드)</span>
       <div class="loc-code-chips" id="loc-code-chips"></div>
     </div>
     <p class="hint-text">시·도 / 시·군·구 / 읍·면·동 중 <b>일부만 입력</b>해도 검색돼요<br>예) <b>부산 해운대</b> &nbsp;·&nbsp; <b>반여동</b> &nbsp;·&nbsp; <b>경주</b></p>
@@ -1064,7 +1064,7 @@ function clearDone(numId, valId, numTxt) {
 
 // 선택된 행정동의 지역코드 배지/칩 (클릭 시 복사)
 // 외부 고객이 우편번호 등 공식 코드로 오해하지 않도록 사내 전용 코드임을 안내
-var LOC_CODE_NOTE = '사내 전용 코드';
+var LOC_CODE_NOTE = '사내 전용';
 
 function copyLocCode(text, el) {
   function flash() {
