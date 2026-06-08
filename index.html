@@ -82,6 +82,12 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
 .loc-code-chip:hover { background:var(--gray-dark); color:#fff; border-color:var(--gray-dark); }
 .loc-code-chip:hover .ccode { background:#fff; color:var(--gray-dark); }
 .loc-code-chip .ccode { font-weight:800; background:var(--gray-dark); color:#fff; border-radius:5px; padding:1px 6px; transition:all 0.15s; }
+
+/* 지역코드 표시는 PC(웹) 전용 — 모바일에서는 노출하지 않음 */
+@media (max-width:899px) {
+  .loc-code-badge,
+  .loc-code-multi { display:none !important; }
+}
 .step-body { padding:12px 16px; }
 
 /* ── 검색창 ── */
