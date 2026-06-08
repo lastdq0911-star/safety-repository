@@ -1221,6 +1221,23 @@ let searchMode = 'dong'; // 'dong' | 'road'
 
 let _debounceTimer = null;
 
+// "대연동" 검색 시 "대연1동·대연3동·대연6동" 등 번호가 붙은 행정동도
+// 함께 매칭되도록 보완 (단순 부분일치만으로는 못 찾는 경우 보완)
+const DONG_SUFFIX_RE = /^(.+?)동$/;
+function tokenMatchesLabel(label, token) {
+  if (label.indexOf(token) >= 0) return true;
+  const m = token.match(DONG_SUFFIX_RE);
+  if (!m) return false;
+  const base = m[1];
+  let re = tokenMatchesLabel._cache[token];
+  if (!re) {
+    re = new RegExp(base.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\d+동');
+    tokenMatchesLabel._cache[token] = re;
+  }
+  return re.test(label);
+}
+tokenMatchesLabel._cache = {};
+
 function clearDestinationState() {
   state.key = null; state.label = '';
   state.entry = null; state.portData = null;
@@ -1254,7 +1271,7 @@ inp.addEventListener('input', function () {
     const tokens = q.split(/\s+/).filter(Boolean);
     const flat = window.FLAT || [];
     var matched = flat.filter(function (item) {
-      return tokens.every(function (t) { return item.l.indexOf(t) >= 0; });
+      return tokens.every(function (t) { return tokenMatchesLabel(item.l, t); });
     });
     // 고시 데이터가 로드된 경우 현재 TARIFF에 운임 데이터가 있는 지역만 표시
     // 운송 유형(왕복/편도)이 선택된 경우 해당 유형의 기점이 있는 지역만 표시
