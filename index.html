@@ -1683,6 +1683,7 @@ function resetStep(step) {
     inp.value = '';
     document.getElementById('smt-dong').classList.remove('active');
     document.getElementById('smt-road').classList.remove('active');
+    hideLocCode();
     hideAC();
   } else if (step === 2) {
     state.type = null;
