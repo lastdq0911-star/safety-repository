@@ -2432,15 +2432,17 @@ document.getElementById('smt-road').addEventListener('click', function () {
   }
 });
 
-// 검색창에 마우스를 올리거나 클릭/포커스하면 현재 모드 버튼을 활성 표시로 동기화
-// (초기화 화면은 searchMode='dong'이 기본이므로, 마우스를 거치지 않고 바로
-//  검색창을 클릭해도 '행정동 검색' 버튼이 즉시 활성화되도록 보장)
+// 검색창에 마우스를 올리거나 클릭하면 현재 모드 버튼을 활성 표시로 동기화
+// (초기화 화면은 기본 활성 표시 없이 대기하다가, 사용자가 검색창에
+//  마우스 클릭하는 순간 비로소 '행정동 검색'이 활성화되도록 함.
+//  단, 로딩 완료 후 자동 포커스(.focus())는 'focus' 이벤트만 발생시키고
+//  'click'은 발생시키지 않으므로 초기 화면에서는 활성 표시가 뜨지 않음)
 function syncSmtActive() {
   document.getElementById('smt-dong').classList.toggle('active', searchMode === 'dong');
   document.getElementById('smt-road').classList.toggle('active', searchMode === 'road');
 }
 inp.addEventListener('mouseenter', syncSmtActive);
-inp.addEventListener('focus', syncSmtActive);
+inp.addEventListener('click', syncSmtActive);
 
 // ── SW 업데이트 시 자동 새로고침 (controllerchange = 가장 신뢰성 높음) ──
 if ('serviceWorker' in navigator) {
