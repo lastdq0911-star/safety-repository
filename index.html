@@ -1253,6 +1253,11 @@ function clearDestinationState() {
 inp.addEventListener('input', function () {
   syncSmtActive(); // 마우스 클릭 없이 키보드로 바로 입력을 시작해도 현재 모드 버튼을 활성 표시로 동기화
   clearDestinationState(); // 입력 변경 시 이전 선택 해제
+  // 새 검색어 입력 시 이전 검색의 acResults/kbIndex를 즉시 무효화
+  // (디바운스가 끝나기 전에 Enter를 누르면 이전 검색 결과 중 하나가
+  //  잘못 선택되며 드롭다운이 "1건"으로 되살아나는 문제 방지)
+  acResults = [];
+  kbIndex = -1;
   if (searchMode === 'road') {
     // 도로명 모드: 카카오 주소 검색 드롭다운
     clearTimeout(_debounceTimer);
@@ -1400,6 +1405,11 @@ function selectItem(i) {
   inp.readOnly = false;   // 행정동 선택 완료 후 readOnly 해제 (disambiguation 후 복원)
   searchMode = 'dong';    // 항상 dong 모드 확정
   inp.value = item.l;
+  // 선택 완료 후 대기 중이던 디바운스 검색이 뒤늦게 실행되어
+  // (변경된 input.value를 기준으로 재검색하며) 드롭다운을 다시 띄우는 것을 방지
+  clearTimeout(_debounceTimer);
+  acResults = [];
+  kbIndex = -1;
   hideAC();
   inp.blur();
   setDone('sn1', 'sv1', item.l.split(' ').slice(-2).join(' '));
