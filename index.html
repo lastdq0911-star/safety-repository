@@ -76,9 +76,9 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
 .loc-code-badge { display:none; align-items:center; gap:4px; font-size:0.66rem; font-weight:700; font-family:inherit; color:var(--gray-dark); background:#fff; border:1.5px solid var(--border); border-radius:6px; padding:3px 8px; cursor:pointer; transition:all 0.15s; white-space:nowrap; flex-shrink:0; }
 .loc-code-badge:hover { background:var(--gray-dark); color:#fff; border-color:var(--gray-dark); }
 .loc-code-multi { display:none; flex-direction:column; gap:6px; margin-top:10px; padding:10px 12px; background:var(--bg3); border:1px solid var(--border); border-radius:10px; }
-.loc-code-multi-label { font-size:0.7rem; font-weight:700; color:var(--gray-dark); cursor:help; }
-.loc-code-chips { display:flex; flex-wrap:wrap; gap:6px; }
-.loc-code-chip { display:flex; align-items:center; gap:6px; font-size:0.7rem; font-weight:600; font-family:inherit; color:var(--gray-dark); background:#fff; border:1.5px solid var(--border); border-radius:8px; padding:5px 10px; cursor:pointer; transition:all 0.15s; }
+.loc-code-multi-label { font-size:0.7rem; font-weight:700; color:var(--gray-dark); }
+.loc-code-chips { display:flex; flex-wrap:nowrap; gap:6px; overflow-x:auto; }
+.loc-code-chip { display:flex; align-items:center; gap:6px; font-size:0.7rem; font-weight:600; font-family:inherit; color:var(--gray-dark); background:#fff; border:1.5px solid var(--border); border-radius:8px; padding:5px 10px; cursor:pointer; transition:all 0.15s; flex-shrink:0; white-space:nowrap; }
 .loc-code-chip:hover { background:var(--gray-dark); color:#fff; border-color:var(--gray-dark); }
 .loc-code-chip:hover .ccode { background:#fff; color:var(--gray-dark); }
 .loc-code-chip .ccode { font-weight:800; background:var(--gray-dark); color:#fff; border-radius:5px; padding:1px 6px; transition:all 0.15s; }
@@ -541,7 +541,7 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
     <div class="step-num" id="sn1">1</div>
     <span class="step-title">목적지 검색</span>
     <span class="step-val" id="sv1" style="margin-left:auto;"></span>
-    <button type="button" class="loc-code-badge" id="loc-code-badge" title="세방(주) 내부 운임 시스템 전용 코드 · 클릭하여 복사"></button>
+    <button type="button" class="loc-code-badge" id="loc-code-badge" title="클릭하여 지역코드 복사"></button>
   </div>
   <div class="step-body">
     <div class="smt-tabs">
@@ -561,7 +561,7 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
       </div>
     </div>
     <div class="loc-code-multi" id="loc-code-multi" style="display:none;">
-      <span class="loc-code-multi-label" title="세방(주) 내부 운임 시스템 전용 코드">🏷 세부 위치별 지역코드 (클릭하여 복사)</span>
+      <span class="loc-code-multi-label">🏷 세부 위치별 지역코드 (클릭하여 복사)</span>
       <div class="loc-code-chips" id="loc-code-chips"></div>
     </div>
     <p class="hint-text">시·도 / 시·군·구 / 읍·면·동 중 <b>일부만 입력</b>해도 검색돼요<br>예) <b>부산 해운대</b> &nbsp;·&nbsp; <b>반여동</b> &nbsp;·&nbsp; <b>경주</b></p>
@@ -1062,10 +1062,6 @@ function clearDone(numId, valId, numTxt) {
 }
 
 // 선택된 행정동의 지역코드 배지/칩 (클릭 시 복사)
-// 지역코드는 세방(주) 사내 운임 시스템에서만 쓰이는 코드로, 우편번호 등
-// 공식 행정구역코드와는 무관함 — 외부 고객 오해 방지를 위해 툴팁으로 안내
-var LOC_CODE_DESC = '세방(주) 내부 운임 시스템 전용 코드';
-
 function copyLocCode(text, el) {
   function flash() {
     var orig = el.innerHTML;
@@ -1100,7 +1096,7 @@ function showLocCode(item) {
       const chip = document.createElement('button');
       chip.type = 'button';
       chip.className = 'loc-code-chip';
-      chip.title = LOC_CODE_DESC + ' · 클릭하여 복사: ' + cand.c;
+      chip.title = '클릭하여 복사: ' + cand.c;
       chip.innerHTML = '<span>' + escapeHtml(cand.n) + '</span><span class="ccode">' + escapeHtml(cand.c) + '</span>';
       chip.addEventListener('click', function () { copyLocCode(cand.c, chip); });
       chips.appendChild(chip);
