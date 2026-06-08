@@ -444,8 +444,8 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
   /* PC 할증 그리드: 남은 공간 채움 */
   .sur-grid { flex:1; align-content:start; }
 
-  /* ── 외부 사이트 바로가기 (PC 전용 노출, 할증 그리드 마지막 줄) ── */
-  .ext-links { display:flex; grid-column:1 / -1; flex-wrap:wrap; align-items:center; gap:7px; margin-top:6px; padding-top:9px; border-top:1px dashed var(--border2); }
+  /* ── 외부 사이트 바로가기 (PC 전용 노출, 좌측 열 하단) ── */
+  .ext-links { display:flex; flex-wrap:wrap; align-items:center; gap:7px; margin-top:14px; padding:11px 14px; background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius); }
 
   /* ── 13. 중량 입력 ── */
   .weight-input-wrap { padding:7px 9px; margin-top:7px; }
@@ -624,6 +624,13 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
   </div>
 </div>
 
+<div class="ext-links">
+  <span class="ext-links-label">🔗 바로가기</span>
+  <a class="ext-link" href="https://sebiz.sebang.com/ebiz/cy/ebcy000056/EBCY000056.xhtml" target="_blank" rel="noopener noreferrer">컨테이너-차량 조회</a>
+  <a class="ext-link" href="https://sebiz.sebang.com/ebiz/cy/ebcy000207/EBCY000207.xhtml" target="_blank" rel="noopener noreferrer">부킹-컨번호 차량 조회</a>
+  <a class="ext-link" href="https://unipass.customs.go.kr/csp/index.do#4" target="_blank" rel="noopener noreferrer">관세청 (유니패스)</a>
+</div>
+
 </div><!-- /pc-left -->
 
 <div class="pc-right">
@@ -654,12 +661,6 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
       <button class="sur-item" data-key="중량" data-rate="0" data-warn="0"><div class="sur-top"><div class="sur-check">✓</div><div class="sur-name">⚖️ 중량물 초과</div></div><div class="sur-rate">초과톤당 +10%</div></button>
       <button class="sur-item" data-key="xray" data-rate="100000" data-type="fixed" data-warn="0"><div class="sur-top"><div class="sur-check">✓</div><div class="sur-name">🔍 검색대(X-RAY)</div></div><div class="sur-rate">+100,000원</div></button>
       <button class="sur-item" data-key="공컨반납" data-rate="40000" data-type="fixed" data-warn="0"><div class="sur-top"><div class="sur-check">✓</div><div class="sur-name">🔁 인천터미널 공컨 반납비</div></div><div class="sur-rate">+40,000원</div></button>
-      <div class="ext-links">
-        <span class="ext-links-label">🔗 바로가기</span>
-        <a class="ext-link" href="https://sebiz.sebang.com/ebiz/cy/ebcy000056/EBCY000056.xhtml" target="_blank" rel="noopener noreferrer">컨테이너-차량 조회</a>
-        <a class="ext-link" href="https://sebiz.sebang.com/ebiz/cy/ebcy000207/EBCY000207.xhtml" target="_blank" rel="noopener noreferrer">부킹-컨번호 차량 조회</a>
-        <a class="ext-link" href="https://unipass.customs.go.kr/csp/index.do#4" target="_blank" rel="noopener noreferrer">관세청 (유니패스)</a>
-      </div>
     </div>
     <div class="weight-input-wrap" id="weight-wrap">
       <div class="weight-row"><span class="weight-label">40FT 초과 중량</span><input class="weight-input" id="w40" type="number" min="0" max="15" placeholder="0"><span style="font-size:0.72rem;color:var(--text2);">톤</span></div>
@@ -2431,11 +2432,15 @@ document.getElementById('smt-road').addEventListener('click', function () {
   }
 });
 
-// 검색창에 마우스 올리면 현재 모드 버튼 활성화
-inp.addEventListener('mouseenter', function () {
+// 검색창에 마우스를 올리거나 클릭/포커스하면 현재 모드 버튼을 활성 표시로 동기화
+// (초기화 화면은 searchMode='dong'이 기본이므로, 마우스를 거치지 않고 바로
+//  검색창을 클릭해도 '행정동 검색' 버튼이 즉시 활성화되도록 보장)
+function syncSmtActive() {
   document.getElementById('smt-dong').classList.toggle('active', searchMode === 'dong');
   document.getElementById('smt-road').classList.toggle('active', searchMode === 'road');
-});
+}
+inp.addEventListener('mouseenter', syncSmtActive);
+inp.addEventListener('focus', syncSmtActive);
 
 // ── SW 업데이트 시 자동 새로고침 (controllerchange = 가장 신뢰성 높음) ──
 if ('serviceWorker' in navigator) {
