@@ -36,6 +36,8 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
 .banner-label { font-size:0.7rem; color:var(--text2); flex-shrink:0; }
 .banner-select { font-size:0.75rem; font-weight:700; color:var(--gray-dark); background:transparent; border:none; outline:none; cursor:pointer; font-family:inherit; }
 .banner-gov { margin-left:auto; font-size:0.68rem; color:var(--text2); white-space:nowrap; font-weight:600; }
+/* 현재 빌드 버전 표시 — 캐시/배포 문제 진단용 (sw.js CACHE_VERSION과 항상 일치해야 함) */
+.app-ver { font-size:0.58rem; color:var(--text3); font-weight:600; white-space:nowrap; flex-shrink:0; }
 
 /* ── STEP 카드 ── */
 .step { margin:16px 14px 0; background:var(--bg2); border:1px solid var(--border); border-left:4px solid var(--mint); border-radius:var(--radius); overflow:visible; box-shadow:var(--shadow); position:relative; }

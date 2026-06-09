@@ -1,5 +1,7 @@
 // @ts-check
 const { test, expect } = require('@playwright/test');
+const fs = require('fs');
+const path = require('path');
 
 const BASE = 'http://localhost:8765';
 
@@ -165,5 +167,61 @@ test.describe('지역코드 배지/칩', () => {
     const chips = page.locator('#loc-code-chips');
     const display = await chips.evaluate(el => getComputedStyle(el).display);
     expect(display).toBe('none');
+  });
+});
+
+test.describe('모바일 뷰포트 (390x844)', () => {
+  test.use({ viewport: { width: 390, height: 844 } });
+
+  test.beforeEach(async ({ page }) => {
+    await page.goto(`${BASE}/index.html`);
+    await page.waitForSelector('#search-input:not(:disabled)', { timeout: 25_000 });
+  });
+
+  test('목적지 선택 시 검색창이 접히고 목적지명이 헤더에 표시된다', async ({ page }) => {
+    await page.fill('#search-input', '해운대구 반여동');
+    await page.waitForTimeout(500);
+    await page.keyboard.press('ArrowDown');
+    await page.keyboard.press('Enter');
+    await page.waitForTimeout(400);
+
+    // 검색창은 접혀서 숨겨지고
+    await expect(page.locator('#step1')).toHaveClass(/collapsed/);
+    await expect(page.locator('#search-input')).toBeHidden();
+
+    // 헤더에 선택한 목적지명이 보여야 함 (목적지가 사라지면 안 됨)
+    const sv1 = page.locator('#sv1');
+    await expect(sv1).toBeVisible();
+    await expect(sv1).toHaveText('해운대구 반여1동');
+
+    // 지역코드 배지는 모바일에서 숨김 (PC 전용)
+    const badge = page.locator('#loc-code-badge');
+    const badgeDisplay = await badge.evaluate(el => getComputedStyle(el).display);
+    expect(badgeDisplay).toBe('none');
+
+    // ① 탭하면 다시 펼쳐져 재검색 가능
+    await page.locator('#sn1').click();
+    await page.waitForTimeout(200);
+    await expect(page.locator('#step1')).not.toHaveClass(/collapsed/);
+    await expect(page.locator('#search-input')).toBeVisible();
+  });
+
+  test('배너에 빌드 버전이 표시된다', async ({ page }) => {
+    const ver = page.locator('#app-ver');
+    await expect(ver).toBeVisible();
+    await expect(ver).toHaveText(/^v\d+$/);
+  });
+});
+
+test.describe('버전 일관성', () => {
+  test('sw.js CACHE_VERSION과 화면 표시 버전(app-ver)이 일치한다', () => {
+    const root = path.join(__dirname, '..');
+    const sw = fs.readFileSync(path.join(root, 'sw.js'), 'utf8');
+    const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
+    const swVer = sw.match(/CACHE_VERSION = '(v\d+)'/);
+    const uiVer = html.match(/id="app-ver">(v\d+)</);
+    expect(swVer).toBeTruthy();
+    expect(uiVer).toBeTruthy();
+    expect(uiVer[1]).toBe(swVer[1]);
   });
 });
