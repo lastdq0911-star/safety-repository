@@ -1104,7 +1104,7 @@ function showLocCode(item) {
       chip.type = 'button';
       chip.className = 'loc-code-chip';
       chip.title = LOC_CODE_NOTE + ' · 클릭하여 복사';
-      chip.innerHTML = '<span class="ccode">' + escapeHtml(cand.c) + '</span>';
+      chip.innerHTML = '🏷 <span>' + escapeHtml(cand.n) + '</span><span class="ccode">' + escapeHtml(cand.c) + '</span>';
       chip.addEventListener('click', function () { copyLocCode(cand.c, chip); });
       chips.appendChild(chip);
     });
