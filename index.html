@@ -1075,6 +1075,7 @@ function clearDone(numId, valId, numTxt) {
 var LOC_CODE_NOTE = '사내 코드';
 
 function copyLocCode(text, el) {
+  gtag('event', 'copy_loc_code', { loc_code: text });
   function flash() {
     var orig = el.innerHTML;
     el.innerHTML = '✅ 복사됨!';
@@ -1307,7 +1308,11 @@ function runDongSearch() {
     if (withData.length || state.type) matched = withData;
   }
   acResults = matched.slice(0, 30);
-  if (!acResults.length) { hideAC(); return; }
+  if (!acResults.length) {
+    gtag('event', 'search_no_result', { search_query: q });
+    hideAC();
+    return;
+  }
   acInfo.textContent = '검색 결과 ' + acResults.length + '건';
   acList.innerHTML = acResults.map(function (item, i) {
     let label = escapeHtml(item.l);
@@ -1578,6 +1583,7 @@ function showResult() {
   });
 
   selectPort(ports[0]);
+  gtag('event', 'view_result', { destination: state.label, transport_type: state.type, fare_type: state.fareType });
   document.getElementById('result').style.display = 'flex';
   setTimeout(function () {
     document.getElementById('result').scrollIntoView({ behavior: 'smooth', block: 'start' });
