@@ -73,13 +73,11 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
 .step-title { font-size:0.85rem; font-weight:700; color:var(--text); flex-shrink:0; white-space:nowrap; }
 .step-tag { font-size:0.65rem; color:var(--text3); font-weight:400; margin-left:4px; }
 .step-val { font-size:0.75rem; color:var(--mint); font-weight:700; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-.loc-code-area { margin-left:auto; display:flex; align-items:center; min-width:0; }
+.loc-code-area { margin-left:auto; display:flex; align-items:center; flex-wrap:wrap; justify-content:flex-end; gap:6px; min-width:0; }
 .loc-code-badge { display:none; align-items:center; gap:4px; font-size:0.66rem; font-weight:700; font-family:inherit; color:var(--gray-dark); background:#fff; border:1.5px solid var(--border); border-radius:6px; padding:3px 8px; cursor:pointer; transition:all 0.15s; white-space:nowrap; flex-shrink:0; }
 .loc-code-badge:hover { background:var(--gray-dark); color:#fff; border-color:var(--gray-dark); }
-.loc-code-multi { display:none; flex-direction:column; gap:6px; margin-top:10px; padding:10px 12px; background:var(--bg3); border:1px solid var(--border); border-radius:10px; }
-.loc-code-multi-label { font-size:0.7rem; font-weight:700; color:var(--gray-dark); }
-.loc-code-chips { display:flex; flex-wrap:wrap; gap:6px; }
-.loc-code-chip { display:flex; align-items:center; gap:6px; font-size:0.7rem; font-weight:600; font-family:inherit; color:var(--gray-dark); background:#fff; border:1.5px solid var(--border); border-radius:8px; padding:5px 10px; cursor:pointer; transition:all 0.15s; white-space:nowrap; }
+.loc-code-chips { display:none; flex-wrap:wrap; justify-content:flex-end; gap:6px; }
+.loc-code-chip { display:flex; align-items:center; gap:6px; font-size:0.66rem; font-weight:600; font-family:inherit; color:var(--gray-dark); background:#fff; border:1.5px solid var(--border); border-radius:6px; padding:3px 8px; cursor:pointer; transition:all 0.15s; white-space:nowrap; }
 .loc-code-chip:hover { background:var(--gray-dark); color:#fff; border-color:var(--gray-dark); }
 .loc-code-chip:hover .ccode { background:#fff; color:var(--gray-dark); }
 .loc-code-chip .ccode { font-weight:800; background:var(--gray-dark); color:#fff; border-radius:5px; padding:1px 6px; transition:all 0.15s; }
@@ -87,7 +85,7 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
 /* 지역코드 표시는 PC(웹) 전용 — 모바일에서는 노출하지 않음 */
 @media (max-width:899px) {
   .loc-code-badge,
-  .loc-code-multi { display:none !important; }
+  .loc-code-chips { display:none !important; }
 }
 .step-body { padding:12px 16px; }
 
@@ -551,6 +549,7 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
     <span class="step-title">목적지 검색</span>
     <div class="loc-code-area" id="loc-code-area">
       <button type="button" class="loc-code-badge" id="loc-code-badge"></button>
+      <div class="loc-code-chips" id="loc-code-chips"></div>
     </div>
   </div>
   <div class="step-body">
@@ -569,10 +568,6 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
         <div id="ac-info">검색 결과</div>
         <div id="ac-list"></div>
       </div>
-    </div>
-    <div class="loc-code-multi" id="loc-code-multi" style="display:none;">
-      <span class="loc-code-multi-label">🏷 세부 위치별 지역코드 (사내 코드)</span>
-      <div class="loc-code-chips" id="loc-code-chips"></div>
     </div>
     <p class="hint-text">시·도 / 시·군·구 / 읍·면·동 중 <b>일부만 입력</b>해도 검색돼요<br>예) <b>부산 해운대</b> &nbsp;·&nbsp; <b>반여동</b> &nbsp;·&nbsp; <b>경주</b></p>
   </div>
@@ -1097,7 +1092,6 @@ function copyLocCode(text, el) {
 
 function showLocCode(item) {
   const badge = document.getElementById('loc-code-badge');
-  const multi = document.getElementById('loc-code-multi');
   const chips = document.getElementById('loc-code-chips');
   if (!item || !item.c) { hideLocCode(); return; }
 
@@ -1110,13 +1104,13 @@ function showLocCode(item) {
       chip.type = 'button';
       chip.className = 'loc-code-chip';
       chip.title = LOC_CODE_NOTE + ' · 클릭하여 복사';
-      chip.innerHTML = '<span>' + escapeHtml(cand.n) + '</span><span class="ccode">' + escapeHtml(cand.c) + '</span>';
+      chip.innerHTML = '<span class="ccode">' + escapeHtml(cand.c) + '</span>';
       chip.addEventListener('click', function () { copyLocCode(cand.c, chip); });
       chips.appendChild(chip);
     });
-    multi.style.display = 'flex';
+    chips.style.display = 'flex';
   } else {
-    multi.style.display = 'none';
+    chips.style.display = 'none';
     chips.innerHTML = '';
     badge.innerHTML = '🏷 ' + escapeHtml(item.c);
     badge.title = LOC_CODE_NOTE + ' · 클릭하여 복사';
@@ -1127,11 +1121,10 @@ function showLocCode(item) {
 
 function hideLocCode() {
   const badge = document.getElementById('loc-code-badge');
-  const multi = document.getElementById('loc-code-multi');
   const chips = document.getElementById('loc-code-chips');
   badge.style.display = 'none';
   badge.onclick = null;
-  multi.style.display = 'none';
+  chips.style.display = 'none';
   chips.innerHTML = '';
 }
 
