@@ -1104,7 +1104,7 @@ function showLocCode(item) {
       chip.type = 'button';
       chip.className = 'loc-code-chip';
       chip.title = LOC_CODE_NOTE + ' · 클릭하여 복사';
-      chip.innerHTML = '🏷 <span>' + escapeHtml(cand.n) + '</span><span class="ccode">' + escapeHtml(cand.c) + '</span>';
+      chip.innerHTML = '🏷 <span>' + escapeHtml(cand.n) + '</span><span style="color:var(--border);margin:0 1px;">|</span><span class="ccode">' + escapeHtml(cand.c) + '</span>';
       chip.addEventListener('click', function () { copyLocCode(cand.c, chip); });
       chips.appendChild(chip);
     });
@@ -1588,7 +1588,7 @@ function selectPort(portName) {
     t.classList.toggle('active', t.getAttribute('data-port') === portName);
   });
   const d = state.entry ? state.entry[portName] : null;
-  if (!d) return;
+  if (!d) { showInlineError('항구 운임 데이터를 불러올 수 없습니다. 다시 시도해 주세요.'); return; }
   gtag('event', 'select_port', { port_name: portName.replace('(편도)', ''), distance_km: d.dist });
   state.portData = d;
   document.getElementById('dist-km').textContent = d.dist + ' km';
@@ -1652,8 +1652,8 @@ function getSurRates() {
     const key = el.getAttribute('data-key');
     const label = el.querySelector('.sur-name').textContent.trim();
     if (key === '중량') {
-      const w40 = parseFloat(document.getElementById('w40').value) || 0;
-      const w20 = parseFloat(document.getElementById('w20').value) || 0;
+      var w40 = Math.min(Math.max(parseFloat(document.getElementById('w40').value) || 0, 0), 15);
+      var w20 = Math.min(Math.max(parseFloat(document.getElementById('w20').value) || 0, 0), 15);
       if (w40 > 0) rates.push({ label: '중량초과40FT(' + w40 + '톤)', rate: w40 * 10, ft: '40' });
       if (w20 > 0) rates.push({ label: '중량초과20FT(' + w20 + '톤)', rate: w20 * 10, ft: '20' });
     } else if (el.getAttribute('data-type') === 'fixed') {
@@ -2023,8 +2023,8 @@ function selectArt(num) {
   expanded[art.ch] = true;
   detPh.style.display = 'none';
   detView.style.display = 'flex';
-  dvHead.innerHTML = '<span class="dv-ch">'+D.chapters[art.ch].title+'</span>'
-    +'<div class="dv-num-title"><strong>'+art.num+'.</strong> ('+art.title+')</div>';
+  dvHead.innerHTML = '<span class="dv-ch">'+escapeHtml(D.chapters[art.ch].title)+'</span>'
+    +'<div class="dv-num-title"><strong>'+escapeHtml(String(art.num))+'.</strong> ('+escapeHtml(art.title)+')</div>';
   dvBody.innerHTML = art.html
     +'<div class="art-govnote">※ 출처: 국토교통부 고시 제2026-55호 「2026년 적용 화물자동차 안전운임 고시」</div>';
   dvBody.scrollTop = 0;
@@ -2056,7 +2056,7 @@ document.getElementById('cl-collapse-all').addEventListener('click', function() 
 
 
 function doCopy(text, btn) {
-  function flash() { var o=btn.innerHTML; btn.innerHTML='✅ 복사됨!'; setTimeout(function(){btn.innerHTML=o;},2000); }
+  function flash() { var o=btn.innerHTML; btn.textContent='✅ 복사됨!'; setTimeout(function(){btn.innerHTML=o;},2000); }
   if (navigator.clipboard) { navigator.clipboard.writeText(text).then(flash).catch(function(){ fallback(); }); }
   else { fallback(); }
   function fallback() {
