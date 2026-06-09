@@ -87,6 +87,11 @@ test.describe('목적지 검색', () => {
     await expect(step1).toHaveClass(/collapsed/);
     await expect(searchInput).toBeHidden();
 
+    // 접힌 상태에서도 선택한 목적지명이 step-head에 표시되어야 함
+    const sv1 = page.locator('#sv1');
+    await expect(sv1).toBeVisible();
+    await expect(sv1).toHaveText('해운대구 반여1동');
+
     await page.locator('#sn1').click();
     await page.waitForTimeout(200);
 

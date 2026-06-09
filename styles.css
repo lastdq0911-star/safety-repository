@@ -46,6 +46,7 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
 .step-title { font-size:0.85rem; font-weight:700; color:var(--text); flex-shrink:0; white-space:nowrap; }
 .step-tag { font-size:0.65rem; color:var(--text3); font-weight:400; margin-left:4px; }
 .step-val { font-size:0.75rem; color:var(--mint); font-weight:700; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+#sv1 { flex:1 1 0; min-width:0; text-align:right; }
 .loc-code-area { margin-left:auto; display:flex; align-items:center; flex-wrap:wrap; justify-content:flex-end; gap:6px; min-width:0; }
 .loc-code-badge { display:none; align-items:center; gap:4px; font-size:0.66rem; font-weight:700; font-family:inherit; color:var(--gray-dark); background:#fff; border:1.5px solid var(--border); border-radius:6px; padding:3px 8px; cursor:pointer; transition:all 0.15s; white-space:nowrap; flex-shrink:0; }
 .loc-code-badge:hover { background:var(--gray-dark); color:#fff; border-color:var(--gray-dark); }
