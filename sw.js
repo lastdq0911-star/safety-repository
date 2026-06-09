@@ -1,12 +1,13 @@
 'use strict';
 
-const CACHE_VERSION = 'v138';
+const CACHE_VERSION = 'v139';
 
 const SHELL_CACHE = 'safety-shell-' + CACHE_VERSION;
 const DATA_CACHE  = 'safety-data-'  + CACHE_VERSION;
 
 const PRECACHE_ASSETS = [
   './index.html',
+  './styles.css',
   './manifest.json',
   './icon-192.png',
   './icon-512.png',
