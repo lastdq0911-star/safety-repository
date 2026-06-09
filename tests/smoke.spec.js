@@ -107,6 +107,12 @@ test.describe('지역코드 배지/칩', () => {
   });
 
   async function searchSelect(page, query) {
+    // step1이 이전 선택으로 접혀 있으면 ① 클릭으로 다시 펼침
+    const step1 = page.locator('#step1');
+    if (await step1.evaluate(el => el.classList.contains('collapsed'))) {
+      await page.locator('#sn1').click();
+      await page.waitForTimeout(200);
+    }
     await page.fill('#search-input', query);
     await page.waitForTimeout(500);
     await page.keyboard.press('ArrowDown');
@@ -143,7 +149,7 @@ test.describe('지역코드 배지/칩', () => {
     });
 
     await searchSelect(page, '광산구 하남동');
-    await page.click('.loc-code-chip');
+    await page.locator('.loc-code-chip').first().click();
     await page.waitForTimeout(300);
     const copied = await page.evaluate(() => window._copied);
     expect(copied.length).toBeGreaterThan(0);
