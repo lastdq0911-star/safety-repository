@@ -74,6 +74,25 @@ test.describe('목적지 검색', () => {
       expect(count).toBe(0);
     }
   });
+
+  test('항목 선택 후 검색창이 접히고, ① 클릭 시 다시 펼쳐진다', async ({ page }) => {
+    await page.fill('#search-input', '해운대구 반여동');
+    await page.waitForTimeout(500);
+    await page.keyboard.press('ArrowDown');
+    await page.keyboard.press('Enter');
+    await page.waitForTimeout(400);
+
+    const step1 = page.locator('#step1');
+    const searchInput = page.locator('#search-input');
+    await expect(step1).toHaveClass(/collapsed/);
+    await expect(searchInput).toBeHidden();
+
+    await page.locator('#sn1').click();
+    await page.waitForTimeout(200);
+
+    await expect(step1).not.toHaveClass(/collapsed/);
+    await expect(searchInput).toBeVisible();
+  });
 });
 
 test.describe('지역코드 배지/칩', () => {
