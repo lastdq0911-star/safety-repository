@@ -61,6 +61,8 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
   .loc-code-chips { display:none !important; }
 }
 .step-body { padding:12px 16px; }
+#step1.collapsed .step-head { border-bottom:none; border-radius:calc(var(--radius) - 1px); }
+#step1.collapsed .step-body { display:none; }
 
 /* ── 검색창 ── */
 .search-wrap { position:relative; z-index:200; }
