@@ -1435,6 +1435,7 @@ function selectItem(i) {
   inp.blur();
   setDone('sn1', 'sv1', item.l.split(' ').slice(-2).join(' '));
   showLocCode(item);
+  gtag('event', 'search_destination', { destination: item.l, destination_key: item.k });
   tryShowResult();
 }
 
@@ -1456,6 +1457,7 @@ function setType(t) {
   document.getElementById('btn-왕복').classList.toggle('active', t === '왕복');
   document.getElementById('btn-편도').classList.toggle('active', t === '편도');
   setDone('sn2', 'sv2', t === '왕복' ? '왕복' : '편도(의왕ICD)');
+  gtag('event', 'select_transport_type', { transport_type: t });
   tryShowResult();
 }
 
@@ -1479,6 +1481,7 @@ function setFareType(t) {
     document.getElementById('ft-' + k).classList.toggle('active', k === t);
   });
   setDone('sn3', 'sv3', FARE_LABEL_MAP[t]);
+  gtag('event', 'select_fare_type', { fare_type: t });
   applyFareHighlight();
   calcSur();
   tryShowResult();
@@ -1587,6 +1590,7 @@ function selectPort(portName) {
   });
   const d = state.entry ? state.entry[portName] : null;
   if (!d) return;
+  gtag('event', 'select_port', { port_name: portName.replace('(편도)', ''), distance_km: d.dist });
   state.portData = d;
   document.getElementById('dist-km').textContent = d.dist + ' km';
   document.getElementById('r-km').textContent =
@@ -1622,7 +1626,10 @@ function toggleSur(el) {
   const surWasShowing = document.getElementById('sur-result').classList.contains('show');
 
   el.classList.remove('checked', 'checked-warn');
-  if (!was) el.classList.add(warn ? 'checked-warn' : 'checked');
+  if (!was) {
+    el.classList.add(warn ? 'checked-warn' : 'checked');
+    gtag('event', 'select_surcharge', { surcharge: el.getAttribute('data-key') });
+  }
   if (isWeight) document.getElementById('weight-wrap').classList.toggle('show', !was);
 
   const remaining = document.querySelectorAll('.sur-item.checked,.sur-item.checked-warn').length;
