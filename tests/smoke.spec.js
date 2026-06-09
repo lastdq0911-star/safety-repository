@@ -140,7 +140,11 @@ test.describe('지역코드 배지/칩', () => {
   });
 
   test('칩 클릭 시 클립보드에 복사', async ({ page }) => {
-    await page.addInitScript(() => {
+    await searchSelect(page, '광산구 하남동');
+
+    // beforeEach에서 이미 페이지가 로드된 뒤이므로 addInitScript 대신
+    // 현재 문서 컨텍스트에 바로 navigator.clipboard를 주입
+    await page.evaluate(() => {
       window._copied = [];
       Object.defineProperty(navigator, 'clipboard', {
         value: { writeText: t => { window._copied.push(t); return Promise.resolve(); } },
@@ -148,7 +152,6 @@ test.describe('지역코드 배지/칩', () => {
       });
     });
 
-    await searchSelect(page, '광산구 하남동');
     await page.locator('.loc-code-chip').first().click();
     await page.waitForTimeout(300);
     const copied = await page.evaluate(() => window._copied);
