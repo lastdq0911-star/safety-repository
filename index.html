@@ -1471,7 +1471,8 @@ function openRateModal() {
   document.getElementById('rate-modal').classList.add('open');
   document.body.style.overflow = 'hidden';
   requestAnimationFrame(function () {
-    document.querySelector('.modal-body').scrollTop = 0;
+    var mb = document.querySelector('.modal-body');
+    if (mb) mb.scrollTop = 0;
   });
 }
 
@@ -1681,8 +1682,7 @@ function searchRoadAddress(q) {
   function onData(data) {
     if (myId !== _jusoReqId) return;
     var juso = (data.results && data.results.juso) || [];
-    _roadResults = juso.map(function (r, idx) {
-      if (idx === 0) console.log('[Juso] raw:', JSON.stringify(r));
+    _roadResults = juso.map(function (r) {
       var bdName = (r.bdNm || '').trim();
       var detBd  = (r.detBdNmList || '').trim();
       return {
@@ -1727,7 +1727,6 @@ function searchRoadAddress(q) {
           var s = text.indexOf('('), e = text.lastIndexOf(')');
           if (s < 0 || e <= s) throw new Error('callback wrapper 없음');
           var data = JSON.parse(text.slice(s + 1, e));
-          console.log('[Juso JSONP] 파싱 성공, juso=' + ((data.results && data.results.juso || []).length));
           onData(data);
         } catch (parseErr) {
           console.warn('[Juso JSONP] 파싱 실패:', parseErr.message, '응답:', text.slice(0, 120));
@@ -1745,10 +1744,8 @@ function searchRoadAddress(q) {
   fetch(baseUrl + '&resultType=json')
     .then(function (r) { return r.json(); })
     .then(function (data) {
-      var ec = data && data.results && data.results.common && data.results.common.errorCode;
-      console.log('[Juso fetch] errorCode=' + ec + ' juso=' + ((data.results && data.results.juso || []).length));
       if (data && data.results) { onData(data); }
-      else { console.warn('[Juso fetch] 결과 없음 → JSONP 시도'); tryJsonp(); }
+      else { tryJsonp(); }
     })
     .catch(function (e) {
       console.warn('[Juso fetch] 실패(' + e.message + ') → JSONP 시도');
@@ -1834,7 +1831,6 @@ function resolveRoadToTariff(addr) {
   function applyKakaoDong(sido, sgg, dong) {
     if (myId !== _coordReqId) return;
     var fullSido = normSido(sido);
-    console.log('[Kakao REST] 행정동: ' + fullSido + ' ' + sgg + ' ' + dong);
     _doResolveRoadToTariff({
       road: addr.road, jibun: addr.jibun,
       sido: fullSido,
@@ -1926,8 +1922,6 @@ function _doResolveRoadToTariff(addr) {
   var flat     = window.FLAT  || [];
   var results  = [];
 
-  console.log('[Resolve] sigungu=' + sigungu + ' dong=' + dongName + ' admCd=' + admCd);
-
   function applyGuFilter(list) {
     if (!sigungu) return list;
     var gt = sigungu.split(' ').filter(Boolean);
@@ -1984,7 +1978,6 @@ function _doResolveRoadToTariff(addr) {
     var sigs5 = results.map(getTariffSig);
     var allSame5 = sigs5[0] !== null && sigs5.every(function(s) { return s === sigs5[0]; });
     if (allSame5) {
-      console.log('[Resolve] 전략5: 전체 운임 동일 → 자동 선택');
       results = [results[0]];
     }
   }
@@ -2113,6 +2106,9 @@ if ('serviceWorker' in navigator) {
   var EJS_SERVICE_ID  = 'service_sebang123';
   var EJS_TEMPLATE_ID = 'template_7nhn0hm';
 
+  // SDK 초기화는 한 번만
+  if (window.emailjs) emailjs.init({ publicKey: EJS_PUBLIC_KEY });
+
   var modal       = document.getElementById('contact-modal');
   var openBtn     = document.getElementById('contact-fab');
   var closeBtn    = document.getElementById('contact-close-btn');
@@ -2199,13 +2195,21 @@ if ('serviceWorker' in navigator) {
       return;
     }
 
+    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      var ei = document.getElementById('c-email');
+      ei.focus();
+      ei.style.borderColor = '#c00';
+      setTimeout(function () { ei.style.borderColor = ''; }, 1500);
+      alert('올바른 이메일 주소를 입력해 주세요.');
+      return;
+    }
+
     if (!window.emailjs) {
       alert('이메일 서비스를 불러오는 중입니다. 잠시 후 다시 시도해 주세요.');
       return;
     }
 
     setSubmitState('loading');
-    emailjs.init({ publicKey: EJS_PUBLIC_KEY });
 
     emailjs.send(EJS_SERVICE_ID, EJS_TEMPLATE_ID, {
       subject:    '[세방(주) 문의]' + (name ? ' ' + name : ''),
