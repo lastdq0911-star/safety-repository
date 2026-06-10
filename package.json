@@ -5,9 +5,11 @@
   "scripts": {
     "test": "playwright test",
     "test:headed": "playwright test --headed",
-    "test:report": "playwright show-report"
+    "test:report": "playwright show-report",
+    "ga4:report": "node scripts/ga4-report.mjs"
   },
   "devDependencies": {
+    "@google-analytics/data": "^6.1.0",
     "@playwright/test": "^1.44.0"
   }
 }
