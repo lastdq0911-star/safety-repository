@@ -98,34 +98,6 @@ test.describe('운임 조회 플로우', () => {
     const firstVal = await fareValues.first().textContent();
     expect(firstVal).toMatch(/원/);
   });
-
-  test('북항·신항 비교 버튼 클릭 시 비교 표 표시', async ({ page }) => {
-    await selectDestination(page, '해운대구 반여동');
-
-    await page.locator('#step2-card .tog-btn').first().click();
-    await page.waitForTimeout(200);
-    await page.locator('#step3-card .tog-btn').first().click();
-    await page.waitForTimeout(300);
-    await page.locator('.ptab').first().click();
-    await page.waitForTimeout(500);
-
-    const compareBtn = page.locator('#port-compare-btn');
-    await expect(compareBtn).toBeVisible();
-
-    const compareTable = page.locator('#port-compare-table');
-    await expect(compareTable).not.toHaveClass(/show/);
-
-    await compareBtn.click();
-    await expect(compareTable).toHaveClass(/show/);
-    await expect(compareTable).toContainText('부산북항');
-    await expect(compareTable).toContainText('부산신항');
-    await expect(compareTable).toContainText('40FT');
-    await expect(compareTable).toContainText('20FT');
-
-    // 다시 클릭하면 닫힘
-    await compareBtn.click();
-    await expect(compareTable).not.toHaveClass(/show/);
-  });
 });
 
 test.describe('할증 기능', () => {
@@ -158,20 +130,6 @@ test.describe('할증 기능', () => {
     await surItem.click();
     const classes = await surItem.getAttribute('class');
     expect(classes).not.toMatch(/checked/);
-  });
-
-  test('할증 적용 시 북항·신항 비교 표에도 할증이 반영된다', async ({ page }) => {
-    const compareBtn = page.locator('#port-compare-btn');
-    const compareTable = page.locator('#port-compare-table');
-
-    await compareBtn.click();
-    await expect(compareTable).toContainText('할증 미반영');
-
-    await page.locator('.sur-item').first().click();
-    await page.waitForTimeout(200);
-
-    await expect(compareTable).toContainText('할증 반영');
-    await expect(compareTable).not.toContainText('할증 미반영');
   });
 });
 

@@ -164,20 +164,6 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
 .ptab { appearance:none; -webkit-appearance:none; font-family:inherit; padding:8px 14px; border-radius:7px; font-size:0.75rem; font-weight:600; border:1.5px solid var(--border); background:var(--bg3); color:var(--text2); cursor:pointer; white-space:nowrap; min-height:36px; display:flex; align-items:center; transition:all 0.15s; }
 .ptab.active { background:var(--gray); border-color:var(--gray); color:#fff; font-weight:700; }
 .fare-area { padding:0 14px 14px; background:#fff; }
-.port-compare-row { display:flex; justify-content:flex-end; margin-bottom:8px; }
-.port-compare-btn { flex-shrink:0; appearance:none; font-family:inherit; padding:5px 12px; border:1.5px solid var(--border); border-radius:6px; background:#fff; color:var(--text2); font-size:0.7rem; font-weight:700; cursor:pointer; transition:all 0.15s; }
-.port-compare-btn.active { background:var(--gray); border-color:var(--gray); color:#fff; }
-.port-compare-table { display:none; margin-bottom:10px; border:1px solid var(--border); border-radius:8px; overflow:hidden; }
-.port-compare-table.show { display:block; }
-.pc-row { display:grid; grid-template-columns:0.7fr 1.15fr 1.15fr 1fr; gap:4px; padding:7px 10px; font-size:0.72rem; border-bottom:1px solid var(--border2); align-items:center; text-align:right; }
-.pc-row > span:first-child { text-align:left; }
-.pc-row:not(.pc-head) > span:not(:first-child) { font-family:'JetBrains Mono',monospace; }
-.pc-row:last-of-type { border-bottom:none; }
-.pc-row.pc-head { background:var(--bg3); font-weight:700; color:var(--text2); font-size:0.66rem; }
-.pc-diff small { display:block; font-size:0.85em; opacity:0.75; margin-top:1px; }
-.pc-up { color:#c00; }
-.pc-down { color:var(--mint); }
-.pc-note { padding:6px 10px; font-size:0.64rem; color:var(--text3); background:var(--bg3); border-top:1px solid var(--border2); }
 .fare-cards { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
 .fare-card { border-radius:var(--radius-sm); overflow:hidden; border:1.5px solid var(--border); }
 .fare-card-head { padding:12px 12px; display:flex; align-items:center; gap:6px; border-bottom:1px solid var(--border2); background:var(--bg3); }
