@@ -39,7 +39,7 @@
 <!-- 행정안전부 Juso API - JSONP/fetch 동적 호출 (별도 SDK 없음) -->
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=8">
+<link rel="stylesheet" href="styles.css?v=9">
 </head>
 <body>
 
@@ -64,7 +64,7 @@
     <span class="banner-gov" id="banner-gov"></span>
     <button id="rate-table-btn">📊 거리별 운임표</button>
     <button id="clause-btn">📋 부대조항</button>
-    <span class="app-ver" id="app-ver">v146</span>
+    <span class="app-ver" id="app-ver">v147</span>
   </div>
 </div>
 
@@ -158,7 +158,7 @@
           </div>
         </div>
         <div class="fare-card ft20">
-          <div class="fare-card-head"><span class="ft-label">20FT</span><span style="font-size:0.68rem;color:var(--text2);">컨테이너</span></div>
+          <div class="fare-card-head"><span class="ft-label">20FT</span><span style="font-size:0.68rem;color:var(--text2);">컨테이너</span><button type="button" class="share-result-btn" id="share-result-btn" style="margin-left:auto;">📤 공유</button></div>
           <div class="fare-rows">
             <div class="fare-row" id="row-f20-위탁"><span class="fl">안전위탁운임</span><span class="fv" id="f20-위탁">-</span></div>
             <div class="fare-row" id="row-f20-사업자"><span class="fl">운수사업자간</span><span class="fv" id="f20-사업자">-</span></div>
@@ -419,6 +419,25 @@ function escapeHtml(str) {
 // ── 숫자 포맷 ──
 function fmt(n) { return Number(n).toLocaleString('ko-KR') + '원'; }
 
+// ── 클립보드 복사 (Clipboard API 미지원 시 폴백) ──
+function copyTextFallback(text) {
+  var ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.cssText = 'position:fixed;opacity:0';
+  document.body.appendChild(ta);
+  ta.select();
+  document.execCommand('copy');
+  document.body.removeChild(ta);
+}
+function copyText(text, onDone) {
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(text).then(onDone).catch(function () { copyTextFallback(text); onDone(); });
+  } else {
+    copyTextFallback(text);
+    onDone();
+  }
+}
+
 // ── 앱 상태 ──
 const state = {
   key: null,
@@ -611,23 +630,11 @@ var LOC_CODE_NOTE = '사내 코드';
 
 function copyLocCode(text, el) {
   gtag('event', 'copy_loc_code', { loc_code: text });
-  function flash() {
+  copyText(text, function () {
     var orig = el.innerHTML;
     el.innerHTML = '✅ 복사됨!';
     setTimeout(function () { el.innerHTML = orig; }, 1600);
-  }
-  function fallback() {
-    var ta = document.createElement('textarea');
-    ta.value = text;
-    ta.style.cssText = 'position:fixed;opacity:0';
-    document.body.appendChild(ta);
-    ta.select();
-    document.execCommand('copy');
-    document.body.removeChild(ta);
-    flash();
-  }
-  if (navigator.clipboard) { navigator.clipboard.writeText(text).then(flash).catch(fallback); }
-  else { fallback(); }
+  });
 }
 
 function showLocCode(item) {
@@ -1309,6 +1316,23 @@ function buildQuoteSummary() {
 
   return lines.join('\n');
 }
+
+// ── 결과 공유하기 ──
+document.getElementById('share-result-btn').addEventListener('click', function () {
+  var btn = this;
+  var text = buildQuoteSummary();
+  if (!text) return;
+  gtag('event', 'share_result', { destination: state.label, fare_type: state.fareType });
+  if (navigator.share) {
+    navigator.share({ title: '안전운임 조회 결과', text: text }).catch(function () {});
+    return;
+  }
+  copyText(text, function () {
+    var orig = btn.textContent;
+    btn.textContent = '✅ 복사됨';
+    setTimeout(function () { btn.textContent = orig; }, 1600);
+  });
+});
 
 // ────────────────────────────────────────────
 // 단계 초기화
@@ -2196,24 +2220,11 @@ if ('serviceWorker' in navigator) {
   });
 
   quoteCopyBtn.addEventListener('click', function () {
-    var text = quoteBody.textContent;
-    function flash() {
+    copyText(quoteBody.textContent, function () {
       var orig = quoteCopyBtn.textContent;
       quoteCopyBtn.textContent = '✅ 복사됨';
       setTimeout(function () { quoteCopyBtn.textContent = orig; }, 1600);
-    }
-    function fallback() {
-      var ta = document.createElement('textarea');
-      ta.value = text;
-      ta.style.cssText = 'position:fixed;opacity:0';
-      document.body.appendChild(ta);
-      ta.select();
-      document.execCommand('copy');
-      document.body.removeChild(ta);
-      flash();
-    }
-    if (navigator.clipboard) { navigator.clipboard.writeText(text).then(flash).catch(fallback); }
-    else fallback();
+    });
     gtag('event', 'copy_quote_summary', { destination: state.label });
   });
 

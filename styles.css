@@ -485,8 +485,8 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
 .quote-card-head { display:flex; align-items:center; justify-content:space-between; gap:8px; }
 .quote-card-toggle { display:flex; align-items:center; gap:8px; font-size:0.82rem; font-weight:700; color:var(--gray-dark); cursor:pointer; }
 .quote-card-toggle input { width:16px; height:16px; accent-color:var(--mint); cursor:pointer; flex-shrink:0; }
-.quote-copy-btn { flex-shrink:0; appearance:none; font-family:inherit; padding:4px 11px; border:1.5px solid var(--mint); border-radius:6px; background:#fff; color:var(--mint); font-size:0.7rem; font-weight:700; cursor:pointer; transition:all 0.15s; }
-.quote-copy-btn:hover { background:var(--mint); color:#fff; }
+.quote-copy-btn, .share-result-btn { flex-shrink:0; appearance:none; font-family:inherit; padding:4px 11px; border:1.5px solid var(--mint); border-radius:6px; background:#fff; color:var(--mint); font-size:0.7rem; font-weight:700; cursor:pointer; transition:all 0.15s; }
+.quote-copy-btn:hover, .share-result-btn:hover { background:var(--mint); color:#fff; }
 .quote-card-body { margin:10px 0 0; padding:10px 12px; background:#fff; border:1px solid var(--border); border-radius:8px; font-family:inherit; font-size:0.78rem; line-height:1.7; color:var(--text2); white-space:pre-wrap; word-break:break-all; transition:opacity 0.15s; }
 .quote-card-body.dim { opacity:0.4; }
 .contact-field { margin-bottom:14px; }

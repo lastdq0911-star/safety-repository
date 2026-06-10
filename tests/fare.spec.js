@@ -98,6 +98,36 @@ test.describe('운임 조회 플로우', () => {
     const firstVal = await fareValues.first().textContent();
     expect(firstVal).toMatch(/원/);
   });
+
+  test('공유 버튼 클릭 시 공유 또는 클립보드 복사', async ({ page }) => {
+    await selectDestination(page, '해운대구 반여동');
+
+    await page.locator('#step2-card .tog-btn').first().click();
+    await page.waitForTimeout(200);
+    await page.locator('#step3-card .tog-btn').first().click();
+    await page.waitForTimeout(300);
+    await page.locator('.ptab').first().click();
+    await page.waitForTimeout(500);
+
+    await page.evaluate(() => {
+      window._shared = [];
+      window._copied = [];
+      Object.defineProperty(navigator, 'share', {
+        value: data => { window._shared.push(data); return Promise.resolve(); },
+        configurable: true,
+      });
+      Object.defineProperty(navigator, 'clipboard', {
+        value: { writeText: t => { window._copied.push(t); return Promise.resolve(); } },
+        configurable: true,
+      });
+    });
+
+    await page.locator('#share-result-btn').click();
+    await page.waitForTimeout(300);
+    const shared = await page.evaluate(() => window._shared);
+    expect(shared.length).toBeGreaterThan(0);
+    expect(shared[0].text).toContain('반여1동');
+  });
 });
 
 test.describe('할증 기능', () => {
