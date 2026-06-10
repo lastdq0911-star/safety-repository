@@ -480,6 +480,12 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
 .contact-close { background:none; border:none; color:rgba(255,255,255,0.65); font-size:1.35rem; cursor:pointer; line-height:1; padding:4px; transition:color 0.1s; }
 .contact-close:hover { color:#fff; }
 .contact-body { padding:18px 18px 24px; overflow-y:auto; flex:1; }
+.quote-card { display:none; border:1.5px solid var(--mint); border-radius:10px; padding:12px; margin-bottom:16px; background:#f4fdfc; }
+.quote-card.show { display:block; }
+.quote-card-toggle { display:flex; align-items:center; gap:8px; font-size:0.82rem; font-weight:700; color:var(--gray-dark); cursor:pointer; }
+.quote-card-toggle input { width:16px; height:16px; accent-color:var(--mint); cursor:pointer; flex-shrink:0; }
+.quote-card-body { margin:10px 0 0; padding:10px 12px; background:#fff; border:1px solid var(--border); border-radius:8px; font-family:inherit; font-size:0.78rem; line-height:1.7; color:var(--text2); white-space:pre-wrap; word-break:break-all; transition:opacity 0.15s; }
+.quote-card-body.dim { opacity:0.4; }
 .contact-field { margin-bottom:14px; }
 .contact-label { display:block; font-size:0.74rem; font-weight:700; color:var(--text2); margin-bottom:5px; }
 .contact-input { width:100%; padding:10px 12px; border:1.5px solid var(--border); border-radius:8px; font-family:inherit; font-size:0.88rem; color:var(--text); background:#fff; outline:none; transition:border-color 0.15s; }

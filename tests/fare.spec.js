@@ -132,3 +132,52 @@ test.describe('할증 기능', () => {
     expect(classes).not.toMatch(/checked/);
   });
 });
+
+test.describe('문의하기 견적 반영', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto(`${BASE}/index.html`);
+    await page.waitForSelector('#search-input:not(:disabled)', { timeout: 25_000 });
+  });
+
+  test('조회 전에는 문의하기에 견적 카드가 보이지 않는다', async ({ page }) => {
+    await page.locator('#contact-fab').click();
+    await expect(page.locator('#contact-modal')).toHaveClass(/open/);
+    await expect(page.locator('#quote-card')).not.toHaveClass(/show/);
+  });
+
+  test('조회 완료 후 문의하기에 견적 요약이 표시된다', async ({ page }) => {
+    await selectDestination(page, '해운대구 반여동');
+    await page.locator('#step2-card .tog-btn').first().click();
+    await page.waitForTimeout(200);
+    await page.locator('#step3-card .tog-btn').first().click();
+    await page.waitForTimeout(300);
+    await page.locator('.ptab').first().click();
+    await page.waitForTimeout(500);
+
+    await page.locator('#contact-fab').click();
+    const quoteCard = page.locator('#quote-card');
+    await expect(quoteCard).toHaveClass(/show/);
+
+    const summary = await page.locator('#quote-card-body').textContent();
+    expect(summary).toContain('반여1동');
+    expect(summary).toMatch(/40FT:.*원/);
+    expect(summary).toMatch(/20FT:.*원/);
+
+    // 기본값: 포함 체크박스 ON
+    await expect(page.locator('#quote-include')).toBeChecked();
+  });
+
+  test('견적 포함 체크 해제 시 미리보기가 흐려진다', async ({ page }) => {
+    await selectDestination(page, '해운대구 반여동');
+    await page.locator('#step2-card .tog-btn').first().click();
+    await page.waitForTimeout(200);
+    await page.locator('#step3-card .tog-btn').first().click();
+    await page.waitForTimeout(300);
+    await page.locator('.ptab').first().click();
+    await page.waitForTimeout(500);
+
+    await page.locator('#contact-fab').click();
+    await page.locator('#quote-include').uncheck();
+    await expect(page.locator('#quote-card-body')).toHaveClass(/dim/);
+  });
+});

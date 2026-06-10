@@ -39,7 +39,7 @@
 <!-- 행정안전부 Juso API - JSONP/fetch 동적 호출 (별도 SDK 없음) -->
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=6">
+<link rel="stylesheet" href="styles.css?v=7">
 </head>
 <body>
 
@@ -64,7 +64,7 @@
     <span class="banner-gov" id="banner-gov"></span>
     <button id="rate-table-btn">📊 거리별 운임표</button>
     <button id="clause-btn">📋 부대조항</button>
-    <span class="app-ver" id="app-ver">v144</span>
+    <span class="app-ver" id="app-ver">v145</span>
   </div>
 </div>
 
@@ -284,6 +284,13 @@
       <button class="contact-close" id="contact-close-btn" aria-label="닫기">✕</button>
     </div>
     <div class="contact-body">
+      <div class="quote-card" id="quote-card">
+        <label class="quote-card-toggle">
+          <input type="checkbox" id="quote-include" checked>
+          <span>📋 조회한 운임 견적 내용 포함해서 보내기</span>
+        </label>
+        <pre class="quote-card-body" id="quote-card-body"></pre>
+      </div>
       <div class="contact-field">
         <label class="contact-label" for="c-name">이름 / 회사명</label>
         <input class="contact-input" id="c-name" type="text" placeholder="홍길동 / (주)물류회사" autocomplete="name">
@@ -1269,6 +1276,36 @@ function calcSur() {
   }
 }
 
+// ── 조회 결과 → 문의하기 견적 요약 텍스트 ──
+// 화면에 표시 중인 값(state + 이미 계산된 DOM)을 그대로 읽어 조립한다.
+// 별도로 운임/할증을 재계산하지 않음으로써 화면 표시값과 100% 일치를 보장한다.
+function buildQuoteSummary() {
+  if (!state.entry || !state.portData || !state.type || !state.fareType) return null;
+
+  const activeTab = document.querySelector('.ptab.active');
+  const portName = activeTab ? activeTab.getAttribute('data-port').replace('(편도)', '') : '';
+  const idx = FARE_TYPE_IDX[state.fareType];
+
+  const lines = [];
+  lines.push('▶ 목적지: ' + state.label);
+  lines.push('▶ 기점: ' + portName + ' (거리 ' + state.portData.dist + 'km, ' + state.type + ')');
+  lines.push('▶ 운임 유형: ' + FARE_LABEL_MAP[state.fareType]);
+
+  const surEl = document.getElementById('sur-result');
+  if (surEl && surEl.classList.contains('show')) {
+    lines.push('▶ 40FT: ' + document.getElementById('sr-f40').textContent + ' (할증 적용)');
+    lines.push('▶ 20FT: ' + document.getElementById('sr-f20').textContent + ' (할증 적용)');
+    lines.push('▶ ' + document.getElementById('sur-detail').textContent);
+  } else {
+    lines.push('▶ 40FT: ' + fmt(state.portData.f40[idx]));
+    lines.push('▶ 20FT: ' + fmt(state.portData.f20[idx]));
+  }
+
+  if (activeNotice) lines.push('▶ 적용 고시: ' + activeNotice.label + (activeNotice.gov ? ' (' + activeNotice.gov + ')' : ''));
+
+  return lines.join('\n');
+}
+
 // ────────────────────────────────────────────
 // 단계 초기화
 // ────────────────────────────────────────────
@@ -2145,9 +2182,27 @@ if ('serviceWorker' in navigator) {
   });
 
   // ── 열기 / 닫기 ─────────────────────────────
+  var quoteCard     = document.getElementById('quote-card');
+  var quoteBody     = document.getElementById('quote-card-body');
+  var quoteCheckbox = document.getElementById('quote-include');
+
+  quoteCheckbox.addEventListener('change', function () {
+    quoteBody.classList.toggle('dim', !quoteCheckbox.checked);
+  });
+
   function openModal() {
     modal.classList.add('open');
     document.body.style.overflow = 'hidden';
+
+    var summary = buildQuoteSummary();
+    if (summary) {
+      quoteBody.textContent = summary;
+      quoteCard.classList.add('show');
+      quoteCheckbox.checked = true;
+      quoteBody.classList.remove('dim');
+    } else {
+      quoteCard.classList.remove('show');
+    }
   }
 
   function closeModal() {
@@ -2211,16 +2266,25 @@ if ('serviceWorker' in navigator) {
       return;
     }
 
+    var quoteSummary = (quoteCard.classList.contains('show') && quoteCheckbox.checked)
+      ? quoteBody.textContent
+      : null;
+
+    var fullMessage = quoteSummary
+      ? '[조회 견적]\n' + quoteSummary + '\n\n[문의 내용]\n' + msg
+      : msg;
+
     setSubmitState('loading');
 
     emailjs.send(EJS_SERVICE_ID, EJS_TEMPLATE_ID, {
-      subject:    '[세방(주) 문의]' + (name ? ' ' + name : ''),
+      subject:    '[세방(주) 문의]' + (name ? ' ' + name : '') + (quoteSummary ? ' - ' + state.label : ''),
       from_name:  name  || '(미입력)',
       from_phone: phone || '(미입력)',
       from_email: email || '(미입력)',
-      message:    msg
+      message:    fullMessage
     })
     .then(function () {
+      if (quoteSummary) gtag('event', 'contact_with_quote', { destination: state.label, fare_type: state.fareType });
       setSubmitState('success');
       document.getElementById('c-name').value  = '';
       document.getElementById('c-phone').value = '';
