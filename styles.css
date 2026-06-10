@@ -48,7 +48,6 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
 .step-title { font-size:0.85rem; font-weight:700; color:var(--text); flex-shrink:0; white-space:nowrap; }
 .step-tag { font-size:0.65rem; color:var(--text3); font-weight:400; margin-left:4px; }
 .step-val { font-size:0.75rem; color:var(--mint); font-weight:700; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-#sv1 { flex:1 1 0; min-width:0; text-align:right; }
 .loc-code-area { margin-left:auto; display:flex; align-items:center; flex-wrap:wrap; justify-content:flex-end; gap:6px; min-width:0; }
 .loc-code-badge { display:none; align-items:center; gap:4px; font-size:0.66rem; font-weight:700; font-family:inherit; color:var(--gray-dark); background:#fff; border:1.5px solid var(--border); border-radius:6px; padding:3px 8px; cursor:pointer; transition:all 0.15s; white-space:nowrap; flex-shrink:0; }
 .loc-code-badge:hover { background:var(--gray-dark); color:#fff; border-color:var(--gray-dark); }
@@ -64,11 +63,12 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
   .loc-code-chips { display:none !important; }
 }
 .step-body { padding:12px 16px; }
-#step1.collapsed .step-head { border-bottom:none; border-radius:calc(var(--radius) - 1px); }
-#step1.collapsed .step-body { display:none; }
 
 /* ── 검색창 ── */
-.search-wrap { position:relative; z-index:200; }
+/* z-index는 반드시 .header(100)보다 낮아야 함 — 높으면 스크롤 시 검색창이
+   상단 고정 헤더 위에 떠서 화면 맨 위에 겹쳐 보이는 버그 발생 (드롭다운은
+   z-index 없는 step 카드들 위에만 뜨면 충분) */
+.search-wrap { position:relative; z-index:50; }
 .search-icon { position:absolute; left:13px; top:50%; transform:translateY(-50%); font-size:16px; pointer-events:none; z-index:1; }
 #search-input {
   width:100%; padding:14px 14px 14px 42px;

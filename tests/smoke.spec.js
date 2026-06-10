@@ -77,28 +77,31 @@ test.describe('목적지 검색', () => {
     }
   });
 
-  test('항목 선택 후 검색창이 접히고, ① 클릭 시 다시 펼쳐진다', async ({ page }) => {
+  test('항목 선택 후에도 검색창은 접히지 않고 그대로 유지된다', async ({ page }) => {
     await page.fill('#search-input', '해운대구 반여동');
     await page.waitForTimeout(500);
     await page.keyboard.press('ArrowDown');
     await page.keyboard.press('Enter');
     await page.waitForTimeout(400);
 
-    const step1 = page.locator('#step1');
+    // 검색창은 계속 보이고, 선택한 목적지가 입력창에 표시됨
     const searchInput = page.locator('#search-input');
-    await expect(step1).toHaveClass(/collapsed/);
-    await expect(searchInput).toBeHidden();
-
-    // 접힌 상태에서도 선택한 목적지명이 step-head에 표시되어야 함
-    const sv1 = page.locator('#sv1');
-    await expect(sv1).toBeVisible();
-    await expect(sv1).toHaveText('해운대구 반여1동');
-
-    await page.locator('#sn1').click();
-    await page.waitForTimeout(200);
-
-    await expect(step1).not.toHaveClass(/collapsed/);
     await expect(searchInput).toBeVisible();
+    await expect(searchInput).toHaveValue(/반여1동/);
+    await expect(page.locator('#step1')).not.toHaveClass(/collapsed/);
+
+    // 목적지 검색 헤더 옆 목적지명 표시(sv1)는 제거된 상태여야 함
+    await expect(page.locator('#sv1')).toHaveCount(0);
+  });
+
+  test('검색창은 스크롤 시 상단 고정 헤더 아래로 지나가야 한다 (z-index)', async ({ page }) => {
+    // 검색창(.search-wrap)의 z-index가 헤더(.header)보다 높으면
+    // 스크롤할 때 검색창이 헤더 위에 떠서 화면 맨 위에 겹쳐 보이는 버그 발생
+    const headerZ = await page.locator('.header').evaluate(
+      el => parseInt(getComputedStyle(el).zIndex, 10) || 0);
+    const searchZ = await page.locator('.search-wrap').evaluate(
+      el => parseInt(getComputedStyle(el).zIndex, 10) || 0);
+    expect(headerZ).toBeGreaterThan(searchZ);
   });
 });
 
@@ -109,12 +112,6 @@ test.describe('지역코드 배지/칩', () => {
   });
 
   async function searchSelect(page, query) {
-    // step1이 이전 선택으로 접혀 있으면 ① 클릭으로 다시 펼침
-    const step1 = page.locator('#step1');
-    if (await step1.evaluate(el => el.classList.contains('collapsed'))) {
-      await page.locator('#sn1').click();
-      await page.waitForTimeout(200);
-    }
     await page.fill('#search-input', query);
     await page.waitForTimeout(500);
     await page.keyboard.press('ArrowDown');
@@ -178,32 +175,43 @@ test.describe('모바일 뷰포트 (390x844)', () => {
     await page.waitForSelector('#search-input:not(:disabled)', { timeout: 25_000 });
   });
 
-  test('목적지 선택 시 검색창이 접히고 목적지명이 헤더에 표시된다', async ({ page }) => {
+  test('목적지 선택 후에도 검색창이 유지되고 입력창에 목적지가 표시된다', async ({ page }) => {
     await page.fill('#search-input', '해운대구 반여동');
     await page.waitForTimeout(500);
     await page.keyboard.press('ArrowDown');
     await page.keyboard.press('Enter');
     await page.waitForTimeout(400);
 
-    // 검색창은 접혀서 숨겨지고
-    await expect(page.locator('#step1')).toHaveClass(/collapsed/);
-    await expect(page.locator('#search-input')).toBeHidden();
+    // 검색창은 접히지 않고 그대로, 선택한 목적지는 입력창에 표시
+    await expect(page.locator('#search-input')).toBeVisible();
+    await expect(page.locator('#search-input')).toHaveValue(/반여1동/);
 
-    // 헤더에 선택한 목적지명이 보여야 함 (목적지가 사라지면 안 됨)
-    const sv1 = page.locator('#sv1');
-    await expect(sv1).toBeVisible();
-    await expect(sv1).toHaveText('해운대구 반여1동');
+    // 헤더 옆 목적지명 표시는 제거된 상태
+    await expect(page.locator('#sv1')).toHaveCount(0);
 
     // 지역코드 배지는 모바일에서 숨김 (PC 전용)
     const badge = page.locator('#loc-code-badge');
     const badgeDisplay = await badge.evaluate(el => getComputedStyle(el).display);
     expect(badgeDisplay).toBe('none');
+  });
 
-    // ① 탭하면 다시 펼쳐져 재검색 가능
-    await page.locator('#sn1').click();
-    await page.waitForTimeout(200);
-    await expect(page.locator('#step1')).not.toHaveClass(/collapsed/);
-    await expect(page.locator('#search-input')).toBeVisible();
+  test('스크롤해도 검색창이 고정 헤더 위에 겹쳐 보이지 않는다', async ({ page }) => {
+    await page.fill('#search-input', '해운대구 반여동');
+    await page.waitForTimeout(500);
+    await page.keyboard.press('ArrowDown');
+    await page.keyboard.press('Enter');
+    await page.waitForTimeout(400);
+
+    // 할증(STEP4) 영역까지 스크롤 — step1이 sticky 헤더 영역을 지나감
+    await page.locator('#step4-card').scrollIntoViewIfNeeded();
+    await page.waitForTimeout(300);
+
+    // 화면 상단(헤더 중앙 지점)에서 실제로 그려진 요소가 검색 입력창이면 안 됨
+    const topEl = await page.evaluate(() => {
+      const el = document.elementFromPoint(window.innerWidth / 2, 28);
+      return el ? (el.id || el.className || el.tagName) : '';
+    });
+    expect(topEl).not.toContain('search-input');
   });
 
   test('배너에 빌드 버전이 표시된다', async ({ page }) => {

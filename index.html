@@ -39,7 +39,7 @@
 <!-- 행정안전부 Juso API - JSONP/fetch 동적 호출 (별도 SDK 없음) -->
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=4">
+<link rel="stylesheet" href="styles.css?v=5">
 </head>
 <body>
 
@@ -64,7 +64,7 @@
     <span class="banner-gov" id="banner-gov"></span>
     <button id="rate-table-btn">📊 거리별 운임표</button>
     <button id="clause-btn">📋 부대조항</button>
-    <span class="app-ver" id="app-ver">v142</span>
+    <span class="app-ver" id="app-ver">v143</span>
   </div>
 </div>
 
@@ -77,7 +77,6 @@
   <div class="step-head">
     <div class="step-num" id="sn1">1</div>
     <span class="step-title">목적지 검색</span>
-    <span class="step-val" id="sv1"></span>
     <div class="loc-code-area" id="loc-code-area">
       <button type="button" class="loc-code-badge" id="loc-code-badge"></button>
       <div class="loc-code-chips" id="loc-code-chips"></div>
@@ -710,7 +709,6 @@ function resetAll() {
   hideAC();
 
   clearDone('sn1', 'sv1', '1');
-  document.getElementById('step1').classList.remove('collapsed');
   hideLocCode();
   clearDone('sn2', 'sv2', '2');
   clearDone('sn3', 'sv3', '3');
@@ -964,7 +962,6 @@ function selectItem(i) {
   hideAC();
   inp.blur();
   setDone('sn1', 'sv1', item.l.split(' ').slice(-2).join(' '));
-  document.getElementById('step1').classList.add('collapsed');
   showLocCode(item);
   gtag('event', 'search_destination', { destination: item.l, destination_key: item.k });
   tryShowResult();
@@ -1298,7 +1295,6 @@ function resetStep(step) {
     state.key = null; state.label = '';
     state.entry = null; state.portData = null;
     inp.value = '';
-    document.getElementById('step1').classList.remove('collapsed');
     document.getElementById('smt-dong').classList.remove('active');
     document.getElementById('smt-road').classList.remove('active');
     hideLocCode();
