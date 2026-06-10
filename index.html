@@ -39,7 +39,7 @@
 <!-- 행정안전부 Juso API - JSONP/fetch 동적 호출 (별도 SDK 없음) -->
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=7">
+<link rel="stylesheet" href="styles.css?v=8">
 </head>
 <body>
 
@@ -64,7 +64,7 @@
     <span class="banner-gov" id="banner-gov"></span>
     <button id="rate-table-btn">📊 거리별 운임표</button>
     <button id="clause-btn">📋 부대조항</button>
-    <span class="app-ver" id="app-ver">v145</span>
+    <span class="app-ver" id="app-ver">v146</span>
   </div>
 </div>
 
@@ -285,10 +285,13 @@
     </div>
     <div class="contact-body">
       <div class="quote-card" id="quote-card">
-        <label class="quote-card-toggle">
-          <input type="checkbox" id="quote-include" checked>
-          <span>📋 조회한 운임 견적 내용 포함해서 보내기</span>
-        </label>
+        <div class="quote-card-head">
+          <label class="quote-card-toggle">
+            <input type="checkbox" id="quote-include" checked>
+            <span>📋 조회한 운임 견적 내용 포함해서 보내기</span>
+          </label>
+          <button type="button" class="quote-copy-btn" id="quote-copy-btn">복사</button>
+        </div>
         <pre class="quote-card-body" id="quote-card-body"></pre>
       </div>
       <div class="contact-field">
@@ -1299,6 +1302,7 @@ function buildQuoteSummary() {
   } else {
     lines.push('▶ 40FT: ' + fmt(state.portData.f40[idx]));
     lines.push('▶ 20FT: ' + fmt(state.portData.f20[idx]));
+    lines.push('▶ 할증: 없음');
   }
 
   if (activeNotice) lines.push('▶ 적용 고시: ' + activeNotice.label + (activeNotice.gov ? ' (' + activeNotice.gov + ')' : ''));
@@ -2185,9 +2189,32 @@ if ('serviceWorker' in navigator) {
   var quoteCard     = document.getElementById('quote-card');
   var quoteBody     = document.getElementById('quote-card-body');
   var quoteCheckbox = document.getElementById('quote-include');
+  var quoteCopyBtn  = document.getElementById('quote-copy-btn');
 
   quoteCheckbox.addEventListener('change', function () {
     quoteBody.classList.toggle('dim', !quoteCheckbox.checked);
+  });
+
+  quoteCopyBtn.addEventListener('click', function () {
+    var text = quoteBody.textContent;
+    function flash() {
+      var orig = quoteCopyBtn.textContent;
+      quoteCopyBtn.textContent = '✅ 복사됨';
+      setTimeout(function () { quoteCopyBtn.textContent = orig; }, 1600);
+    }
+    function fallback() {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.cssText = 'position:fixed;opacity:0';
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      flash();
+    }
+    if (navigator.clipboard) { navigator.clipboard.writeText(text).then(flash).catch(fallback); }
+    else fallback();
+    gtag('event', 'copy_quote_summary', { destination: state.label });
   });
 
   function openModal() {

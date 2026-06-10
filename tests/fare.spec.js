@@ -162,6 +162,7 @@ test.describe('문의하기 견적 반영', () => {
     expect(summary).toContain('반여1동');
     expect(summary).toMatch(/40FT:.*원/);
     expect(summary).toMatch(/20FT:.*원/);
+    expect(summary).toContain('할증: 없음');
 
     // 기본값: 포함 체크박스 ON
     await expect(page.locator('#quote-include')).toBeChecked();
@@ -179,5 +180,31 @@ test.describe('문의하기 견적 반영', () => {
     await page.locator('#contact-fab').click();
     await page.locator('#quote-include').uncheck();
     await expect(page.locator('#quote-card-body')).toHaveClass(/dim/);
+  });
+
+  test('견적 복사 버튼 클릭 시 클립보드에 복사', async ({ page }) => {
+    await selectDestination(page, '해운대구 반여동');
+    await page.locator('#step2-card .tog-btn').first().click();
+    await page.waitForTimeout(200);
+    await page.locator('#step3-card .tog-btn').first().click();
+    await page.waitForTimeout(300);
+    await page.locator('.ptab').first().click();
+    await page.waitForTimeout(500);
+
+    await page.locator('#contact-fab').click();
+
+    await page.evaluate(() => {
+      window._copied = [];
+      Object.defineProperty(navigator, 'clipboard', {
+        value: { writeText: t => { window._copied.push(t); return Promise.resolve(); } },
+        configurable: true,
+      });
+    });
+
+    await page.locator('#quote-copy-btn').click();
+    await page.waitForTimeout(300);
+    const copied = await page.evaluate(() => window._copied);
+    expect(copied.length).toBeGreaterThan(0);
+    expect(copied[0]).toContain('반여1동');
   });
 });
