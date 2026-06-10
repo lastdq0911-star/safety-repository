@@ -159,6 +159,20 @@ test.describe('할증 기능', () => {
     const classes = await surItem.getAttribute('class');
     expect(classes).not.toMatch(/checked/);
   });
+
+  test('할증 적용 시 북항·신항 비교 표에도 할증이 반영된다', async ({ page }) => {
+    const compareBtn = page.locator('#port-compare-btn');
+    const compareTable = page.locator('#port-compare-table');
+
+    await compareBtn.click();
+    await expect(compareTable).toContainText('할증 미반영');
+
+    await page.locator('.sur-item').first().click();
+    await page.waitForTimeout(200);
+
+    await expect(compareTable).toContainText('할증 반영');
+    await expect(compareTable).not.toContainText('할증 미반영');
+  });
 });
 
 test.describe('문의하기 견적 반영', () => {
