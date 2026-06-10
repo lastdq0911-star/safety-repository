@@ -39,7 +39,7 @@
 <!-- 행정안전부 Juso API - JSONP/fetch 동적 호출 (별도 SDK 없음) -->
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=9">
+<link rel="stylesheet" href="styles.css?v=10">
 </head>
 <body>
 
@@ -64,7 +64,7 @@
     <span class="banner-gov" id="banner-gov"></span>
     <button id="rate-table-btn">📊 거리별 운임표</button>
     <button id="clause-btn">📋 부대조항</button>
-    <span class="app-ver" id="app-ver">v147</span>
+    <span class="app-ver" id="app-ver">v148</span>
   </div>
 </div>
 
@@ -148,6 +148,10 @@
     <div style="display:none;"><div id="r-loc"></div><div id="r-km"></div><div id="r-sub"></div></div>
     <div class="port-scroll"><div class="port-tabs" id="port-tabs"></div></div>
     <div class="fare-area">
+      <div class="port-compare-row" id="port-compare-row">
+        <button type="button" class="port-compare-btn" id="port-compare-btn">⚖️ 북항·신항 비교</button>
+      </div>
+      <div class="port-compare-table" id="port-compare-table"></div>
       <div class="fare-cards">
         <div class="fare-card ft40">
           <div class="fare-card-head"><span class="ft-label">40FT</span><span style="font-size:0.68rem;color:var(--text2);">컨테이너</span><span class="dist-km" id="dist-km">-</span></div>
@@ -158,7 +162,7 @@
           </div>
         </div>
         <div class="fare-card ft20">
-          <div class="fare-card-head"><span class="ft-label">20FT</span><span style="font-size:0.68rem;color:var(--text2);">컨테이너</span><button type="button" class="share-result-btn" id="share-result-btn" style="margin-left:auto;">📤 공유</button></div>
+          <div class="fare-card-head"><span class="ft-label">20FT</span><span style="font-size:0.68rem;color:var(--text2);">컨테이너</span></div>
           <div class="fare-rows">
             <div class="fare-row" id="row-f20-위탁"><span class="fl">안전위탁운임</span><span class="fv" id="f20-위탁">-</span></div>
             <div class="fare-row" id="row-f20-사업자"><span class="fl">운수사업자간</span><span class="fv" id="f20-사업자">-</span></div>
@@ -1147,10 +1151,58 @@ function selectPort(portName) {
   });
   applyFareHighlight();
   calcSur();
+  updatePortCompare();
   if (document.getElementById('rate-modal').classList.contains('open')) {
     buildAllPanels();
   }
 }
+
+// ────────────────────────────────────────────
+// 부산북항 · 부산신항 비교
+// ────────────────────────────────────────────
+
+function diffCell(a, b) {
+  const diff = b - a;
+  const pct = a ? (diff / a * 100) : 0;
+  if (diff === 0) return '<span>동일</span>';
+  const cls = diff > 0 ? 'pc-up' : 'pc-down';
+  const sign = diff > 0 ? '+' : '';
+  return '<span class="pc-diff ' + cls + '">' + sign + fmt(diff) + '<small>' + sign + pct.toFixed(1) + '%</small></span>';
+}
+
+function updatePortCompare() {
+  const row = document.getElementById('port-compare-row');
+  const table = document.getElementById('port-compare-table');
+
+  const keys = state.type === '편도'
+    ? ['부산북항↔의왕ICD(편도)', '부산신항↔의왕ICD(편도)']
+    : ['부산북항', '부산신항'];
+  const buk = state.entry ? state.entry[keys[0]] : null;
+  const sin = state.entry ? state.entry[keys[1]] : null;
+
+  if (!buk || !sin || !state.fareType) {
+    row.style.display = 'none';
+    table.classList.remove('show');
+    table.innerHTML = '';
+    document.getElementById('port-compare-btn').classList.remove('active');
+    return;
+  }
+  row.style.display = '';
+
+  const idx = FARE_TYPE_IDX[state.fareType];
+  table.innerHTML =
+    '<div class="pc-row pc-head"><span>구분</span><span>부산북항</span><span>부산신항</span><span>차이(신항-북항)</span></div>' +
+    '<div class="pc-row"><span>40FT</span><span>' + fmt(buk.f40[idx]) + '</span><span>' + fmt(sin.f40[idx]) + '</span>' + diffCell(buk.f40[idx], sin.f40[idx]) + '</div>' +
+    '<div class="pc-row"><span>20FT</span><span>' + fmt(buk.f20[idx]) + '</span><span>' + fmt(sin.f20[idx]) + '</span>' + diffCell(buk.f20[idx], sin.f20[idx]) + '</div>' +
+    '<div class="pc-note">거리: 북항 ' + buk.dist + 'km · 신항 ' + sin.dist + 'km · ' + FARE_LABEL_MAP[state.fareType] + ' 기준 (할증 미반영)</div>';
+}
+
+document.getElementById('port-compare-btn').addEventListener('click', function () {
+  const willShow = !document.getElementById('port-compare-table').classList.contains('show');
+  document.getElementById('port-compare-table').classList.toggle('show', willShow);
+  this.classList.toggle('active', willShow);
+  if (willShow) gtag('event', 'compare_busan_ports', { destination: state.label, fare_type: state.fareType });
+});
 
 // ────────────────────────────────────────────
 // 할증 계산
@@ -1316,23 +1368,6 @@ function buildQuoteSummary() {
 
   return lines.join('\n');
 }
-
-// ── 결과 공유하기 ──
-document.getElementById('share-result-btn').addEventListener('click', function () {
-  var btn = this;
-  var text = buildQuoteSummary();
-  if (!text) return;
-  gtag('event', 'share_result', { destination: state.label, fare_type: state.fareType });
-  if (navigator.share) {
-    navigator.share({ title: '안전운임 조회 결과', text: text }).catch(function () {});
-    return;
-  }
-  copyText(text, function () {
-    var orig = btn.textContent;
-    btn.textContent = '✅ 복사됨';
-    setTimeout(function () { btn.textContent = orig; }, 1600);
-  });
-});
 
 // ────────────────────────────────────────────
 // 단계 초기화

@@ -99,7 +99,7 @@ test.describe('운임 조회 플로우', () => {
     expect(firstVal).toMatch(/원/);
   });
 
-  test('공유 버튼 클릭 시 공유 또는 클립보드 복사', async ({ page }) => {
+  test('북항·신항 비교 버튼 클릭 시 비교 표 표시', async ({ page }) => {
     await selectDestination(page, '해운대구 반여동');
 
     await page.locator('#step2-card .tog-btn').first().click();
@@ -109,24 +109,22 @@ test.describe('운임 조회 플로우', () => {
     await page.locator('.ptab').first().click();
     await page.waitForTimeout(500);
 
-    await page.evaluate(() => {
-      window._shared = [];
-      window._copied = [];
-      Object.defineProperty(navigator, 'share', {
-        value: data => { window._shared.push(data); return Promise.resolve(); },
-        configurable: true,
-      });
-      Object.defineProperty(navigator, 'clipboard', {
-        value: { writeText: t => { window._copied.push(t); return Promise.resolve(); } },
-        configurable: true,
-      });
-    });
+    const compareBtn = page.locator('#port-compare-btn');
+    await expect(compareBtn).toBeVisible();
 
-    await page.locator('#share-result-btn').click();
-    await page.waitForTimeout(300);
-    const shared = await page.evaluate(() => window._shared);
-    expect(shared.length).toBeGreaterThan(0);
-    expect(shared[0].text).toContain('반여1동');
+    const compareTable = page.locator('#port-compare-table');
+    await expect(compareTable).not.toHaveClass(/show/);
+
+    await compareBtn.click();
+    await expect(compareTable).toHaveClass(/show/);
+    await expect(compareTable).toContainText('부산북항');
+    await expect(compareTable).toContainText('부산신항');
+    await expect(compareTable).toContainText('40FT');
+    await expect(compareTable).toContainText('20FT');
+
+    // 다시 클릭하면 닫힘
+    await compareBtn.click();
+    await expect(compareTable).not.toHaveClass(/show/);
   });
 });
 
