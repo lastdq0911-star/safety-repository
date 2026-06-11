@@ -439,6 +439,12 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
   .fare-row { padding:11px 0; }
   .fare-row.selected-type { margin:0; padding:9px 8px; }
 
+  /* 신항·북항 비교표: 세로로 쌓으면 좌측 컬럼이 100vh를 넘어 스크롤이 생기므로
+     PC에서는 표를 운임 카드 왼쪽에 나란히 배치해 높이 증가를 없앤다 */
+  .fare-area.compare-open { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.3fr); gap:0 10px; }
+  .fare-area.compare-open .port-compare-row { grid-column:1 / -1; }
+  .fare-area.compare-open .port-compare-table.show { margin-bottom:0; align-self:start; }
+
   /* ── 11. 우측: STEP 4(할증) 자연 높이 ── */
   .pc-right > .step {
     flex:1; min-height:0;

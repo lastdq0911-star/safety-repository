@@ -39,7 +39,7 @@
 <!-- 행정안전부 Juso API - JSONP/fetch 동적 호출 (별도 SDK 없음) -->
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=14">
+<link rel="stylesheet" href="styles.css?v=15">
 </head>
 <body>
 
@@ -64,7 +64,7 @@
     <span class="banner-gov" id="banner-gov"></span>
     <button id="rate-table-btn">📊 거리별 운임표</button>
     <button id="clause-btn">📋 부대조항</button>
-    <span class="app-ver" id="app-ver">v157</span>
+    <span class="app-ver" id="app-ver">v158</span>
   </div>
 </div>
 
@@ -1183,6 +1183,7 @@ function updatePortCompare() {
     row.style.display = 'none';
     table.classList.remove('show');
     table.innerHTML = '';
+    document.querySelector('.fare-area').classList.remove('compare-open');
     document.getElementById('port-compare-btn').classList.remove('active');
     return;
   }
@@ -1212,6 +1213,7 @@ function updatePortCompare() {
 document.getElementById('port-compare-btn').addEventListener('click', function () {
   const willShow = !document.getElementById('port-compare-table').classList.contains('show');
   document.getElementById('port-compare-table').classList.toggle('show', willShow);
+  document.querySelector('.fare-area').classList.toggle('compare-open', willShow);
   this.classList.toggle('active', willShow);
   if (willShow) gtag('event', 'compare_busan_ports', { destination: state.label, fare_type: state.fareType });
 });
