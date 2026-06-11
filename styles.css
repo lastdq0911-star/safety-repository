@@ -49,7 +49,7 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
 .step-title { font-size:0.85rem; font-weight:700; color:var(--text); flex-shrink:0; white-space:nowrap; }
 .step-tag { font-size:0.65rem; color:var(--text3); font-weight:400; margin-left:4px; }
 .step-val { font-size:0.75rem; color:var(--mint); font-weight:700; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-.loc-code-area { margin-left:auto; display:flex; align-items:center; flex-wrap:wrap; justify-content:flex-end; gap:6px; min-width:0; }
+.loc-code-area { display:flex; align-items:center; flex-wrap:wrap; justify-content:flex-end; gap:6px; min-width:0; }
 .loc-code-badge { display:none; align-items:center; gap:4px; font-size:0.66rem; font-weight:700; font-family:inherit; color:var(--gray-dark); background:#fff; border:1.5px solid var(--border); border-radius:6px; padding:3px 8px; cursor:pointer; transition:all 0.15s; white-space:nowrap; flex-shrink:0; }
 .loc-code-badge:hover { background:var(--gray-dark); color:#fff; border-color:var(--gray-dark); }
 .loc-code-chips { display:none; flex-wrap:wrap; justify-content:flex-end; gap:6px; }
@@ -201,7 +201,7 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
 
 /* 모바일: 한글 라벨이 음절 중간("컨테이/너")에서 끊기지 않도록 단어 단위 줄바꿈 */
 @media (max-width:899px) {
-  .pc-row, .pc-note, .fl, .fare-card-head { word-break:keep-all; }
+  .pc-row, .pc-note, .fl, .fare-card-head, .tog-btn, .mf-btn { word-break:keep-all; }
   .dist-km { white-space:nowrap; }
   .fare-row { padding:13px 0; }
 }
