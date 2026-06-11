@@ -171,7 +171,7 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
 .port-compare-table.show { display:block; }
 .pc-row { display:grid; grid-template-columns:0.7fr 1.15fr 1.15fr 1fr; gap:4px; padding:7px 10px; font-size:0.72rem; border-bottom:1px solid var(--border2); align-items:center; text-align:right; }
 .pc-row > span:first-child { text-align:left; }
-.pc-row > span:nth-child(2), .pc-row > span:nth-child(3) { text-align:center; }
+.pc-row > span:not(:first-child) { text-align:center; }
 .pc-row:not(.pc-head) > span:not(:first-child) { font-family:'JetBrains Mono',monospace; }
 .pc-row:last-of-type { border-bottom:none; }
 .pc-row.pc-head { background:var(--bg3); font-weight:700; color:var(--text2); font-size:0.66rem; }
@@ -203,6 +203,7 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
 @media (max-width:899px) {
   .pc-row, .pc-note, .fl, .fare-card-head { word-break:keep-all; }
   .dist-km { white-space:nowrap; }
+  .fare-row { padding:13px 0; }
 }
 
 /* ── 할증 최종운임 (금액 박스 숨김, 설명만 표시) ── */

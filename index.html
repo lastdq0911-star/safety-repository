@@ -39,7 +39,7 @@
 <!-- 행정안전부 Juso API - JSONP/fetch 동적 호출 (별도 SDK 없음) -->
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=13">
+<link rel="stylesheet" href="styles.css?v=14">
 </head>
 <body>
 
@@ -64,7 +64,7 @@
     <span class="banner-gov" id="banner-gov"></span>
     <button id="rate-table-btn">📊 거리별 운임표</button>
     <button id="clause-btn">📋 부대조항</button>
-    <span class="app-ver" id="app-ver">v154</span>
+    <span class="app-ver" id="app-ver">v155</span>
   </div>
 </div>
 
@@ -126,7 +126,7 @@
   <div class="step-body">
     <div class="toggle-row" style="grid-template-columns:1fr 1fr 1fr;">
       <button class="tog-btn" id="ft-위탁">안전위탁</button>
-      <button class="tog-btn" id="ft-사업자">사업자간</button>
+      <button class="tog-btn" id="ft-사업자">운수사간</button>
       <button class="tog-btn" id="ft-운송">안전운송</button>
     </div>
   </div>
@@ -156,17 +156,17 @@
         <div class="fare-card ft40">
           <div class="fare-card-head"><span class="ft-label">40FT</span><span style="font-size:0.68rem;color:var(--text2);">컨테이너</span><span class="dist-km" id="dist-km">-</span></div>
           <div class="fare-rows">
-            <div class="fare-row" id="row-f40-위탁"><span class="fl">안전위탁운임</span><span class="fv" id="f40-위탁">-</span></div>
-            <div class="fare-row" id="row-f40-사업자"><span class="fl">운수사업자간</span><span class="fv" id="f40-사업자">-</span></div>
-            <div class="fare-row" id="row-f40-운송"><span class="fl">안전운송운임</span><span class="fv" id="f40-운송">-</span></div>
+            <div class="fare-row" id="row-f40-위탁"><span class="fl">위탁운임</span><span class="fv" id="f40-위탁">-</span></div>
+            <div class="fare-row" id="row-f40-사업자"><span class="fl">운수사간</span><span class="fv" id="f40-사업자">-</span></div>
+            <div class="fare-row" id="row-f40-운송"><span class="fl">안전운송</span><span class="fv" id="f40-운송">-</span></div>
           </div>
         </div>
         <div class="fare-card ft20">
           <div class="fare-card-head"><span class="ft-label">20FT</span><span style="font-size:0.68rem;color:var(--text2);">컨테이너</span></div>
           <div class="fare-rows">
-            <div class="fare-row" id="row-f20-위탁"><span class="fl">안전위탁운임</span><span class="fv" id="f20-위탁">-</span></div>
-            <div class="fare-row" id="row-f20-사업자"><span class="fl">운수사업자간</span><span class="fv" id="f20-사업자">-</span></div>
-            <div class="fare-row" id="row-f20-운송"><span class="fl">안전운송운임</span><span class="fv" id="f20-운송">-</span></div>
+            <div class="fare-row" id="row-f20-위탁"><span class="fl">위탁운임</span><span class="fv" id="f20-위탁">-</span></div>
+            <div class="fare-row" id="row-f20-사업자"><span class="fl">운수사간</span><span class="fv" id="f20-사업자">-</span></div>
+            <div class="fare-row" id="row-f20-운송"><span class="fl">안전운송</span><span class="fv" id="f20-운송">-</span></div>
           </div>
         </div>
       </div>
@@ -332,7 +332,7 @@
       <span class="mf-label">운임 유형</span>
       <div class="mf-group">
         <button class="mf-btn active" data-mf-fare="위탁">안전위탁</button>
-        <button class="mf-btn" data-mf-fare="사업자">사업자간</button>
+        <button class="mf-btn" data-mf-fare="사업자">운수사간</button>
         <button class="mf-btn" data-mf-fare="운송">안전운송</button>
       </div>
     </div>
@@ -461,7 +461,7 @@ let tariffLoaded = false;
 // 운임 유형 인덱스/레이블 (전체에서 공유)
 const FARE_TYPES     = ['위탁', '사업자', '운송'];
 const FARE_TYPE_IDX  = { '위탁': 0, '사업자': 1, '운송': 2 };
-const FARE_LABEL_MAP = { '위탁': '안전위탁', '사업자': '사업자간', '운송': '안전운송' };
+const FARE_LABEL_MAP = { '위탁': '안전위탁', '사업자': '운수사간', '운송': '안전운송' };
 
 // ────────────────────────────────────────────
 // 고시 데이터 동적 로딩
