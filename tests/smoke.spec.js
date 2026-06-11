@@ -90,8 +90,8 @@ test.describe('목적지 검색', () => {
     await expect(searchInput).toHaveValue(/반여1동/);
     await expect(page.locator('#step1')).not.toHaveClass(/collapsed/);
 
-    // 목적지 검색 헤더 옆 목적지명 표시(sv1)는 제거된 상태여야 함
-    await expect(page.locator('#sv1')).toHaveCount(0);
+    // 목적지 검색 헤더 옆에 선택한 행정동명(sv1)이 표시됨
+    await expect(page.locator('#sv1')).toHaveText(/반여1동/);
   });
 
   test('검색창은 스크롤 시 상단 고정 헤더 아래로 지나가야 한다 (z-index)', async ({ page }) => {
@@ -186,8 +186,8 @@ test.describe('모바일 뷰포트 (390x844)', () => {
     await expect(page.locator('#search-input')).toBeVisible();
     await expect(page.locator('#search-input')).toHaveValue(/반여1동/);
 
-    // 헤더 옆 목적지명 표시는 제거된 상태
-    await expect(page.locator('#sv1')).toHaveCount(0);
+    // 헤더 옆에 선택한 행정동명(sv1)이 표시됨
+    await expect(page.locator('#sv1')).toHaveText(/반여1동/);
 
     // 지역코드 배지는 모바일에서 숨김 (PC 전용)
     const badge = page.locator('#loc-code-badge');
