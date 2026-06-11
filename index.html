@@ -39,7 +39,7 @@
 <!-- 행정안전부 Juso API - JSONP/fetch 동적 호출 (별도 SDK 없음) -->
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=11">
+<link rel="stylesheet" href="styles.css?v=12">
 </head>
 <body>
 
@@ -64,7 +64,7 @@
     <span class="banner-gov" id="banner-gov"></span>
     <button id="rate-table-btn">📊 거리별 운임표</button>
     <button id="clause-btn">📋 부대조항</button>
-    <span class="app-ver" id="app-ver">v150</span>
+    <span class="app-ver" id="app-ver">v151</span>
   </div>
 </div>
 
@@ -148,6 +148,10 @@
     <div style="display:none;"><div id="r-loc"></div><div id="r-km"></div><div id="r-sub"></div></div>
     <div class="port-scroll"><div class="port-tabs" id="port-tabs"></div></div>
     <div class="fare-area">
+      <div class="port-compare-row" id="port-compare-row">
+        <button type="button" class="port-compare-btn" id="port-compare-btn">⚖️ 신항·북항 비교</button>
+      </div>
+      <div class="port-compare-table" id="port-compare-table"></div>
       <div class="fare-cards">
         <div class="fare-card ft40">
           <div class="fare-card-head"><span class="ft-label">40FT</span><span style="font-size:0.68rem;color:var(--text2);">컨테이너</span><span class="dist-km" id="dist-km">-</span></div>
@@ -1153,6 +1157,66 @@ function selectPort(portName) {
 }
 
 // ────────────────────────────────────────────
+// 부산신항 · 부산북항 비교
+// ────────────────────────────────────────────
+
+function diffCell(a, b) {
+  const diff = b - a;
+  const pct = a ? (diff / a * 100) : 0;
+  if (diff === 0) return '<span>동일</span>';
+  const cls = diff > 0 ? 'pc-up' : 'pc-down';
+  const sign = diff > 0 ? '+' : '';
+  return '<span class="pc-diff ' + cls + '">' + sign + fmt(diff) + '<small>' + sign + pct.toFixed(1) + '%</small></span>';
+}
+
+function updatePortCompare() {
+  const row = document.getElementById('port-compare-row');
+  const table = document.getElementById('port-compare-table');
+
+  const keys = state.type === '편도'
+    ? ['부산북항↔의왕ICD(편도)', '부산신항↔의왕ICD(편도)']
+    : ['부산북항', '부산신항'];
+  const buk = state.entry ? state.entry[keys[0]] : null;
+  const sin = state.entry ? state.entry[keys[1]] : null;
+
+  if (!buk || !sin || !state.fareType) {
+    row.style.display = 'none';
+    table.classList.remove('show');
+    table.innerHTML = '';
+    document.getElementById('port-compare-btn').classList.remove('active');
+    return;
+  }
+  row.style.display = '';
+
+  const idx = FARE_TYPE_IDX[state.fareType];
+  const sur = getSurRateInfo();
+
+  let buk40 = buk.f40[idx], sin40 = sin.f40[idx];
+  let buk20 = buk.f20[idx], sin20 = sin.f20[idx];
+  let surNote = '할증 미반영';
+  if (sur) {
+    buk40 = applySur(buk40, sur.rate40, sur.fixedTotal);
+    sin40 = applySur(sin40, sur.rate40, sur.fixedTotal);
+    buk20 = applySur(buk20, sur.rate20, sur.fixedTotal);
+    sin20 = applySur(sin20, sur.rate20, sur.fixedTotal);
+    surNote = '할증 반영';
+  }
+
+  table.innerHTML =
+    '<div class="pc-row pc-head"><span>구분</span><span>부산신항</span><span>부산북항</span><span>차이(신항-북항)</span></div>' +
+    '<div class="pc-row"><span>40FT</span><span>' + fmt(sin40) + '</span><span>' + fmt(buk40) + '</span>' + diffCell(buk40, sin40) + '</div>' +
+    '<div class="pc-row"><span>20FT</span><span>' + fmt(sin20) + '</span><span>' + fmt(buk20) + '</span>' + diffCell(buk20, sin20) + '</div>' +
+    '<div class="pc-note">거리: 신항 ' + sin.dist + 'km · 북항 ' + buk.dist + 'km · ' + FARE_LABEL_MAP[state.fareType] + ' 기준 (' + surNote + ')</div>';
+}
+
+document.getElementById('port-compare-btn').addEventListener('click', function () {
+  const willShow = !document.getElementById('port-compare-table').classList.contains('show');
+  document.getElementById('port-compare-table').classList.toggle('show', willShow);
+  this.classList.toggle('active', willShow);
+  if (willShow) gtag('event', 'compare_busan_ports', { destination: state.label, fare_type: state.fareType });
+});
+
+// ────────────────────────────────────────────
 // 할증 계산
 // ────────────────────────────────────────────
 
@@ -1218,6 +1282,24 @@ function calcMulti(arr) {
   return s.slice(0, 3).reduce(function (acc, val, i) { return acc + (i === 0 ? val : val * 0.5); }, 0);
 }
 
+// 할증률(%)·정액(원)을 기본운임에 적용한 최종금액 계산 (100원 단위 반올림)
+function applySur(val, rate, fixedTotal) {
+  return Math.round(val * (1 + rate / 100) / 100) * 100 + fixedTotal;
+}
+
+// 현재 선택된 할증 항목들로부터 40FT/20FT 할증률과 정액 합계를 계산
+// 선택된 할증이 없으면 null
+function getSurRateInfo() {
+  const allRates = getSurRates();
+  if (!allRates.length) return null;
+  const pctRates = allRates.filter(function (r) { return !r.fixed; });
+  const fixedTotal = allRates.filter(function (r) { return r.fixed; }).reduce(function (s, r) { return s + r.amount; }, 0);
+  const common = pctRates.filter(function (r) { return !r.ft; }).map(function (r) { return r.rate; });
+  const rate40 = calcMulti(common.concat(pctRates.filter(function (r) { return r.ft === '40'; }).map(function (r) { return r.rate; })));
+  const rate20 = calcMulti(common.concat(pctRates.filter(function (r) { return r.ft === '20'; }).map(function (r) { return r.rate; })));
+  return { rate40: rate40, rate20: rate20, fixedTotal: fixedTotal, pctCount: pctRates.length };
+}
+
 function calcSur() {
   const allRates = getSurRates();
   const checked = document.querySelectorAll('.sur-item.checked,.sur-item.checked-warn').length;
@@ -1238,19 +1320,15 @@ function calcSur() {
   if (!state.portData || !allRates.length || !state.fareType) {
     surEl.classList.remove('show');
     var _s4=document.getElementById('step4-card'); if(_s4){_s4.classList.remove('sur-active'); var _t4=document.getElementById('step4-title'); if(_t4)_t4.innerHTML='할증 <span class="step-tag">(선택사항)</span>';}
+    updatePortCompare();
     return;
   }
 
   const idx = FARE_TYPE_IDX[state.fareType];
-  const pctRates  = allRates.filter(function (r) { return !r.fixed; });
-  const fixedRates = allRates.filter(function (r) { return r.fixed; });
-  const fixedTotal = fixedRates.reduce(function (s, r) { return s + r.amount; }, 0);
-
-  const common = pctRates.filter(function (r) { return !r.ft; }).map(function (r) { return r.rate; });
-  const rate40 = calcMulti(common.concat(pctRates.filter(function (r) { return r.ft === '40'; }).map(function (r) { return r.rate; })));
-  const rate20 = calcMulti(common.concat(pctRates.filter(function (r) { return r.ft === '20'; }).map(function (r) { return r.rate; })));
-  const final40 = Math.round(state.portData.f40[idx] * (1 + rate40 / 100) / 100) * 100 + fixedTotal;
-  const final20 = Math.round(state.portData.f20[idx] * (1 + rate20 / 100) / 100) * 100 + fixedTotal;
+  const sur = getSurRateInfo();
+  const rate40 = sur.rate40, rate20 = sur.rate20, fixedTotal = sur.fixedTotal;
+  const final40 = applySur(state.portData.f40[idx], rate40, fixedTotal);
+  const final20 = applySur(state.portData.f20[idx], rate20, fixedTotal);
   const lbl = FARE_LABEL_MAP[state.fareType];
 
   // 선택된 운임 유형 행: 기존 금액 실선(위) + 할증 금액 + 차액
@@ -1272,7 +1350,7 @@ function calcSur() {
   document.getElementById('sr-f20').textContent = fmt(final20);
 
   const parts = [];
-  if (pctRates.length) parts.push('40FT ' + rate40.toFixed(1) + '% · 20FT ' + rate20.toFixed(1) + '%');
+  if (sur.pctCount) parts.push('40FT ' + rate40.toFixed(1) + '% · 20FT ' + rate20.toFixed(1) + '%');
   if (fixedTotal > 0) parts.push('정액 +' + fixedTotal.toLocaleString('ko-KR') + '원');
   document.getElementById('sur-detail').textContent =
     '적용: ' + allRates.map(function (r) { return r.label; }).join(', ') +
@@ -1284,6 +1362,7 @@ function calcSur() {
     var _t4=document.getElementById('step4-title');
     if(_t4)_t4.innerHTML='✅ 할증 적용 <span style="color:var(--mint);font-weight:800;">' + Math.max(rate40,rate20).toFixed(2) + '%</span>';
   }
+  updatePortCompare();
 }
 
 // ── 조회 결과 → 문의하기 견적 요약 텍스트 ──
