@@ -27,6 +27,10 @@ const dateRanges = [{ startDate: `${days}daysAgo`, endDate: 'today' }];
 
 const client = new BetaAnalyticsDataClient();
 
+// 해외(주로 US, Direct·Chrome/Windows·세션당 1페이지뷰)는 대부분 봇 트래픽이라
+// 실 사용자 분석을 왜곡하므로 국내(South Korea) 트래픽만 집계한다.
+const KR_FILTER = { filter: { fieldName: 'country', stringFilter: { value: 'South Korea' } } };
+
 function printRows(title, response) {
   console.log(`\n## ${title}`);
   const dimHeaders = (response.dimensionHeaders || []).map((h) => h.name);
@@ -43,16 +47,21 @@ function printRows(title, response) {
   }
 }
 
-async function runReport(request) {
+async function runReport({ dimensionFilter, ...request }) {
+  const mergedFilter = dimensionFilter
+    ? { andGroup: { expressions: [KR_FILTER, dimensionFilter] } }
+    : KR_FILTER;
+
   const [response] = await client.runReport({
     property: `properties/${propertyId}`,
+    dimensionFilter: mergedFilter,
     ...request,
   });
   return response;
 }
 
 async function main() {
-  console.log(`==== 안전운임 조회 GA4 리포트 (최근 ${days}일) ====`);
+  console.log(`==== 안전운임 조회 GA4 리포트 (최근 ${days}일, 국내 기준) ====`);
 
   printRows(
     '전체 요약',
