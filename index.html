@@ -64,7 +64,7 @@
     <span class="banner-gov" id="banner-gov"></span>
     <button id="rate-table-btn">📊 거리별 운임표</button>
     <button id="clause-btn">📋 부대조항</button>
-    <span class="app-ver" id="app-ver">v159</span>
+    <span class="app-ver" id="app-ver">v160</span>
   </div>
 </div>
 
@@ -1205,7 +1205,7 @@ function updatePortCompare() {
   }
 
   table.innerHTML =
-    '<div class="pc-row pc-head"><span>구분</span><span>부산신항</span><span>부산북항</span><span>차이</span></div>' +
+    '<div class="pc-row pc-head"><span>구분</span><span>부산신항</span><span>부산북항</span><span>차액</span></div>' +
     '<div class="pc-row"><span>40FT</span><span>' + fmt(sin40) + '</span><span>' + fmt(buk40) + '</span>' + diffCell(buk40, sin40) + '</div>' +
     '<div class="pc-row"><span>20FT</span><span>' + fmt(sin20) + '</span><span>' + fmt(buk20) + '</span>' + diffCell(buk20, sin20) + '</div>' +
     '<div class="pc-note">거리: 신항 ' + sin.dist + 'km · 북항 ' + buk.dist + 'km · ' + FARE_LABEL_MAP[state.fareType] + ' 기준 (' + surNote + ')</div>';
