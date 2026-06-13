@@ -64,7 +64,7 @@
     <span class="banner-gov" id="banner-gov"></span>
     <button id="rate-table-btn">📊 거리별 운임표</button>
     <button id="clause-btn">📋 부대조항</button>
-    <span class="app-ver" id="app-ver">v161</span>
+    <span class="app-ver" id="app-ver">v162</span>
   </div>
 </div>
 
@@ -2389,10 +2389,6 @@ if ('serviceWorker' in navigator) {
     .then(function () {
       if (quoteSummary) gtag('event', 'contact_with_quote', { destination: state.label, fare_type: state.fareType });
       setSubmitState('success');
-      document.getElementById('c-name').value  = '';
-      document.getElementById('c-phone').value = '';
-      document.getElementById('c-email').value = '';
-      document.getElementById('c-msg').value   = '';
     })
     .catch(function (err) {
       setSubmitState('idle');
