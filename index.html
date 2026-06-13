@@ -64,7 +64,7 @@
     <span class="banner-gov" id="banner-gov"></span>
     <button id="rate-table-btn">📊 거리별 운임표</button>
     <button id="clause-btn">📋 부대조항</button>
-    <span class="app-ver" id="app-ver">v160</span>
+    <span class="app-ver" id="app-ver">v161</span>
   </div>
 </div>
 
@@ -2393,7 +2393,6 @@ if ('serviceWorker' in navigator) {
       document.getElementById('c-phone').value = '';
       document.getElementById('c-email').value = '';
       document.getElementById('c-msg').value   = '';
-      setTimeout(closeModal, 1800);
     })
     .catch(function (err) {
       setSubmitState('idle');
