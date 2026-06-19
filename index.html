@@ -64,7 +64,7 @@
     <span class="banner-gov" id="banner-gov"></span>
     <button id="rate-table-btn">📊 거리별 운임표</button>
     <button id="clause-btn">📋 부대조항</button>
-    <span class="app-ver" id="app-ver">v162</span>
+    <span class="app-ver" id="app-ver">v163</span>
   </div>
 </div>
 
@@ -883,8 +883,10 @@ acList.addEventListener('touchend', function (e) {
   // 도로명 결과
   var roadI = item.getAttribute('data-road-i');
   if (roadI !== null) { resolveRoadToTariff(_roadResults[parseInt(roadI, 10)]); return; }
-  // 행정동 결과
-  selectItem(parseInt(item.getAttribute('data-i'), 10));
+  // 한글 IME 조합 종료 시 acResults가 초기화될 수 있으므로 재검색
+  var idx = parseInt(item.getAttribute('data-i'), 10);
+  if (!acResults.length && searchMode === 'dong') runDongSearch();
+  selectItem(idx);
 }, { passive: false });
 acList.addEventListener('mousedown', function (e) {
   const item = e.target.closest('.ac-item');
@@ -896,8 +898,10 @@ acList.addEventListener('mousedown', function (e) {
   // 도로명 결과
   var roadI = item.getAttribute('data-road-i');
   if (roadI !== null) { resolveRoadToTariff(_roadResults[parseInt(roadI, 10)]); return; }
-  // 행정동 결과
-  selectItem(parseInt(item.getAttribute('data-i'), 10));
+  // 한글 IME 조합 종료 시 acResults가 초기화될 수 있으므로 재검색
+  var idx = parseInt(item.getAttribute('data-i'), 10);
+  if (!acResults.length && searchMode === 'dong') runDongSearch();
+  selectItem(idx);
 });
 
 function setKbFocus(idx) {
@@ -920,11 +924,13 @@ inp.addEventListener('keydown', function (e) {
     e.preventDefault();
     clearTimeout(_debounceTimer);
     if (acWrap.style.display === 'none') return;
+    if (!acResults.length && searchMode === 'dong') runDongSearch();
     setKbFocus(kbIndex < 0 ? 0 : Math.min(kbIndex + 1, items.length - 1));
   } else if (e.key === 'ArrowUp') {
     e.preventDefault();
     clearTimeout(_debounceTimer);
     if (acWrap.style.display === 'none') return;
+    if (!acResults.length && searchMode === 'dong') runDongSearch();
     setKbFocus(kbIndex <= 0 ? 0 : kbIndex - 1);
   } else if (e.key === 'Enter') {
     e.preventDefault();
