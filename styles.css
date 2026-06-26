@@ -344,7 +344,6 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
     box-shadow:0 2px 16px rgba(0,0,0,0.13); background:#000;
   }
   .side-ad-img { width:100%; display:block; object-fit:cover; aspect-ratio:9/16; }
-  .side-ad-right .side-ad-img { aspect-ratio:16/9; }
   .side-ad-play {
     position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
     width:48px; height:48px; border-radius:50%; background:rgba(0,0,0,0.55);
@@ -361,7 +360,6 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
     width:100%; aspect-ratio:9/16; border:0; border-radius:12px;
     box-shadow:0 2px 16px rgba(0,0,0,0.13);
   }
-  .side-ad-right .side-ad-player iframe { aspect-ratio:16/9; }
 
   /* ── 1. body: 세로 flex, 100vh 고정 ── */
   body {
