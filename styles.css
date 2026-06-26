@@ -332,10 +332,10 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
 
 @media (min-width:900px) {
   .side-ad-thumb {
-    position:relative; width:100%; border-radius:12px; overflow:hidden;
+    position:relative; width:100%; height:100%; border-radius:14px; overflow:hidden;
     box-shadow:0 2px 16px rgba(0,0,0,0.13); background:#000;
   }
-  .side-ad-img { width:100%; display:block; object-fit:cover; aspect-ratio:9/16; }
+  .side-ad-img { width:100%; height:100%; display:block; object-fit:cover; }
   .side-ad-play {
     position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
     width:48px; height:48px; border-radius:50%; background:rgba(0,0,0,0.55);
@@ -348,9 +348,13 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
     background:linear-gradient(transparent, rgba(0,0,0,0.7));
     color:#fff; font-size:0.7rem; font-weight:700; text-align:center;
   }
+  .side-ad-player {
+    width:100%; height:100%; position:relative; overflow:hidden;
+    border-radius:14px; box-shadow:0 2px 16px rgba(0,0,0,0.13); background:#000;
+  }
   .side-ad-player iframe {
-    width:100%; aspect-ratio:9/16; border:0; border-radius:12px;
-    box-shadow:0 2px 16px rgba(0,0,0,0.13);
+    position:absolute; top:0; left:50%; transform:translateX(-50%);
+    height:100%; width:auto; aspect-ratio:9/16; border:0;
   }
 
   /* ── 1. body: 세로 flex, 100vh 고정 ── */
@@ -513,26 +517,26 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
   /* ── 양쪽 세방 광고 배너 (PC 공통) ── */
   .side-ad {
     display:block; position:fixed; top:50%; transform:translateY(-50%);
-    z-index:50; cursor:pointer;
+    z-index:50; cursor:pointer; height:calc(100vh - 16px);
   }
   .side-ad-left { left:6px; }
   .side-ad-right { right:6px; }
 }
 
-/* ── 노트북 (900px ~ 1919px): 본문 축소 + 광고 ── */
+/* ── 노트북 (900px ~ 1919px): 본문 축소 + 풀하이트 세로 광고 ── */
 @media (min-width:900px) and (max-width:1919px) {
-  .header, .banner { max-width:calc(100% - 280px); }
-  .pc-wrap { max-width:calc(100% - 280px); }
-  .side-ad { width:130px; }
-  .side-ad-play { width:40px; height:40px; font-size:18px; }
-  .side-ad-label { font-size:0.6rem; padding:6px 8px; }
+  .header, .banner { max-width:calc(100% - 360px); }
+  .pc-wrap { max-width:calc(100% - 360px); }
+  .side-ad { width:160px; }
 }
 
-/* ── 대형 PC (1920px+): 넓은 본문 + 큰 광고 ── */
+/* ── 대형 PC (1920px+): 넓은 본문 + 풀하이트 세로 광고 ── */
 @media (min-width:1920px) {
-  .side-ad { width:150px; }
-  .side-ad-left { left:10px; }
-  .side-ad-right { right:10px; }
+  .header, .banner { max-width:calc(100% - 440px); }
+  .pc-wrap { max-width:calc(100% - 440px); }
+  .side-ad { width:200px; }
+  .side-ad-left { left:12px; }
+  .side-ad-right { right:12px; }
 }
 
 /* ── 세방(주) 문의 FAB ── */

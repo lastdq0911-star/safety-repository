@@ -39,7 +39,7 @@
 <!-- 행정안전부 Juso API - JSONP/fetch 동적 호출 (별도 SDK 없음) -->
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=18">
+<link rel="stylesheet" href="styles.css?v=19">
 </head>
 <body>
 
@@ -82,7 +82,7 @@
     <span class="banner-gov" id="banner-gov"></span>
     <button id="rate-table-btn">📊 거리별 운임표</button>
     <button id="clause-btn">📋 부대조항</button>
-    <span class="app-ver" id="app-ver">v169</span>
+    <span class="app-ver" id="app-ver">v170</span>
   </div>
 </div>
 
@@ -2472,8 +2472,8 @@ initNotices();
     var vid = ads[side];
     thumb.addEventListener('click', function () {
       player.innerHTML = '<iframe src="https://www.youtube.com/embed/' + vid +
-        '?loop=1&playlist=' + vid + '" ' +
-        'allow="encrypted-media" allowfullscreen></iframe>';
+        '?autoplay=1&loop=1&playlist=' + vid + '&mute=1" ' +
+        'allow="autoplay; encrypted-media" allowfullscreen></iframe>';
       thumb.style.display = 'none';
       player.style.display = 'block';
     });
