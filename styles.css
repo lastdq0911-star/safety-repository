@@ -533,6 +533,7 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
   .side-ad { width:150px; }
   .side-ad-left { left:10px; }
   .side-ad-right { right:10px; }
+}
 
 /* ── 세방(주) 문의 FAB ── */
 #contact-fab { position:fixed; bottom:20px; right:16px; z-index:200; display:flex; align-items:center; gap:8px; padding:12px 18px; background:#3d3d3d; color:#fff; border:none; border-radius:28px; font-family:inherit; font-size:0.82rem; font-weight:800; cursor:pointer; box-shadow:0 4px 16px rgba(0,0,0,0.28); transition:background 0.15s,transform 0.15s,box-shadow 0.15s; white-space:nowrap; border:2px solid var(--mint); touch-action:manipulation; }
