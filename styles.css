@@ -327,7 +327,41 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
 /* ══════════════════════════════════════════
    PC 레이아웃 (900px+) — 완전 재설계
    ══════════════════════════════════════════ */
+/* ── 양쪽 세방 광고 배너 (PC, 여백 충분할 때만) ── */
+.side-ad { display:none; }
+@media (min-width:1920px) {
+  .side-ad {
+    display:block; position:fixed; top:50%; transform:translateY(-50%);
+    width:150px; z-index:50; cursor:pointer;
+  }
+  .side-ad-left { left:10px; }
+  .side-ad-right { right:10px; }
+}
+
 @media (min-width:900px) {
+  .side-ad-thumb {
+    position:relative; width:100%; border-radius:12px; overflow:hidden;
+    box-shadow:0 2px 16px rgba(0,0,0,0.13); background:#000;
+  }
+  .side-ad-img { width:100%; display:block; object-fit:cover; aspect-ratio:9/16; }
+  .side-ad-right .side-ad-img { aspect-ratio:16/9; }
+  .side-ad-play {
+    position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+    width:48px; height:48px; border-radius:50%; background:rgba(0,0,0,0.55);
+    color:#fff; font-size:22px; display:flex; align-items:center; justify-content:center;
+    pointer-events:none; transition:background 0.2s;
+  }
+  .side-ad-thumb:hover .side-ad-play { background:rgba(255,0,0,0.8); }
+  .side-ad-label {
+    position:absolute; bottom:0; left:0; right:0; padding:8px 10px;
+    background:linear-gradient(transparent, rgba(0,0,0,0.7));
+    color:#fff; font-size:0.7rem; font-weight:700; text-align:center;
+  }
+  .side-ad-player iframe {
+    width:100%; aspect-ratio:9/16; border:0; border-radius:12px;
+    box-shadow:0 2px 16px rgba(0,0,0,0.13);
+  }
+  .side-ad-right .side-ad-player iframe { aspect-ratio:16/9; }
 
   /* ── 1. body: 세로 flex, 100vh 고정 ── */
   body {
