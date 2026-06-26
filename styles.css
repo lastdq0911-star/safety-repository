@@ -516,8 +516,8 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
 
   /* ── 양쪽 세방 광고 배너 (PC 공통) ── */
   .side-ad {
-    display:block; position:fixed; top:50%; transform:translateY(-50%);
-    z-index:50; cursor:pointer; height:calc(100vh - 16px);
+    display:block; position:fixed; top:10px;
+    z-index:50; cursor:pointer; height:calc(100vh - 90px);
   }
   .side-ad-left { left:6px; }
   .side-ad-right { right:6px; }
