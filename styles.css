@@ -528,11 +528,9 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
    1920px 미만(1366/1536 등 일반 노트북)은 여백이 없어 미표시 — v166과 동일. */
 @media (min-width:1920px) {
   .side-ad-left {
-    display:block; left:6px;
-    /* 좌측 빈 여백 + 본문 자체 좌측 패딩(4vw)까지 광고로 채워 실제 패널 바로 옆(8px)까지 옴.
-       본문 패널/내용은 가리지 않음. width = 패널좌측(54vw-800) - left(6) - gap(8). */
-    width:calc(54vw - 814px);
-    max-width:45vh;   /* 영상이 화면 높이를 넘지 않는 선까지만 (초광폭에서 안전) */
+    display:block; left:16px;
+    /* 화면 크기에 따라 자동 조절(무크롭 9:16). 과도하게 커지지 않도록 상한 300px. */
+    width:clamp(170px, 10vw, 300px);
   }
 }
 
