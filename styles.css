@@ -327,16 +327,8 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
 /* ══════════════════════════════════════════
    PC 레이아웃 (900px+) — 완전 재설계
    ══════════════════════════════════════════ */
-/* ── 양쪽 세방 광고 배너 (PC, 여백 충분할 때만) ── */
+/* ── 양쪽 세방 광고 배너 ── */
 .side-ad { display:none; }
-@media (min-width:1920px) {
-  .side-ad {
-    display:block; position:fixed; top:50%; transform:translateY(-50%);
-    width:150px; z-index:50; cursor:pointer;
-  }
-  .side-ad-left { left:10px; }
-  .side-ad-right { right:10px; }
-}
 
 @media (min-width:900px) {
   .side-ad-thumb {
@@ -517,7 +509,30 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
   /* ── 부대조항 모달 PC ── */
   #clause-modal { align-items:center; }
   .clause-box { border-radius:18px; height:87vh; max-height:87vh; }
+
+  /* ── 양쪽 세방 광고 배너 (PC 공통) ── */
+  .side-ad {
+    display:block; position:fixed; top:50%; transform:translateY(-50%);
+    z-index:50; cursor:pointer;
+  }
+  .side-ad-left { left:6px; }
+  .side-ad-right { right:6px; }
 }
+
+/* ── 노트북 (900px ~ 1919px): 본문 축소 + 작은 광고 ── */
+@media (min-width:900px) and (max-width:1919px) {
+  .header, .banner { max-width:calc(100% - 220px); }
+  .pc-wrap { max-width:calc(100% - 220px); }
+  .side-ad { width:100px; }
+  .side-ad-play { width:36px; height:36px; font-size:16px; }
+  .side-ad-label { font-size:0.58rem; padding:6px 6px; }
+}
+
+/* ── 대형 PC (1920px+): 넓은 본문 + 큰 광고 ── */
+@media (min-width:1920px) {
+  .side-ad { width:150px; }
+  .side-ad-left { left:10px; }
+  .side-ad-right { right:10px; }
 
 /* ── 세방(주) 문의 FAB ── */
 #contact-fab { position:fixed; bottom:20px; right:16px; z-index:200; display:flex; align-items:center; gap:8px; padding:12px 18px; background:#3d3d3d; color:#fff; border:none; border-radius:28px; font-family:inherit; font-size:0.82rem; font-weight:800; cursor:pointer; box-shadow:0 4px 16px rgba(0,0,0,0.28); transition:background 0.15s,transform 0.15s,box-shadow 0.15s; white-space:nowrap; border:2px solid var(--mint); touch-action:manipulation; }
