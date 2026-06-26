@@ -524,13 +524,16 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
 
 /* ── 광고 표시 정책 ──
    본문(최대 1600px)은 모든 화면에서 자연 레이아웃 그대로 유지 → 광고가 본문에 절대 영향 없음.
-   광고는 본문 옆 빈 여백이 충분한 초대형 화면(2080px+)에서만 표시.
-   1920px 이하(대부분의 노트북·일반 PC 모니터)에서는 여백 부족으로 광고 미표시. */
+   광고(좌측 1개)는 1920px+에서 표시하되, 본문을 덮지 않도록 빈 여백 크기에 맞춰 폭 자동 조절.
+   1920px 미만(1366/1536 등 일반 노트북)은 여백이 없어 미표시 — v166과 동일. */
+@media (min-width:1920px) {
+  .side-ad-left { display:block; width:150px; left:6px; }
+}
 @media (min-width:2080px) {
-  .side-ad { display:block; width:220px; }
+  .side-ad-left { width:220px; }
 }
 @media (min-width:2560px) {
-  .side-ad { width:300px; left:24px; }
+  .side-ad-left { width:300px; left:24px; }
 }
 
 /* ── 세방(주) 문의 FAB ── */
