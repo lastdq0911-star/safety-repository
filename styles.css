@@ -525,18 +525,18 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
 
 /* ── 노트북 (900px ~ 1919px): 본문 축소 + 풀하이트 세로 광고 ── */
 @media (min-width:900px) and (max-width:1919px) {
-  .header, .banner { max-width:calc(100% - 360px); }
-  .pc-wrap { max-width:calc(100% - 360px); }
-  .side-ad { width:160px; }
+  .header, .banner { max-width:calc(100% - 380px); }
+  .pc-wrap { max-width:calc(100% - 380px); }
+  .side-ad { width:178px; }
 }
 
 /* ── 대형 PC (1920px+): 넓은 본문 + 풀하이트 세로 광고 ── */
 @media (min-width:1920px) {
-  .header, .banner { max-width:calc(100% - 440px); }
-  .pc-wrap { max-width:calc(100% - 440px); }
-  .side-ad { width:200px; }
-  .side-ad-left { left:12px; }
-  .side-ad-right { right:12px; }
+  .header, .banner { max-width:calc(100% - 480px); }
+  .pc-wrap { max-width:calc(100% - 480px); }
+  .side-ad { width:224px; }
+  .side-ad-left { left:8px; }
+  .side-ad-right { right:8px; }
 }
 
 /* ── 세방(주) 문의 FAB ── */
