@@ -39,7 +39,7 @@
 <!-- 행정안전부 Juso API - JSONP/fetch 동적 호출 (별도 SDK 없음) -->
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=33">
+<link rel="stylesheet" href="styles.css?v=34">
 </head>
 <body>
 
@@ -82,7 +82,7 @@
     <span class="banner-gov" id="banner-gov"></span>
     <button id="rate-table-btn">📊 거리별 운임표</button>
     <button id="clause-btn">📋 부대조항</button>
-    <span class="app-ver" id="app-ver">v184</span>
+    <span class="app-ver" id="app-ver">v185</span>
   </div>
 </div>
 
@@ -261,6 +261,10 @@
   <span class="fab-icon">✉️</span>
   <span>세방(주) 문의하기</span>
 </button>
+
+<!-- 음성 입력 (모바일 전용, 지원 기기에서만 노출) -->
+<div id="voice-hint" role="status" aria-live="polite"></div>
+<button id="voice-fab" aria-label="음성으로 목적지 검색">🎤</button>
 
 <!-- 부대조항 모달 -->
 <div id="clause-modal" role="dialog" aria-modal="true" aria-labelledby="clause-modal-title">
@@ -2480,6 +2484,105 @@ initNotices();
   }
   initAd('left');
   initAd('right');
+}());
+
+// ────────────────────────────────────────────
+// 음성 입력 (모바일 전용) — 말로 목적지 검색 + 결과 음성 안내
+//   원칙: 음성은 '목적지'만 받음(AI 추론 X). 운송/운임 유형은 기본값(왕복+안전위탁).
+//        최상위 결과 자동 선택 후 운임을 소리로 읽어줌. 미지원/PC는 버튼 숨김.
+// ────────────────────────────────────────────
+(function () {
+  var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  var fab = document.getElementById('voice-fab');
+  var hint = document.getElementById('voice-hint');
+  if (!fab) return;
+  var isMobile = window.matchMedia('(max-width:899px)').matches &&
+                 (('ontouchstart' in window) || navigator.maxTouchPoints > 0);
+  if (!SR || !isMobile) return;            // 미지원 브라우저/PC → 버튼 숨긴 채 종료
+  fab.classList.add('supported');          // 지원 기기에서만 노출
+
+  var rec = new SR();
+  rec.lang = 'ko-KR';
+  rec.interimResults = false;
+  rec.maxAlternatives = 1;
+  rec.continuous = false;
+  var listening = false, hintTimer = null;
+
+  function showHint(msg, autoMs) {
+    if (!hint) return;
+    hint.textContent = msg; hint.classList.add('show');
+    clearTimeout(hintTimer);
+    if (autoMs) hintTimer = setTimeout(function () { hint.classList.remove('show'); }, autoMs);
+  }
+  function buzz(ms) { try { if (navigator.vibrate) navigator.vibrate(ms || 40); } catch (e) {} }
+  function speak(text) {
+    try {
+      if (!window.speechSynthesis) return;
+      window.speechSynthesis.cancel();
+      var u = new SpeechSynthesisUtterance(text);
+      u.lang = 'ko-KR'; u.rate = 1.0;
+      window.speechSynthesis.speak(u);
+    } catch (e) {}
+  }
+
+  fab.addEventListener('click', function () {
+    if (listening) { try { rec.stop(); } catch (e) {} return; }
+    try { if (window.speechSynthesis) window.speechSynthesis.cancel(); } catch (e) {}
+    try { rec.start(); } catch (e) { showHint('마이크를 시작할 수 없어요. 다시 눌러주세요', 2500); }
+  });
+
+  rec.onstart = function () { listening = true; fab.classList.add('listening'); buzz(40); showHint('듣고 있어요… 목적지를 말씀하세요'); };
+  rec.onend = function () { listening = false; fab.classList.remove('listening'); };
+  rec.onerror = function (e) {
+    listening = false; fab.classList.remove('listening');
+    showHint(e && e.error === 'not-allowed' ? '마이크 권한을 허용해 주세요' : '음성을 못 들었어요. 다시 눌러 말씀하세요', 3000);
+  };
+  rec.onresult = function (e) {
+    var t = (e.results[0][0].transcript || '').trim();
+    if (!t) { showHint('다시 한 번 말씀해 주세요', 2500); return; }
+    handleVoice(t);
+  };
+
+  function handleVoice(transcript) {
+    showHint('“' + transcript + '” 검색 중…');
+    if (typeof tariffLoaded !== 'undefined' && !tariffLoaded) {
+      showHint('운임 데이터 로딩 중입니다. 잠시 후 다시 눌러주세요', 3000);
+      speak('운임 데이터를 불러오는 중입니다. 잠시 후 다시 시도해 주세요'); return;
+    }
+    // 행정동 모드 강제 + 기본값(왕복 + 안전위탁) 적용
+    searchMode = 'dong';
+    var sd = document.getElementById('smt-dong'), sr2 = document.getElementById('smt-road');
+    if (sd) sd.classList.add('active'); if (sr2) sr2.classList.remove('active');
+    if (!state.type) setType('왕복');
+    if (!state.fareType) setFareType('위탁');
+    // 검색 실행 (말한 목적지를 검색창에 넣고 즉시 검색)
+    inp.value = transcript;
+    runDongSearch();
+    if (!acResults.length) {
+      showHint('“' + transcript + '” 결과가 없어요. 다시 말씀해 주세요', 3500);
+      speak(transcript + ' 검색 결과가 없습니다. 다시 말씀해 주세요'); return;
+    }
+    selectItem(0);                          // 최상위 자동 선택
+    setTimeout(announceResult, 280);        // 결과 채워진 뒤 음성 안내
+  }
+
+  function announceResult() {
+    if (!state.portData || !state.fareType) {
+      var lbl0 = state.label || '';
+      showHint(lbl0 + ' 선택됨', 3000);
+      speak(lbl0 + ' 을 선택했습니다'); return;
+    }
+    var idx = FARE_TYPE_IDX[state.fareType];
+    var activeTab = document.querySelector('.ptab.active');
+    var portName = activeTab ? activeTab.getAttribute('data-port').replace('(편도)', '') : '';
+    var f40 = state.portData.f40[idx], f20 = state.portData.f20[idx];
+    var fareLbl = FARE_LABEL_MAP[state.fareType];
+    showHint('🔊 ' + state.label + ' · ' + portName + ' · 40FT ' + fmt(f40), 6000);
+    speak(state.label + ', ' + portName + ' 기준, 40피트 ' + fareLbl + ' ' + fmt(f40) +
+          ', 20피트 ' + fmt(f20) + ' 입니다. 부가세 별도입니다.');
+    buzz(30);
+    try { gtag('event', 'voice_search', { destination: state.label }); } catch (e) {}
+  }
 }());
 </script>
 </body>

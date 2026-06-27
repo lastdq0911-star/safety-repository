@@ -571,6 +571,36 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
 #contact-fab:hover { background:var(--mint); transform:translateY(-2px); box-shadow:0 6px 20px rgba(0,184,169,0.40); }
 #contact-fab:active { transform:translateY(0); box-shadow:0 3px 10px rgba(0,0,0,0.25); }
 
+/* ── 음성 입력 FAB (모바일 전용) ── */
+#voice-fab {
+  display:none; position:fixed; left:16px; bottom:20px; z-index:200;
+  width:60px; height:60px; border-radius:50%; border:2px solid #fff;
+  background:var(--mint); color:#fff; font-size:25px;
+  align-items:center; justify-content:center; cursor:pointer;
+  box-shadow:0 4px 16px rgba(0,0,0,0.3); touch-action:manipulation;
+  transition:transform 0.12s, background 0.15s;
+}
+#voice-fab.supported { display:flex; }   /* JS가 지원 기기에서만 부여 */
+#voice-fab:active { transform:scale(0.93); }
+#voice-fab.listening { background:#e53935; animation:voicePulse 1.1s infinite; }
+@keyframes voicePulse {
+  0%   { box-shadow:0 0 0 0 rgba(229,57,53,0.50); }
+  70%  { box-shadow:0 0 0 18px rgba(229,57,53,0); }
+  100% { box-shadow:0 0 0 0 rgba(229,57,53,0); }
+}
+#voice-hint {
+  display:none; position:fixed; left:50%; bottom:92px; transform:translateX(-50%);
+  z-index:201; max-width:86vw; padding:9px 15px; border-radius:16px;
+  background:rgba(0,0,0,0.82); color:#fff; font-size:0.82rem; font-weight:600;
+  line-height:1.4; text-align:center; box-shadow:0 2px 14px rgba(0,0,0,0.28);
+  word-break:keep-all;
+}
+#voice-hint.show { display:block; }
+/* PC(≥900px)에서는 어떤 경우에도 음성 UI 숨김 */
+@media (min-width:900px) {
+  #voice-fab, #voice-hint { display:none !important; }
+}
+
 /* ── 문의 모달 ── */
 #contact-modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:600; align-items:flex-end; justify-content:center; }
 #contact-modal.open { display:flex; }
