@@ -39,7 +39,7 @@
 <!-- 행정안전부 Juso API - JSONP/fetch 동적 호출 (별도 SDK 없음) -->
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=34">
+<link rel="stylesheet" href="styles.css?v=35">
 </head>
 <body>
 
@@ -82,7 +82,7 @@
     <span class="banner-gov" id="banner-gov"></span>
     <button id="rate-table-btn">📊 거리별 운임표</button>
     <button id="clause-btn">📋 부대조항</button>
-    <span class="app-ver" id="app-ver">v185</span>
+    <span class="app-ver" id="app-ver">v186</span>
   </div>
 </div>
 
@@ -264,7 +264,7 @@
 
 <!-- 음성 입력 (모바일 전용, 지원 기기에서만 노출) -->
 <div id="voice-hint" role="status" aria-live="polite"></div>
-<button id="voice-fab" aria-label="음성으로 목적지 검색">🎤</button>
+<button id="voice-fab" aria-label="음성으로 목적지 검색">🗣️</button>
 
 <!-- 부대조항 모달 -->
 <div id="clause-modal" role="dialog" aria-modal="true" aria-labelledby="clause-modal-title">
@@ -2527,7 +2527,15 @@ initNotices();
 
   fab.addEventListener('click', function () {
     if (listening) { try { rec.stop(); } catch (e) {} return; }
-    try { if (window.speechSynthesis) window.speechSynthesis.cancel(); } catch (e) {}
+    // iOS 사파리: TTS는 사용자 제스처 안에서만 깨어남 → 탭 순간 무음 발화로 잠금 해제
+    try {
+      if (window.speechSynthesis) {
+        window.speechSynthesis.cancel();
+        var warm = new SpeechSynthesisUtterance(' ');
+        warm.volume = 0; warm.lang = 'ko-KR';
+        window.speechSynthesis.speak(warm);
+      }
+    } catch (e) {}
     try { rec.start(); } catch (e) { showHint('마이크를 시작할 수 없어요. 다시 눌러주세요', 2500); }
   });
 
@@ -2544,44 +2552,57 @@ initNotices();
   };
 
   function handleVoice(transcript) {
-    showHint('“' + transcript + '” 검색 중…');
-    if (typeof tariffLoaded !== 'undefined' && !tariffLoaded) {
-      showHint('운임 데이터 로딩 중입니다. 잠시 후 다시 눌러주세요', 3000);
-      speak('운임 데이터를 불러오는 중입니다. 잠시 후 다시 시도해 주세요'); return;
+    try {
+      showHint('“' + transcript + '” 검색 중…');
+      if (typeof tariffLoaded !== 'undefined' && !tariffLoaded) {
+        showHint('운임 데이터 로딩 중입니다. 잠시 후 다시 눌러주세요', 3500);
+        speak('운임 데이터를 불러오는 중입니다. 잠시 후 다시 시도해 주세요'); return;
+      }
+      // 행정동 모드 강제 + 기본값(왕복 + 안전위탁) 적용
+      searchMode = 'dong';
+      var sd = document.getElementById('smt-dong'), sr2 = document.getElementById('smt-road');
+      if (sd) sd.classList.add('active'); if (sr2) sr2.classList.remove('active');
+      if (!state.type) setType('왕복');
+      if (!state.fareType) setFareType('위탁');
+      // 검색 실행 (말한 목적지를 검색창에 넣고 즉시 검색)
+      inp.value = transcript;
+      runDongSearch();
+      if (!acResults || !acResults.length) {
+        showHint('“' + transcript + '” 결과가 없어요. 또박또박 다시 말씀해 주세요', 4000);
+        speak(transcript + ' 검색 결과가 없습니다. 다시 말씀해 주세요'); return;
+      }
+      selectItem(0);            // 최상위 자동 선택 (showResult까지 동기 실행)
+      announceResult();         // 결과가 이미 채워졌으므로 바로 안내 (타이머 의존 제거)
+    } catch (err) {
+      showHint('검색 처리 중 문제가 생겼어요. 다시 시도해 주세요', 4000);
+      try { console.error('[voice] handleVoice error', err); } catch (e) {}
+      try { if (window.Sentry) Sentry.captureException(err); } catch (e) {}
     }
-    // 행정동 모드 강제 + 기본값(왕복 + 안전위탁) 적용
-    searchMode = 'dong';
-    var sd = document.getElementById('smt-dong'), sr2 = document.getElementById('smt-road');
-    if (sd) sd.classList.add('active'); if (sr2) sr2.classList.remove('active');
-    if (!state.type) setType('왕복');
-    if (!state.fareType) setFareType('위탁');
-    // 검색 실행 (말한 목적지를 검색창에 넣고 즉시 검색)
-    inp.value = transcript;
-    runDongSearch();
-    if (!acResults.length) {
-      showHint('“' + transcript + '” 결과가 없어요. 다시 말씀해 주세요', 3500);
-      speak(transcript + ' 검색 결과가 없습니다. 다시 말씀해 주세요'); return;
-    }
-    selectItem(0);                          // 최상위 자동 선택
-    setTimeout(announceResult, 280);        // 결과 채워진 뒤 음성 안내
   }
 
   function announceResult() {
-    if (!state.portData || !state.fareType) {
-      var lbl0 = state.label || '';
-      showHint(lbl0 + ' 선택됨', 3000);
-      speak(lbl0 + ' 을 선택했습니다'); return;
+    try {
+      if (!state.portData || !state.fareType) {
+        var lbl0 = state.label || '';
+        showHint((lbl0 || '목적지') + ' 선택됨 — 화면을 확인하세요', 4000);
+        if (lbl0) speak(lbl0 + ' 을 선택했습니다. 화면을 확인해 주세요');
+        return;
+      }
+      var idx = FARE_TYPE_IDX[state.fareType];
+      var activeTab = document.querySelector('.ptab.active');
+      var portName = activeTab ? activeTab.getAttribute('data-port').replace('(편도)', '') : '';
+      var f40 = state.portData.f40[idx], f20 = state.portData.f20[idx];
+      var fareLbl = FARE_LABEL_MAP[state.fareType];
+      showHint('🔊 ' + state.label + ' · ' + portName + ' · 40FT ' + fmt(f40), 6000);
+      speak(state.label + ', ' + portName + ' 기준, 40피트 ' + fareLbl + ' ' + fmt(f40) +
+            ', 20피트 ' + fmt(f20) + ' 입니다. 부가세 별도입니다.');
+      buzz(30);
+      try { gtag('event', 'voice_search', { destination: state.label }); } catch (e) {}
+    } catch (err) {
+      showHint('결과는 화면에서 확인해 주세요', 4000);
+      try { console.error('[voice] announceResult error', err); } catch (e) {}
+      try { if (window.Sentry) Sentry.captureException(err); } catch (e) {}
     }
-    var idx = FARE_TYPE_IDX[state.fareType];
-    var activeTab = document.querySelector('.ptab.active');
-    var portName = activeTab ? activeTab.getAttribute('data-port').replace('(편도)', '') : '';
-    var f40 = state.portData.f40[idx], f20 = state.portData.f20[idx];
-    var fareLbl = FARE_LABEL_MAP[state.fareType];
-    showHint('🔊 ' + state.label + ' · ' + portName + ' · 40FT ' + fmt(f40), 6000);
-    speak(state.label + ', ' + portName + ' 기준, 40피트 ' + fareLbl + ' ' + fmt(f40) +
-          ', 20피트 ' + fmt(f20) + ' 입니다. 부가세 별도입니다.');
-    buzz(30);
-    try { gtag('event', 'voice_search', { destination: state.label }); } catch (e) {}
   }
 }());
 </script>
