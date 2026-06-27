@@ -39,7 +39,7 @@
 <!-- 행정안전부 Juso API - JSONP/fetch 동적 호출 (별도 SDK 없음) -->
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=38">
+<link rel="stylesheet" href="styles.css?v=39">
 </head>
 <body>
 
@@ -82,7 +82,7 @@
     <span class="banner-gov" id="banner-gov"></span>
     <button id="rate-table-btn">📊 거리별 운임표</button>
     <button id="clause-btn">📋 부대조항</button>
-    <span class="app-ver" id="app-ver">v189</span>
+    <span class="app-ver" id="app-ver">v190</span>
   </div>
 </div>
 
@@ -2531,37 +2531,45 @@ initNotices();
     if (!state.fareType) setFareType('위탁');
   }
 
-  // iOS 사파리는 웹 음성인식이 불안정 → 애플 기본 '키보드 받아쓰기'로 유도(안정적)
-  if (isIOS || !SR) {
+  // 음성인식 자체가 없는 기기(일부 구형 iOS 등) → 키보드 받아쓰기 안내만
+  if (!SR) {
     fab.addEventListener('click', function () {
       prepDongAndDefaults();
-      try { inp.focus(); } catch (e) {}
       buzz(30);
-      showHint('검색창 키보드의 🎤(받아쓰기)를 눌러 목적지를 말씀하세요', 6000);
+      showHint('검색창을 누른 뒤 키보드의 🎤(받아쓰기)로 목적지를 말씀하세요', 6000);
     });
-    return;   // iOS 분기 종료 — 아래 웹 음성인식 코드 미사용
+    return;
   }
 
-  // ── 안드로이드 등: 웹 음성인식 직접 사용 ──
+  // ── 웹 음성인식 (안드로이드 + 음성인식 지원 iOS 공통) ──
   var rec = new SR();
   rec.lang = 'ko-KR';
   rec.interimResults = false;
   rec.maxAlternatives = 1;
   rec.continuous = false;
+  var gotResult = false;
 
   fab.addEventListener('click', function () {
     if (listening) { try { rec.stop(); } catch (e) {} return; }
+    gotResult = false;
     try { if (window.speechSynthesis) window.speechSynthesis.cancel(); } catch (e) {}
-    try { rec.start(); } catch (e) { showHint('마이크를 시작할 수 없어요. 다시 눌러주세요', 2500); }
+    try { rec.start(); } catch (e) { showHint('인식을 시작할 수 없어요. 검색창을 눌러 키보드 🎤(받아쓰기)로도 입력돼요', 4000); }
   });
 
   rec.onstart = function () { listening = true; fab.classList.add('listening'); buzz(40); showHint('듣고 있어요… 목적지를 말씀하세요'); };
-  rec.onend = function () { listening = false; fab.classList.remove('listening'); };
+  rec.onend = function () {
+    listening = false; fab.classList.remove('listening');
+    // iOS 등에서 인식이 빈 채로 끝나면 키보드 받아쓰기로 유도
+    if (!gotResult) showHint('못 알아들었어요. 다시 누르거나, 검색창을 눌러 키보드 🎤(받아쓰기)로 입력하세요', 5000);
+  };
   rec.onerror = function (e) {
     listening = false; fab.classList.remove('listening');
-    showHint(e && e.error === 'not-allowed' ? '마이크 권한을 허용해 주세요' : '음성을 못 들었어요. 다시 눌러 말씀하세요', 3000);
+    showHint(e && e.error === 'not-allowed'
+      ? '마이크 권한을 허용해 주세요'
+      : '음성 인식이 어려워요. 검색창을 눌러 키보드 🎤(받아쓰기)로 입력해 보세요', 5000);
   };
   rec.onresult = function (e) {
+    gotResult = true;
     var t = (e.results[0][0].transcript || '').trim();
     if (!t) { showHint('다시 한 번 말씀해 주세요', 2500); return; }
     handleVoice(t);
