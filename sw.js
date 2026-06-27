@@ -1,6 +1,6 @@
 'use strict';
 
-const CACHE_VERSION = 'v186';
+const CACHE_VERSION = 'v187';
 
 const SHELL_CACHE = 'safety-shell-' + CACHE_VERSION;
 const DATA_CACHE  = 'safety-data-'  + CACHE_VERSION;

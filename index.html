@@ -39,7 +39,7 @@
 <!-- 행정안전부 Juso API - JSONP/fetch 동적 호출 (별도 SDK 없음) -->
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=35">
+<link rel="stylesheet" href="styles.css?v=36">
 </head>
 <body>
 
@@ -82,7 +82,7 @@
     <span class="banner-gov" id="banner-gov"></span>
     <button id="rate-table-btn">📊 거리별 운임표</button>
     <button id="clause-btn">📋 부대조항</button>
-    <span class="app-ver" id="app-ver">v186</span>
+    <span class="app-ver" id="app-ver">v187</span>
   </div>
 </div>
 
@@ -264,7 +264,7 @@
 
 <!-- 음성 입력 (모바일 전용, 지원 기기에서만 노출) -->
 <div id="voice-hint" role="status" aria-live="polite"></div>
-<button id="voice-fab" aria-label="음성으로 목적지 검색">🗣️</button>
+<button id="voice-fab" aria-label="음성으로 목적지 검색">💬</button>
 
 <!-- 부대조항 모달 -->
 <div id="clause-modal" role="dialog" aria-modal="true" aria-labelledby="clause-modal-title">
@@ -2527,15 +2527,8 @@ initNotices();
 
   fab.addEventListener('click', function () {
     if (listening) { try { rec.stop(); } catch (e) {} return; }
-    // iOS 사파리: TTS는 사용자 제스처 안에서만 깨어남 → 탭 순간 무음 발화로 잠금 해제
-    try {
-      if (window.speechSynthesis) {
-        window.speechSynthesis.cancel();
-        var warm = new SpeechSynthesisUtterance(' ');
-        warm.volume = 0; warm.lang = 'ko-KR';
-        window.speechSynthesis.speak(warm);
-      }
-    } catch (e) {}
+    // 진행 중이던 음성출력만 정지(인식 방해 방지). TTS 워밍업은 인식을 깨뜨려 제거함.
+    try { if (window.speechSynthesis) window.speechSynthesis.cancel(); } catch (e) {}
     try { rec.start(); } catch (e) { showHint('마이크를 시작할 수 없어요. 다시 눌러주세요', 2500); }
   });
 
