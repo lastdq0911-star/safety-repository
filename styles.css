@@ -522,6 +522,37 @@ body { font-family:'SEBANG Gothic','Noto Sans KR',sans-serif; background:var(--b
   .side-ad-right { display:none; }
 }
 
+/* ── 노트북(짧은 화면, 높이 ≤900px): 조회 결과까지 한 화면에 — 좌측 컬럼 세로 밀도 압축 ──
+   결과 카드(flex:1)는 긴 화면에선 늘어나 채우고, 짧은 화면에선 아래 압축값이 적용돼
+   내부 스크롤 없이 한 화면에 들어옴. 큰 모니터(높이>900px)는 영향 없음. */
+@media (min-width:900px) and (max-height:900px) {
+  .pc-left { gap:4px; }
+  .step-head { padding:7px 14px; }
+  .step-body { padding:7px 14px; }
+  .smt-tabs { margin-bottom:4px; }
+  .port-scroll { padding:5px 12px 2px; }
+  .port-tabs { gap:4px; padding-bottom:4px; }
+  .ptab { padding:4px 9px; min-height:24px; }
+  .fare-card-head { padding:6px 10px; }
+  .fare-rows { padding:6px 10px 7px; }
+  .fare-row { padding:4px 0; }
+  .fare-row.selected-type { padding:5px 8px; }
+  .note { padding:5px 11px; }
+}
+
+/* 더 짧은 노트북(높이 ≤745px, 예: 1366×768·1280×720)에서 한 단계 더 압축 */
+@media (min-width:900px) and (max-height:745px) {
+  .pc-left { gap:3px; }
+  .step-head { padding:5px 14px; }
+  .step-body { padding:5px 14px; }
+  .tog-btn { min-height:34px; padding:6px; }
+  .fare-card-head { padding:5px 10px; }
+  .fare-rows { padding:4px 10px 5px; }
+  .fare-row { padding:3px 0; }
+  .fare-row.selected-type { padding:4px 8px; }
+  .port-tabs { padding-bottom:2px; }
+}
+
 /* ── 광고 표시 정책 ──
    본문(최대 1600px)은 모든 화면에서 자연 레이아웃 그대로 유지 → 광고가 본문에 절대 영향 없음.
    광고(좌측 1개)는 1920px+에서 표시하되, 본문을 덮지 않도록 빈 여백 크기에 맞춰 폭 자동 조절.
