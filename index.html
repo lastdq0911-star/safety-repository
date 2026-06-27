@@ -39,7 +39,7 @@
 <!-- 행정안전부 Juso API - JSONP/fetch 동적 호출 (별도 SDK 없음) -->
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=36">
+<link rel="stylesheet" href="styles.css?v=38">
 </head>
 <body>
 
@@ -82,7 +82,7 @@
     <span class="banner-gov" id="banner-gov"></span>
     <button id="rate-table-btn">📊 거리별 운임표</button>
     <button id="clause-btn">📋 부대조항</button>
-    <span class="app-ver" id="app-ver">v187</span>
+    <span class="app-ver" id="app-ver">v189</span>
   </div>
 </div>
 
@@ -264,7 +264,7 @@
 
 <!-- 음성 입력 (모바일 전용, 지원 기기에서만 노출) -->
 <div id="voice-hint" role="status" aria-live="polite"></div>
-<button id="voice-fab" aria-label="음성으로 목적지 검색">💬</button>
+<button id="voice-fab" aria-label="음성으로 목적지 검색">🔊</button>
 
 <!-- 부대조항 모달 -->
 <div id="clause-modal" role="dialog" aria-modal="true" aria-labelledby="clause-modal-title">
@@ -2462,7 +2462,8 @@ initNotices();
   if (cBox && cHead) makeDraggable(cBox, cHead);
 }());
 
-})();
+// ── 아래 보조 기능(광고·음성)은 앱 IIFE 내부에서 실행한다 ──
+//    (state/setType/runDongSearch 등 앱 내부 함수·변수에 접근해야 하므로)
 
 // ────────────────────────────────────────────
 // 양쪽 세방 광고 배너 — 클릭 시 YouTube 로드 (파사드)
@@ -2498,14 +2499,12 @@ initNotices();
   if (!fab) return;
   var isMobile = window.matchMedia('(max-width:899px)').matches &&
                  (('ontouchstart' in window) || navigator.maxTouchPoints > 0);
-  if (!SR || !isMobile) return;            // 미지원 브라우저/PC → 버튼 숨긴 채 종료
-  fab.classList.add('supported');          // 지원 기기에서만 노출
+  var isIOS = /iP(hone|ad|od)/.test(navigator.userAgent) ||
+              (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  if (!isMobile) return;
+  if (!SR && !isIOS) return;               // 음성인식 미지원 + iOS도 아님 → 버튼 숨김
+  fab.classList.add('supported');
 
-  var rec = new SR();
-  rec.lang = 'ko-KR';
-  rec.interimResults = false;
-  rec.maxAlternatives = 1;
-  rec.continuous = false;
   var listening = false, hintTimer = null;
 
   function showHint(msg, autoMs) {
@@ -2524,10 +2523,34 @@ initNotices();
       window.speechSynthesis.speak(u);
     } catch (e) {}
   }
+  function prepDongAndDefaults() {
+    searchMode = 'dong';
+    var sd = document.getElementById('smt-dong'), sr2 = document.getElementById('smt-road');
+    if (sd) sd.classList.add('active'); if (sr2) sr2.classList.remove('active');
+    if (!state.type) setType('왕복');
+    if (!state.fareType) setFareType('위탁');
+  }
+
+  // iOS 사파리는 웹 음성인식이 불안정 → 애플 기본 '키보드 받아쓰기'로 유도(안정적)
+  if (isIOS || !SR) {
+    fab.addEventListener('click', function () {
+      prepDongAndDefaults();
+      try { inp.focus(); } catch (e) {}
+      buzz(30);
+      showHint('검색창 키보드의 🎤(받아쓰기)를 눌러 목적지를 말씀하세요', 6000);
+    });
+    return;   // iOS 분기 종료 — 아래 웹 음성인식 코드 미사용
+  }
+
+  // ── 안드로이드 등: 웹 음성인식 직접 사용 ──
+  var rec = new SR();
+  rec.lang = 'ko-KR';
+  rec.interimResults = false;
+  rec.maxAlternatives = 1;
+  rec.continuous = false;
 
   fab.addEventListener('click', function () {
     if (listening) { try { rec.stop(); } catch (e) {} return; }
-    // 진행 중이던 음성출력만 정지(인식 방해 방지). TTS 워밍업은 인식을 깨뜨려 제거함.
     try { if (window.speechSynthesis) window.speechSynthesis.cancel(); } catch (e) {}
     try { rec.start(); } catch (e) { showHint('마이크를 시작할 수 없어요. 다시 눌러주세요', 2500); }
   });
@@ -2598,6 +2621,8 @@ initNotices();
     }
   }
 }());
+
+})();   // ── 앱 IIFE 종료 (광고·음성 포함) ──
 </script>
 </body>
 </html>
