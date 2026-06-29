@@ -39,7 +39,7 @@
 <!-- 행정안전부 Juso API - JSONP/fetch 동적 호출 (별도 SDK 없음) -->
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=40">
+<link rel="stylesheet" href="styles.css?v=41">
 </head>
 <body>
 
@@ -74,6 +74,12 @@
   <div class="side-ad-player" id="side-ad-player-right" style="display:none;"></div>
 </div>
 
+<!-- 광고 팝업(라이트박스) — 썸네일 클릭 시 큰 화면으로 재생 -->
+<div class="ad-modal" id="ad-modal" aria-hidden="true">
+  <button class="ad-modal-close" id="ad-modal-close" aria-label="닫기">×</button>
+  <div class="ad-modal-inner" id="ad-modal-inner"></div>
+</div>
+
 <!-- 배너 -->
 <div class="banner">
   <div class="banner-inner">
@@ -82,7 +88,7 @@
     <span class="banner-gov" id="banner-gov"></span>
     <button id="rate-table-btn">📊 거리별 운임표</button>
     <button id="clause-btn">📋 부대조항</button>
-    <span class="app-ver" id="app-ver">v191</span>
+    <span class="app-ver" id="app-ver">v192</span>
   </div>
 </div>
 
@@ -2461,25 +2467,36 @@ initNotices();
 })();
 
 // ────────────────────────────────────────────
-// 양쪽 세방 광고 배너 — 클릭 시 YouTube 로드 (파사드)
+// 세방 광고 — 썸네일 클릭 시 큰 팝업(라이트박스)으로 재생
 // ────────────────────────────────────────────
 (function () {
-  var ads = { left: 'NhwD3VbFZdg', right: 'NhwD3VbFZdg' };
-  function initAd(side) {
-    var thumb = document.getElementById('side-ad-thumb-' + side);
-    var player = document.getElementById('side-ad-player-' + side);
-    if (!thumb || !player) return;
-    var vid = ads[side];
-    thumb.addEventListener('click', function () {
-      player.innerHTML = '<iframe src="https://www.youtube.com/embed/' + vid +
-        '?autoplay=1&loop=1&playlist=' + vid + '&mute=1" ' +
-        'allow="autoplay; encrypted-media" allowfullscreen></iframe>';
-      thumb.style.display = 'none';
-      player.style.display = 'block';
-    });
+  var VID = 'NhwD3VbFZdg';
+  var modal = document.getElementById('ad-modal');
+  var inner = document.getElementById('ad-modal-inner');
+  var closeBtn = document.getElementById('ad-modal-close');
+  if (!modal || !inner) return;
+
+  function openAd() {
+    inner.innerHTML = '<iframe src="https://www.youtube.com/embed/' + VID +
+      '?autoplay=1&loop=1&playlist=' + VID + '" ' +
+      'allow="autoplay; encrypted-media" allowfullscreen></iframe>';
+    modal.classList.add('open');
+    modal.setAttribute('aria-hidden', 'false');
   }
-  initAd('left');
-  initAd('right');
+  function closeAd() {
+    modal.classList.remove('open');
+    modal.setAttribute('aria-hidden', 'true');
+    inner.innerHTML = '';   // iframe 제거 → 재생·소리 정지
+  }
+  ['left', 'right'].forEach(function (side) {
+    var thumb = document.getElementById('side-ad-thumb-' + side);
+    if (thumb) thumb.addEventListener('click', openAd);
+  });
+  if (closeBtn) closeBtn.addEventListener('click', closeAd);
+  modal.addEventListener('click', function (e) { if (e.target === modal) closeAd(); });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && modal.classList.contains('open')) closeAd();
+  });
 }());
 </script>
 </body>
